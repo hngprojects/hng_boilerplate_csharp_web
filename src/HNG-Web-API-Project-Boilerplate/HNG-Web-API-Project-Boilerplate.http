@@ -1,0 +1,6 @@
+@HNG_Web_API_Project_Boilerplate_HostAddress = http://localhost:5288
+
+GET {{HNG_Web_API_Project_Boilerplate_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

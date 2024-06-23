@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>HNG_Boilerplate_Application</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HNG-Boilerplate-Domain\HNG-Boilerplate-Domain.csproj" />
+    <ProjectReference Include="..\HNG.Boilerplate.Infrastructure\HNG.Boilerplate.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
