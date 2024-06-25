@@ -1,4 +1,4 @@
-using HNG_Web_API_Project_Boilerplate.Services;
+using Hng.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

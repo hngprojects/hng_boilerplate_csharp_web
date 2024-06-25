@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace HNG_Web_API_Project_Boilerplate.Controllers
+namespace Hng.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]

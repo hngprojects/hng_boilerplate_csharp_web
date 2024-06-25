@@ -1,4 +1,4 @@
-namespace HNG_Web_API_Project_Boilerplate
+namespace Hng.Web
 {
     public class WeatherForecast
     {

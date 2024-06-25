@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>HNG_Boilerplate_Application</RootNamespace>
+    <RootNamespace>Hng.Application</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HNG-Boilerplate-Domain\HNG-Boilerplate-Domain.csproj" />
-    <ProjectReference Include="..\HNG.Boilerplate.Infrastructure\HNG.Boilerplate.Infrastructure.csproj" />
+    <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
+    <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
