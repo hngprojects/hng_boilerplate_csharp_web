@@ -168,6 +168,6 @@ Alternatively you can `cd` into `src/Hng.Web` project and run the command
 dotnet run
 ```
 
-### 7. Verify the Setup
+### 4. Verify the Setup
 
 Depending on the IDE/code editor, you should be greeted with the Swagger documentation page else navigate to `/swagger` to view the documentation
