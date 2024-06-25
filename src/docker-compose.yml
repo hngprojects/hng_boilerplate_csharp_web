@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  hng-web-api-project-boilerplate:
-    image: ${DOCKER_REGISTRY-}hngwebapiprojectboilerplate
-    build:
-      context: HNG-Web-API-Project-Boilerplate
-      dockerfile: Dockerfile

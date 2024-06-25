@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HNG.Boilerplate.Infrastructure.Context
+namespace Hng.Infrastructure.Context
 {
     public class MyDBContext : DbContext
     {

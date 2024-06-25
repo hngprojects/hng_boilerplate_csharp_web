@@ -1,8 +1,8 @@
-﻿using HNG.Boilerplate.Infrastructure.Context;
+﻿using Hng.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace HNG_Web_API_Project_Boilerplate.Services
+namespace Hng.Web.Services
 {
     public static class ServiceExtensions
     {

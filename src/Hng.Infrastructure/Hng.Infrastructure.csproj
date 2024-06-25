@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HNG-Boilerplate-Domain\HNG-Boilerplate-Domain.csproj" />
+    <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
   </ItemGroup>
 
 </Project>
