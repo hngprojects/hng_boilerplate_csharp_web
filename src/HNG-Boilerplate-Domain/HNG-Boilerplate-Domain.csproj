@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Repository\" />
     <Folder Include="SeedData\" />
   </ItemGroup>
 

@@ -1,5 +1,4 @@
-﻿using HNG_Boilerplate_Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +12,5 @@ namespace HNG.Boilerplate.Infrastructure.Context
         public MyDBContext(DbContextOptions<MyDBContext> options) : base(options)
         {
         }
-
-        public DbSet<Product> Products { get; set; }
-
-        // Add DbSet for other entities
     }
 }
