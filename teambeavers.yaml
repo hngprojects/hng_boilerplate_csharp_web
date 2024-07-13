@@ -105,6 +105,12 @@ paths:
       responses:
         '200':
           description: Success
+    get:
+      tags:
+        - Notifications
+      responses:
+        '200':
+          description: Success
 components:
   schemas:
     AddOrganisationDto:
