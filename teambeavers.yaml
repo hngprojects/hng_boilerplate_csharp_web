@@ -4,7 +4,7 @@ info:
   description: The Authentication and Organization Management API provides essential functionalities for user and organization management within an application. This API enables clients to perform user registration, user login, organization creation, and adding users to organizations. It is designed to facilitate secure and efficient management of users and their associations with organizations.
   version: "v1"
 paths:
- /auth/login:
+  /auth/login:
     post:
       tags:
         - Auth
@@ -15,8 +15,8 @@ paths:
               $ref: '#/components/schemas/LoginDto'
       responses:
         '200':
-          description: Success                 
- /auth/register:
+          description: Success
+  /auth/register:
     post:
       tags:
         - Auth
@@ -28,7 +28,7 @@ paths:
       responses:
         '200':
           description: Success
- /api/organisations:
+  /api/organisations:
     post:
       tags:
         - Organisations
@@ -46,7 +46,7 @@ paths:
       responses:
         '200':
           description: Success
- /api/organisations/{orgId}:
+  /api/organisations/{orgId}:
     get:
       tags:
         - Organisations
@@ -60,7 +60,7 @@ paths:
       responses:
         '200':
           description: Success
- /api/organisations/{orgId}/users:
+  /api/organisations/{orgId}/users:
     post:
       tags:
         - Organisations
@@ -76,6 +76,20 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserIdDto'
+      responses:
+        '200':
+          description: Success
+  /api/Users/{userId}:
+    get:
+      tags:
+        - Users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
       responses:
         '200':
           description: Success
