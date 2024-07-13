@@ -26,7 +26,7 @@ paths:
             schema:
               $ref: '#/components/schemas/UserRegistrationDto'
       responses:
-        '200':
+        '201':
           description: Success
   /api/organisations:
     post:
@@ -38,7 +38,7 @@ paths:
             schema:
               $ref: '#/components/schemas/AddOrganisationDto'
       responses:
-        '200':
+        '201':
           description: Success
     get:
       tags:
@@ -77,7 +77,7 @@ paths:
             schema:
               $ref: '#/components/schemas/UserIdDto'
       responses:
-        '200':
+        '204':
           description: Success
   /api/Users/{userId}:
     get:
@@ -103,7 +103,7 @@ paths:
             schema:
               $ref: '#/components/schemas/AddNotificationDto'
       responses:
-        '200':
+        '201':
           description: Success
     get:
       tags:
