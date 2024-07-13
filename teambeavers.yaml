@@ -1,0 +1,7 @@
+openapi: 3.0.1
+info:
+  title: User and Organization Management API
+  description: The Authentication and Organization Management API provides essential functionalities for user and organization management within an application. This API enables clients to perform user registration, user login, organization creation, and adding users to organizations. It is designed to facilitate secure and efficient management of users and their associations with organizations.
+  version: "v1"
+paths: {}
+components: {}
