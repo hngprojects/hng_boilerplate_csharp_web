@@ -40,6 +40,45 @@ paths:
       responses:
         '200':
           description: Success
+    get:
+      tags:
+        - Organisations
+      responses:
+        '200':
+          description: Success
+ /api/organisations/{orgId}:
+    get:
+      tags:
+        - Organisations
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+ /api/organisations/{orgId}/users:
+    post:
+      tags:
+        - Organisations
+      parameters:
+        - name: orgId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserIdDto'
+      responses:
+        '200':
+          description: Success
 components:
   schemas:
     AddOrganisationDto:
