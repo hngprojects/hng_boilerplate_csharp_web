@@ -15,6 +15,30 @@ paths:
               $ref: '#/components/schemas/LoginDto'
       responses:
         '200':
+          description: Success                 
+ /auth/register:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationDto'
+      responses:
+        '200':
+          description: Success
+ /api/organisations:
+    post:
+      tags:
+        - Organisations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddOrganisationDto'
+      responses:
+        '200':
           description: Success
 components:
   schemas:
