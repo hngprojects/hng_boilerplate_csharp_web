@@ -93,6 +93,18 @@ paths:
       responses:
         '200':
           description: Success
+  /api/notifications:
+    post:
+      tags:
+        - Notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddNotificationDto'
+      responses:
+        '200':
+          description: Success
 components:
   schemas:
     AddOrganisationDto:
@@ -140,6 +152,19 @@ components:
         phone:
           type: string
           nullable: true
+      additionalProperties: false
+    AddNotificationDto:
+      type: object
+      properties:
+        orgId:
+          type: string
+          nullable: false
+        title:
+          type: string
+          nullable: false
+        description:
+          type: string
+          nullable: false
       additionalProperties: false
   securitySchemes:
     Bearer:
