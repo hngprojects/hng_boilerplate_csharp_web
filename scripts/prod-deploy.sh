@@ -10,5 +10,5 @@ dotnet build
 # publish app
 dotnet publish
 
-# kill any existing instance on port 80
+# restart the systemd service
 sudo systemctl restart hng-web
