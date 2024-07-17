@@ -10,7 +10,7 @@ jobs:
 
     environment:
       name: "dev"
-      url: ${{env.DEV_URL}}
+      url: ${{env.URL}}
 
     steps:
     - name: Checkout repository
