@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hng.Application", "src\Hng.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hng.Web", "src\Hng.Web\Hng.Web.csproj", "{9774A8A9-24E7-4DF0-99FE-28377C71A396}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hng.Application.Test", "src\Hng.Application.Test\Hng.Application.Test.csproj", "{76168A5E-BD9C-4717-847C-5F586F4ECF98}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,10 +35,6 @@ Global
 		{9774A8A9-24E7-4DF0-99FE-28377C71A396}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9774A8A9-24E7-4DF0-99FE-28377C71A396}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9774A8A9-24E7-4DF0-99FE-28377C71A396}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76168A5E-BD9C-4717-847C-5F586F4ECF98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76168A5E-BD9C-4717-847C-5F586F4ECF98}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76168A5E-BD9C-4717-847C-5F586F4ECF98}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76168A5E-BD9C-4717-847C-5F586F4ECF98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,7 +44,6 @@ Global
 		{9D953FB6-38BC-4052-AD57-FDDCB7C0D7F4} = {7DBA9FEC-56C1-4474-A496-42135E7C1431}
 		{D0791DB0-B0F8-441E-9063-B898C0A10F75} = {7DBA9FEC-56C1-4474-A496-42135E7C1431}
 		{9774A8A9-24E7-4DF0-99FE-28377C71A396} = {7DBA9FEC-56C1-4474-A496-42135E7C1431}
-		{76168A5E-BD9C-4717-847C-5F586F4ECF98} = {7DBA9FEC-56C1-4474-A496-42135E7C1431}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27B33D62-0FC6-4073-BEAB-76CFE688568E}
