@@ -8,19 +8,13 @@ jobs:
   dev-deploy:
     runs-on: ubuntu-latest
 
+    environment:
+      name: "dev"
+      url: ${{env.DEV_URL}}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-
-    - name: Copy files via ssh-password
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        port: ${{ secrets.PORT }}
-        password: ${{ secrets.PASSWORD }}
-        source: "./*"
-        target: dev-deploy
 
     - name: Deploy To Dev Server
       uses: appleboy/ssh-action@v1.0.0
@@ -30,9 +24,8 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
+          git checkout dev
+          git pull origin dev
           cd ~/dev-deploy/scripts
-          chmod +x dev-deploy.sh
           ./dev-deploy.sh
-      env:
-        PASSWORD: ${{secrets.PASSWORD}}
 
