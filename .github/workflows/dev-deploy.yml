@@ -28,4 +28,3 @@ jobs:
           git checkout dev
           git pull origin dev
           ./dev-deploy.sh
-
