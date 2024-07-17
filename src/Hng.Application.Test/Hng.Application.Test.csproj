@@ -1,15 +1,4 @@
-<<<<<<< HEAD
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-</Project>
-=======
-﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -31,4 +20,3 @@
   </ItemGroup>
 
 </Project>
->>>>>>> 27b2420 (feat: setup test project for dot net)
