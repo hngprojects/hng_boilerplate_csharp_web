@@ -17,13 +17,9 @@ jobs:
         dotnet-version: '8.0.x' # Use the version of .NET you need
 
     - name: Install dependencies
-      shell: bash
       run: | 
-          cd $(git rev-parse --show-toplevel)/src/Hng.Web
-          dotnet restore ./Hng.Web.csproj
+          dotnet restore ./Hng.Csharp.Web.sln
 
     - name: Build Application
-      shell: bash
       run: | 
-          cd $(git rev-parse --show-toplevel)/src/Hng.Web
           dotnet build

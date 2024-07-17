@@ -1,12 +1,18 @@
-# get to project root
-cd $(git rev-parse --show-toplevel)/src/Hng.Web
+# navigate to repo root
+cd  $(git rev-parse --show-toplevel)
+
 # install dependencies
-dotnet restore ./Hng.Web.csproj
+dotnet restore Hng.Csharp.Web.sln
+
 # build app
 dotnet build
-# ensure app is executable
-chmod +x ./bin/Release/net8.0/Hng.Web
-# kill any existing instance
-echo "$PASSWORD" | sudo kill -9 $(sudo lsof -t -i:5288) &> /dev/null || true
-# run app - dev
-nohup dotnet run &
+
+# navigate to project root
+cd src/Hng.Web
+
+# kill any existing instance on port 80
+sudo kill -9 $(sudo lsof -t -i:80) &> /dev/null || true
+
+# run app on port 80
+nohup sudo dotnet run --urls "http://0.0.0.0:80" &
+

@@ -35,3 +35,4 @@ jobs:
           ./dev-deploy.sh
       env:
         PASSWORD: ${{secrets.PASSWORD}}
+
