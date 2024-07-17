@@ -1,0 +1,14 @@
+name: Build
+
+on:
+  pull_request: 
+    branches: 
+        - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
