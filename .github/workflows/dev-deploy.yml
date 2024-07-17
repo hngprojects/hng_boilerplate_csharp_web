@@ -5,9 +5,33 @@ on:
     branches: 
         - dev
 jobs:
-  deploy:
+  dev-deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    - name: Copy files via ssh-password
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        port: ${{ secrets.PORT }}
+        password: ${{ secrets.PASSWORD }}
+        source: "./*"
+        target: dev-deploy
+
+    - name: Deploy To Dev Server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd ~/dev-deploy/scripts
+          chmod +x dev-deploy.sh
+          ./dev-deploy.sh
+      env:
+        PASSWORD: ${{secrets.PASSWORD}}

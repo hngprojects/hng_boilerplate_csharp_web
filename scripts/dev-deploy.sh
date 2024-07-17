@@ -7,6 +7,6 @@ dotnet build
 # ensure app is executable
 chmod +x ./bin/Release/net8.0/Hng.Web
 # kill any existing instance
-sudo kill -9 $(sudo lsof -t -i:5000) &> /dev/null || true
+echo "$PASSWORD" | sudo kill -9 $(sudo lsof -t -i:5288) &> /dev/null || true
 # run app - dev
-dotnet run
+nohup dotnet run &
