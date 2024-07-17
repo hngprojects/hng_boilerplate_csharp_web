@@ -11,8 +11,7 @@ dotnet build
 cd src/Hng.Web
 
 # kill any existing instance on port 80
-sudo kill -9 $(sudo lsof -t -i:80) &> /dev/null || true
+sudo kill -9 $(sudo lsof -t -i:8000) &> /dev/null || true
 
-# run app on port 80
-nohup sudo dotnet run --urls "http://0.0.0.0:80" > nohup.out 2> nohup.err < /dev/null &
-
+# run app on port 8000
+nohup sudo dotnet run --urls "http://0.0.0.0:8000" > nohup.out 2> nohup.err < /dev/null &
