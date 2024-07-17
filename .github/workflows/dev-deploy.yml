@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  push: 
+    branches: 
+        - dev
+jobs:
+  dev-deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: "dev"
+      url: ${{env.DEV_URL}}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Deploy To Dev Server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          git checkout dev
+          git pull origin dev
+          cd ~/dev-deploy/scripts
+          ./dev-deploy.sh
+
