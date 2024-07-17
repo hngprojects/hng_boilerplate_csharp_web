@@ -8,13 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Services\" />
+    <PackageReference Include="FluentValidation" Version="11.9.2" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
-    <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

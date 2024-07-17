@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hng.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,8 @@ namespace Hng.Infrastructure.Context
         public MyDBContext(DbContextOptions<MyDBContext> options) : base(options)
         {
         }
+
+        public DbSet<WaitlistUser> WaitlistUsers { get; set; }
+        public DbSet<RateLimit> RateLimitUsers { get; set; }
     }
 }
