@@ -14,5 +14,5 @@ cd src/Hng.Web
 sudo kill -9 $(sudo lsof -t -i:80) &> /dev/null || true
 
 # run app on port 80
-nohup sudo dotnet run --urls "http://0.0.0.0:80" &
+nohup sudo dotnet run --urls "http://0.0.0.0:80" > nohup.out 2> nohup.err < /dev/null &
 
