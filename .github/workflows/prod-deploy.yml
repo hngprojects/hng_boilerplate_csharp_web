@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  push: 
+    branches: 
+        - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: "production"
+      url: ${{env.URL}}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Deploy To Prod Server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd hng_boilerplate_csharp_web/scripts
+          git checkout main
+          git pull origin main
+          ./prod-deploy.sh
