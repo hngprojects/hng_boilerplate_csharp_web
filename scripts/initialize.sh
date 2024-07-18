@@ -295,7 +295,7 @@ else
 fi
 
 # Project Setup
-cd ~
+cd /home/$USER
 
 mkdir -p hng_boilerplate_csharp_web
 cd hng_boilerplate_csharp_web
@@ -324,7 +324,7 @@ fi
 
 git pull origin main
 
-cd ~
+cd /home/$USER
 
 # Systemd
 create_systemd_service() {
@@ -391,6 +391,13 @@ then
     echo "HNG-Web-dev service is running."
 else
     echo "HNG-Web-dev service is not running. Please check the HNG-Web-dev installation."
+fi
+
+if systemctl is-active --quiet hng-web-staging
+then
+    echo "HNG-Web-staging service is running."
+else
+    echo "HNG-Web-staging service is not running. Please check the HNG-Web-staging installation."
 fi
 
 echo "HNG C# Web Server installation and setup verified. Ending script."
