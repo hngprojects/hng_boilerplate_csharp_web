@@ -10,10 +10,10 @@ DEV_DOMAIN_NAME=$DEV_DOMAIN_NAME
 STAGING_DOMAIN_NAME=$STAGING_DOMAIN_NAME
 
 # Credentials
-CREDENTIALS_FILE="/etc/passwd/credentials.txt"
+CREDENTIALS_FILE="/etc/server_creds/credentials.txt"
 
 if [ ! -f "$CREDENTIALS_FILE" ]; then
-    sudo mkdir -p /etc/passwd
+    sudo mkdir -p /etc/server_creds
     sudo touch "$CREDENTIALS_FILE"
     sudo chmod 600 "$CREDENTIALS_FILE"
 fi
@@ -59,21 +59,19 @@ else
     exit 1
 fi
 
-# Generate and store passwords if not already present
-DEV_PASSWORD=$(store_password "redis_dev" $(generate_password))
-STAGING_PASSWORD=$(store_password "redis_staging" $(generate_password))
-PROD_PASSWORD=$(store_password "redis_prod" $(generate_password))
-
 # Create Redis users with passwords (using ACL) if not already present
 if ! redis-cli ACL LIST | grep -q "user:redis_dev"; then
+    DEV_PASSWORD=$(store_password "redis_dev" $(generate_password))
     redis-cli ACL SETUSER redis_dev on >"$DEV_PASSWORD" ~* &> /dev/null
 fi
 
 if ! redis-cli ACL LIST | grep -q "user:redis_staging"; then
+    STAGING_PASSWORD=$(store_password "redis_staging" $(generate_password))
     redis-cli ACL SETUSER redis_staging on >"$STAGING_PASSWORD" ~* &> /dev/null
 fi
 
 if ! redis-cli ACL LIST | grep -q "user:redis_prod"; then
+    PROD_PASSWORD=$(store_password "redis_prod" $(generate_password))
     redis-cli ACL SETUSER redis_prod on >"$PROD_PASSWORD" ~* &> /dev/null
 fi
 
