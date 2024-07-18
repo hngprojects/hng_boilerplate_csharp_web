@@ -19,7 +19,7 @@ if [ ! -f "$CREDENTIALS_FILE" ]; then
 fi
 
 generate_password() {
-    openssl rand -base64 12
+    tr -dc A-Za-z0-9 < /dev/urandom | head -c 12
 }
 
 store_password() {
