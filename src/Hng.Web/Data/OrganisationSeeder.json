@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Default Seeded Organisation", 
+        "description": "Use this organisation if you are a first time user, otherwise create one"
+    },
+    {
+        "name": "Second Organisation", 
+        "description": "Description here"
+    },
+    {
+        "name": "Third Organisation", 
+        "description": "Description here"
+    }
+]
+
+
+
