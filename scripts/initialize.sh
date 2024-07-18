@@ -326,4 +326,4 @@ git pull origin main
 
 cd /home/$USER
 
-echo "HNG C# Web Server installation and setup verified. Ending script."
+echo "HNG C# Web Server installation completed. Ending script."
