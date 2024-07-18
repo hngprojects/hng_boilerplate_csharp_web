@@ -326,4 +326,5 @@ git pull origin main
 
 cd /home/$USER
 
+# Note removed systemd service files
 echo "HNG C# Web Server installation completed. Ending script."
