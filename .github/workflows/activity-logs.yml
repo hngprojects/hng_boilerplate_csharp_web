@@ -1,0 +1,40 @@
+name: Log Activities
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  log:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Fetch latest changes
+        run: git fetch origin main
+
+      - name: Log Commit Message
+        run: |
+          echo "Commit message: ${{ github.event.head_commit.message }}" >> commit-logs.txt
+          echo "Committer: ${{ github.event.head_commit.committer.name }}" >> commit-logs.txt
+          echo "Timestamp: ${{ github.event.head_commit.timestamp }}" >> commit-logs.txt
+          echo "Commit URL: ${{ github.event.head_commit.url }}" >> commit-logs.txt
+          echo "" >> commit-logs.txt
+
+      - name: Add and Commit Log
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add commit-logs.txt
+          git commit -m "Update activities log" || echo "No changes to commit"
+
+      - name: Push changes
+        env:
+          PAT_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          git remote set-url origin https://${PAT_TOKEN}@github.com/${{ github.repository }}.git
+          git pull origin main --rebase
+          git push --force-with-lease origin HEAD:main
