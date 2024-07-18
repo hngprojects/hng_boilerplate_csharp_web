@@ -1,5 +1,24 @@
 #!/bin/bash
 
+export DOMAIN_NAME="api-csharp.boilerplate.hng.tech"
+export DEV_DOMAIN_NAME="staging.api-csharp.boilerplate.hng.tech"
+export STAGING_DOMAIN_NAME="deployment.api-csharp.boilerplate.hng.tech"
+
+export DOMAIN_IP="91.229.239.238"
+
+echo "DOMAIN_NAME=${DOMAIN_NAME}" >> ~/.bashrc
+echo "DEV_DOMAIN_NAME=${DEV_DOMAIN_NAME}" >> ~/.bashrc
+echo "STAGING_DOMAIN_NAME=${STAGING_DOMAIN_NAME}" >> ~/.bashrc
+echo "DOMAIN_IP=${DOMAIN_IP}" >> ~/.bashrc
+
+source ~/.bashrc
+
+# Verify the environment variables
+echo "DOMAIN_NAME: $DOMAIN_NAME"
+echo "DEV_DOMAIN_NAME: $DEV_DOMAIN_NAME"
+echo "STAGING_DOMAIN_NAME: $STAGING_DOMAIN_NAME"
+echo "DOMAIN_IP: $DOMAIN_IP"
+
 sudo apt-get update
 # get logged-in user
 USER=$(logname)
@@ -95,11 +114,78 @@ else
     sudo systemctl start nginx
 fi
 
-if nginx -v &> /dev/null
+if [ ! -f /etc/nginx/sites-available/api.conf ]
 then
-    echo "NGINX installation and setup verified."
+    # Create NGINX configuration file for API
+    sudo bash -c 'cat > /etc/nginx/sites-available/api.conf <<EOF
+server {
+    listen 80;
+    server_name api-csharp.boilerplate.hng.tech;
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_redirect off;
+    }
+}
+
+server {
+    listen 80;
+    server_name staging.api-csharp.boilerplate.hng.tech;
+
+    location / {
+        proxy_pass http://localhost:5001;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_redirect off;
+    }
+}
+
+server {
+    listen 80;
+    server_name deployment.api-csharp.boilerplate.hng.tech;
+
+    location / {
+        proxy_pass http://localhost:5002;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_redirect off;
+    }
+}
+EOF'
+
+    # Create symbolic link for NGINX configuration
+    sudo ln -sf /etc/nginx/sites-available/api.conf /etc/nginx/sites-enabled/
+
+    # Remove default symbolic link if it exists
+    if [ -f /etc/nginx/sites-enabled/default ]
+    then
+        sudo rm /etc/nginx/sites-enabled/default
+        echo "Removed default NGINX configuration from sites-enabled."
+    fi
+
+    # Verify NGINX configuration syntax
+    sudo nginx -t
+
+    # Reload NGINX to apply changes
+    sudo systemctl reload nginx
+
+    # Verify NGINX is running with the new configuration
+    if sudo systemctl is-active --quiet nginx
+    then
+        echo "NGINX configuration applied successfully."
+    else
+        echo "NGINX configuration failed to apply. Please check the configuration."
+    fi
 else
-    echo "NGINX setup verification failed. Please check the NGINX installation."
+    echo "NGINX configuration file api.conf already exists. Skipping configuration."
 fi
 
 # PostgreSQL
