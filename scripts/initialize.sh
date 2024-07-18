@@ -276,6 +276,24 @@ fi
 sudo -i -u postgres psql -c "\du"
 sudo -i -u postgres psql -c "\l"
 
+# C# setup
+if ! command -v dotnet &> /dev/null
+then
+    echo "dotnet not found. Installing dotnet..."
+    sudo apt-get update && \
+      sudo apt-get install -y dotnet-sdk-8.0
+else
+    echo "dotnet is already installed."
+fi
+
+if ! command -v dotnet &> /dev/null
+then
+    echo "dotnet installation failed. Please check the installation."
+    exit 1
+else
+    echo "dotnet installation successful."
+fi
+
 # Project Setup
 cd ~
 
