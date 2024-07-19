@@ -1,10 +1,10 @@
-name: Build
+name: Test
 
 on:
   pull_request
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,9 +17,13 @@ jobs:
         dotnet-version: '8.0.x' # Use the version of .NET you need
 
     - name: Install dependencies
-      run: | 
-          dotnet restore ./Hng.Csharp.Web.sln
+      run: |
+        dotnet restore ./Hng.Csharp.Web.sln
 
     - name: Build Application
-      run: | 
-          dotnet build
+      run: |
+        dotnet build --configuration Release
+
+    - name: Run Unit Tests
+      run: |
+        dotnet test ./src/Hng.Application.Test/Hng.Application.Test.csproj --configuration Release --no-build --verbosity normal
