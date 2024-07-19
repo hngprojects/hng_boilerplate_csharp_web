@@ -178,9 +178,3 @@ Update your appsettings.development file with details of your postgress connecti
 ```
 "DefaultConnectionString": "Server=server-here; Port=5432; Database=UserDb;User Id=postgres;Password=yourpasswordhere"
 ```
-
-If you do not have pgAdmin installed, update program.cs to point to a remote pastgres database setup for you.
-
-```
-var connString = builder.Configuration.GetConnectionString("PostgresSQLConnectionRemote");
-```
