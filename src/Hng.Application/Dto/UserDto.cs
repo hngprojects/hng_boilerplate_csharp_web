@@ -2,11 +2,11 @@ namespace Hng.Application.Dto
 {
     public class UserDto
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public ProfileDto Profile { get; set; }
-        public List<OrganisationDto> Organisations { get; set; }
-        public List<ProductDto> Products { get; set; }
+        public string name { get; set; }
+        public Guid id { get; set; }
+        public string email { get; set; }
+        public ProfileDto profile { get; set; }
+        public List<OrganisationDto> organisations { get; set; }
+        public List<ProductDto> products { get; set; }
     }
 }

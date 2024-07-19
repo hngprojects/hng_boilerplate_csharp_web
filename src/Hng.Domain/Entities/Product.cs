@@ -1,5 +1,5 @@
-namespace Hng.Domain.Models
-{
+
+namespace Hng.Domain.Entities;
     public class Product: EntityBase
     {
         public string Name { get; set; }
@@ -7,4 +7,3 @@ namespace Hng.Domain.Models
         public Guid UserId { get; set; }
         public User User { get; set; }
     }
-}

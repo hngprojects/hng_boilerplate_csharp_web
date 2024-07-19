@@ -9,15 +9,17 @@
 
   <ItemGroup>
     <Compile Remove="Models\**" />
-    <Compile Remove="Services\**" />
     <EmbeddedResource Remove="Models\**" />
-    <EmbeddedResource Remove="Services\**" />
     <None Remove="Models\**" />
-    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
+    <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

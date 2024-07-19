@@ -1,5 +1,5 @@
-namespace Hng.Domain.Models
-{
+namespace Hng.Domain.Entities;
+
     public class User: EntityBase
     {
         public string FirstName { get; set; }
@@ -11,7 +11,6 @@ namespace Hng.Domain.Models
 
 
         public Profile Profile { get; set; }
-        public ICollection<OrganisationUser> OrganisationUsers { get; set; }
+        public ICollection<Organisation> Organisations { get; set; }
         public ICollection<Product> Products { get; set; }
     }
-}

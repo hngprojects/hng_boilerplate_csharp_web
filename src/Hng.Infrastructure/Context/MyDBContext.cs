@@ -1,4 +1,4 @@
-﻿using Hng.Domain.Models;
+﻿using Hng.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,22 +17,10 @@ namespace Hng.Infrastructure.Context
         {
             base.OnModelCreating(modelBuilder);
 
-             modelBuilder.Entity<User>()
-                .HasMany(ur => ur.OrganisationUsers)
-                .WithOne(u => u.User)
-                .HasForeignKey(f => f.UserId)
-                .IsRequired();
-
-                 modelBuilder.Entity<User>()
-                .HasMany(ur => ur.OrganisationUsers)
-                .WithOne(u => u.User)
-                .HasForeignKey(f => f.UserId)
-                .IsRequired();
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Organisation> Organisations { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<OrganisationUser> OrganisationUsers { get; set; }
     }
 }

@@ -2,9 +2,9 @@ namespace Hng.Application.Dto
 {
     public class ProfileDto
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string PhoneNumber { get; set; }
-        public string AvatarUrl { get; set; }
+        public string first_name { get; set; }
+        public string last_name { get; set; }
+        public string phone_number { get; set; }
+        public string avatar_url { get; set; }
     }
 }

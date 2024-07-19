@@ -1,4 +1,5 @@
-namespace Hng.Domain.Models
+namespace Hng.Domain.Entities
+
 {
     public class Profile : EntityBase
     {

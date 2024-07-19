@@ -1,4 +1,4 @@
-using Hng.Domain.Models;
+using Hng.Domain.Entities;
 
 namespace Hng.Infrastructure.Repository.Interface
 {

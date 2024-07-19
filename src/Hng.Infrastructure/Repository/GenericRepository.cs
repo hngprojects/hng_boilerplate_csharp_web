@@ -1,61 +1,65 @@
-using Hng.Domain.Models;
+using Hng.Domain.Entities;
 using Hng.Infrastructure.Context;
 using Hng.Infrastructure.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Hng.Infrastructure.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : EntityBase
     {
-        private readonly MyDBContext myDBContext;
+        private readonly MyDBContext _context;
+        private readonly DbSet<T> _dbSet;
 
-        public GenericRepository(MyDBContext myDBContext)
+        public GenericRepository(MyDBContext context)
         {
-            this.myDBContext = myDBContext;
+            _context = context;
+            _dbSet = _context.Set<T>();
         }
+
         public async Task<T> AddAsync(T entity)
         {
-            await myDBContext.AddAsync(entity);
-            await myDBContext.SaveChangesAsync();
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
 
             return entity;
         }
 
         public async Task<T> DeleteAsync(Guid id)
         {
-            var data = await GetAsync(id);
-            if (data == null)
+            var entity = await GetAsync(id);
+            if (entity == null)
             {
                 return null;
             }
 
-            myDBContext.Set<T>().Remove(data);
-            await myDBContext.SaveChangesAsync();
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
 
-            return data;
+            return entity;
         }
 
         public async Task<bool> Exists(Guid id)
         {
-            var data = await GetAsync(id);
-            return data != null;
+            return await _dbSet.AnyAsync(e => e.Id == id);
         }
 
         public async Task<ICollection<T>> GetAllAsync()
         {
-            return await myDBContext.Set<T>().ToListAsync();
+            return await _dbSet.ToListAsync();
         }
-
 
         public async Task<T> GetAsync(Guid id)
         {
-            return await myDBContext.Set<T>().FindAsync(id);
+            return await _dbSet.FindAsync(id);
         }
 
         public async Task UpdateAsync(T entity)
         {
-            myDBContext.Set<T>().Update(entity);
-            await myDBContext.SaveChangesAsync();
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

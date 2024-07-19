@@ -30,8 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hng.Application\Hng.Application.csproj" />
-    <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
+	  <ProjectReference Include="..\Hng.Application\Hng.Application.csproj" />
+	  <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>
 

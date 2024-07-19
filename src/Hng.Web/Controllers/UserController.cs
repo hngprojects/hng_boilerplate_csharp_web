@@ -18,7 +18,7 @@ namespace Hng.Web.Controllers
             this.repo = repo;
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             var dataFromRepo = await repo.GetUserById(id);
             if(dataFromRepo == null)

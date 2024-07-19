@@ -1,5 +1,4 @@
-namespace Hng.Domain.Models
-{
+namespace Hng.Domain.Entities;
     public class Organisation: EntityBase
     {
         public string Name { get; set; } 
@@ -7,4 +6,3 @@ namespace Hng.Domain.Models
 
         public ICollection<OrganisationUser> OrganisationUsers { get; set; }
     }
-}
