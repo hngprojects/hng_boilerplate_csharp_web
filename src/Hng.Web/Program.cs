@@ -1,4 +1,5 @@
 using Hng.Web.Services;
+using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +10,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connString = builder.Configuration.GetConnectionString("DefaultConnectionString");
-builder.Services.AddConfiguredServices(connString);
-
+//var connString = builder.Configuration.GetConnectionString("DefaultConnectionString");
+//builder.Services.AddMySqlDataSource(connString);
+builder.Services.AddConfiguredServices(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

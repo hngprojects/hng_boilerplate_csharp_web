@@ -34,7 +34,7 @@ namespace Hng.Application.Services
             if (!validationResult.IsValid)
             {
                 result.Success = false;
-                result.StatusCode = 400; 
+                result.StatusCode = 400;
                 result.Message = "Validation error";
                 result.Error = string.Join(", ", validationResult.Errors);
                 return result;
@@ -42,20 +42,39 @@ namespace Hng.Application.Services
 
             try
             {
-                var userId = Guid.NewGuid(); 
+                var userId = model.Email;
                 var rateLimit = await _rateLimitRepository.GetRateLimitByUserIdAsync(userId);
 
-                if (rateLimit != null && rateLimit.RequestCount >= 5) 
+                if (rateLimit != null)
                 {
-                    result.Success = false;
-                    result.StatusCode = 429;
-                    result.Message = "Rate limit exceeded";
-                    result.Error = "Too Many Requests";
-                    return result;
+                    if (rateLimit.RequestCount >= 2)
+                    {
+                        result.Success = false;
+                        result.StatusCode = 429;
+                        result.Message = "Rate limit exceeded";
+                        result.Error = "Too Many Requests";
+                        return result;
+                    }
+
+                    rateLimit.RequestCount++;
+                    rateLimit.LastRequest = DateTime.UtcNow;
+                    await _rateLimitRepository.UpdateRateLimitAsync(rateLimit);
+                }
+                else
+                {
+                    rateLimit = new RateLimit
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = userId.ToString(),
+                        RequestCount = 1,
+                        LastRequest = DateTime.UtcNow
+                    };
+                    await _rateLimitRepository.AddRateLimitAsync(rateLimit);
                 }
 
                 var waitlistUser = new WaitlistUser
                 {
+                    Id = Guid.NewGuid(),
                     Email = model.Email,
                     FullName = model.FullName,
                     CreatedAt = DateTime.UtcNow
@@ -68,7 +87,7 @@ namespace Hng.Application.Services
                     Subject = "Welcome to the Waitlist!",
                     Body = $"Dear {model.FullName},\n\nYou are now on our waitlist. Thank you for signing up!"
                 };
-                var emailSent = await _emailService.SendEmail(email);
+                var emailSent = await _emailService.SendEmailAsync(model.Email, email.Subject, email.Body);
 
                 if (!emailSent)
                 {

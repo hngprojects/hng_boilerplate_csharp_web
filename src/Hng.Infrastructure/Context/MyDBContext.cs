@@ -16,5 +16,12 @@ namespace Hng.Infrastructure.Context
 
         public DbSet<WaitlistUser> WaitlistUsers { get; set; }
         public DbSet<RateLimit> RateLimitUsers { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<RateLimit>().ToTable("RateLimits");
+            modelBuilder.Entity<WaitlistUser>().ToTable("WaitlistUsers");
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

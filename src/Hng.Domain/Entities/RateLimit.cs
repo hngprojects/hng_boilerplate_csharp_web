@@ -8,7 +8,7 @@ namespace Hng.Domain.Entities
 {
     public class RateLimit
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } 
         public string UserId { get; set; }
         public int RequestCount { get; set; }
         public DateTime LastRequest { get; set; }

@@ -1,4 +1,5 @@
-﻿using Hng.Domain.Entities;
+﻿using Hng.Application.Models.WaitlistModels;
+using Hng.Domain.Entities;
 using Hng.Domain.Repositories;
 using Hng.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,11 @@ namespace Hng.Domain.Repository
         {
         }
 
-        public async Task<RateLimit> GetRateLimitByUserIdAsync(Guid userId)
+        public async Task<RateLimit> GetRateLimitByUserIdAsync(string userId)
         {
+            var userIdString = userId.ToString();
             return await _context.Set<RateLimit>()
-                .FirstOrDefaultAsync(r => r.UserId == userId.ToString());
+                .FirstOrDefaultAsync(r => r.UserId == userIdString && r.UserId != null);
         }
 
         public async Task UpdateRateLimitAsync(RateLimit rateLimit)

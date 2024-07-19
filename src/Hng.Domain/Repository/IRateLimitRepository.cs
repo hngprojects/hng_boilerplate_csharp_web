@@ -9,7 +9,7 @@ namespace Hng.Domain.Repository
 {
     public interface IRateLimitRepository : IGenericRepository<RateLimit>
     {
-        Task<RateLimit> GetRateLimitByUserIdAsync(Guid userId);
+        Task<RateLimit> GetRateLimitByUserIdAsync(string userId);
         Task UpdateRateLimitAsync(RateLimit rateLimit);
         Task AddRateLimitAsync(RateLimit rateLimit);
     }
