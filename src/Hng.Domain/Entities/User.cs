@@ -9,6 +9,6 @@ namespace Hng.Domain.Entities;
         public string PhoneNumber { get; set; }
 
         public Profile Profile { get; set; }
-        public ICollection<Organisation> Organisations { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Organisation> Organisations { get; set; } = new List<Organisation>();
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
