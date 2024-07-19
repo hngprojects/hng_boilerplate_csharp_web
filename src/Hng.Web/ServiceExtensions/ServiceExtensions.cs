@@ -1,6 +1,7 @@
-﻿using Hng.Infrastructure.Context;
+﻿using Hng.Domain.Entities.Models;
+using Hng.Infrastructure.Context;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Hng.Web.Services
 {
@@ -8,10 +9,16 @@ namespace Hng.Web.Services
     {
         public static IServiceCollection AddConfiguredServices(this IServiceCollection services, string connectionString)
         {
-            services.AddScoped<DbContext, MyDBContext>();
-
-            services.AddDbContext<MyDBContext>(options =>
-                options.UseMySQL(connectionString));
+            services.AddDbContext<MyDBContext>(options => options.UseNpgsql(connectionString));
+            services.AddIdentityCore<User>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 2;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+            })
+                .AddRoles<IdentityRole<long>>().AddEntityFrameworkStores<MyDBContext>();
 
             return services;
         }

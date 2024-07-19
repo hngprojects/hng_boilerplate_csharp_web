@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HNG-Boilerplate-Application\HNG-Boilerplate-Application.csproj" />
+    <!--<ProjectReference Include="..\HNG-Boilerplate-Application\HNG-Boilerplate-Application.csproj" />-->
     <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>
