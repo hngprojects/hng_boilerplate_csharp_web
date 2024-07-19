@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 using Hng.Infrastructure.Context;
+using Hng.Infrastructure.Repository;
+using Hng.Infrastructure.Repository.Interface;
 using Hng.Web.Data;
-using Hng.Web.Repo;
-using Hng.Web.Repo.Interface;
 using Hng.Web.Services;
 using Microsoft.EntityFrameworkCore;
 

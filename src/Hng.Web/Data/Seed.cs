@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Hng.Domain.Models;
 using Hng.Infrastructure.Context;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -12,9 +7,9 @@ namespace Hng.Web.Data
 {
     public class Seed
     {
-         public static async Task SeedOrganisation(MyDBContext dataContext)
+        public static async Task SeedOrganisation(MyDBContext dataContext)
         {
-            if (await dataContext.Organisations.AnyAsync()) return; 
+            if (await dataContext.Organisations.AnyAsync()) return;
             var dataFronJsonFile = await System.IO.File.ReadAllTextAsync("Data/Seeder/OrganisationSeeder.json");
             var organisations = JsonConvert.DeserializeObject<List<Organisation>>(dataFronJsonFile);
             if (organisations == null) return;
@@ -23,19 +18,19 @@ namespace Hng.Web.Data
             {
                 var orgId = Guid.NewGuid().ToString();
                 dataContext.Organisations.Add(new Organisation
-               {
+                {
                     Name = organisation.Name,
-                    OrgId = orgId,
+                    // OrgId = orgId,
                     Description = organisation.Description,
-               });
+                });
             }
 
             await dataContext.SaveChangesAsync();
         }
 
-          public static async Task SeedProducts(MyDBContext dataContext)
+        public static async Task SeedProducts(MyDBContext dataContext)
         {
-            if (await dataContext.Products.AnyAsync()) return; 
+            if (await dataContext.Products.AnyAsync()) return;
             var dataFronJsonFile = await System.IO.File.ReadAllTextAsync("Data/Seeder/ProductSeeder.json");
             var products = JsonConvert.DeserializeObject<List<Product>>(dataFronJsonFile);
             if (products == null) return;
@@ -43,20 +38,20 @@ namespace Hng.Web.Data
             foreach (var product in products)
             {
                 dataContext.Products.Add(new Product
-               {
+                {
                     Name = product.Name,
                     Description = product.Description,
                     UserId = product.UserId
-               });
+                });
             }
 
             await dataContext.SaveChangesAsync();
         }
 
 
-         public static async Task SeedOrganisationUser(MyDBContext dataContext)
+        public static async Task SeedOrganisationUser(MyDBContext dataContext)
         {
-            if (await dataContext.OrganisationUsers.AnyAsync()) return; 
+            if (await dataContext.OrganisationUsers.AnyAsync()) return;
             var dataFronJsonFile = await System.IO.File.ReadAllTextAsync("Data/Seeder/OrganisationUser.json");
             var organisationUsers = JsonConvert.DeserializeObject<List<OrganisationUser>>(dataFronJsonFile);
             if (organisationUsers == null) return;
@@ -64,10 +59,10 @@ namespace Hng.Web.Data
             foreach (var organisationUser in organisationUsers)
             {
                 dataContext.OrganisationUsers.Add(new OrganisationUser
-               {
-                   OrganisationId = organisationUser.OrganisationId,
-                   UserId = organisationUser.UserId
-               });
+                {
+                    OrganisationId = organisationUser.OrganisationId,
+                    UserId = organisationUser.UserId
+                });
             }
 
             await dataContext.SaveChangesAsync();
@@ -75,7 +70,7 @@ namespace Hng.Web.Data
 
         public static async Task SeedProfile(MyDBContext dataContext)
         {
-            if (await dataContext.Profiles.AnyAsync()) return; 
+            if (await dataContext.Profiles.AnyAsync()) return;
             var dataFronJsonFile = await System.IO.File.ReadAllTextAsync("Data/Seeder/ProfileSeeder.json");
             var profiles = JsonConvert.DeserializeObject<List<Profile>>(dataFronJsonFile);
             if (profiles == null) return;
@@ -83,19 +78,19 @@ namespace Hng.Web.Data
             foreach (var profile in profiles)
             {
                 dataContext.Profiles.Add(new Profile
-               {
-                   UserId = profile.UserId,
-                   PhoneNumber = profile.PhoneNumber,
-                   FirstName = profile.FirstName,
-                   LastName = profile.LastName,
-                   AvatarUrl = profile.AvatarUrl
-               });
+                {
+                    UserId = profile.UserId,
+                    PhoneNumber = profile.PhoneNumber,
+                    FirstName = profile.FirstName,
+                    LastName = profile.LastName,
+                    AvatarUrl = profile.AvatarUrl
+                });
             }
 
             await dataContext.SaveChangesAsync();
         }
 
-         public static async Task SeedUsers(MyDBContext myDBContext)
+        public static async Task SeedUsers(MyDBContext myDBContext)
         {
             if (await myDBContext.Users.AnyAsync()) return;
 
@@ -105,7 +100,8 @@ namespace Hng.Web.Data
 
             foreach (var user in users)
             {
-                await myDBContext.Users.AddAsync(new User{
+                await myDBContext.Users.AddAsync(new User
+                {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,

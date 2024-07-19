@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hng.Web.Repo.Interface;
+using Hng.Infrastructure.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers

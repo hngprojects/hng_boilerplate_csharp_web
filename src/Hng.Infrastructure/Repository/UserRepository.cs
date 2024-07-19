@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
+using Hng.Application.Dto;
 using Hng.Domain.Models;
 using Hng.Infrastructure.Context;
-using Hng.Web.Data;
-using Hng.Web.Data.Dto;
-using Hng.Web.Repo.Interface;
+using Hng.Infrastructure.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hng.Web.Repo
+namespace Hng.Infrastructure.Repository
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
@@ -23,40 +18,41 @@ namespace Hng.Web.Repo
             this.mapper = mapper;
         }
 
-        public async Task<object> GetUserById(int id)
+        public async Task<User> GetUserById(Guid id)
         {
-            var data = await myDBContext.Users.Include(x=> x.Products).FirstOrDefaultAsync(x=> x.Id == id);
+            var data = await myDBContext.Users.Include(x => x.Products).FirstOrDefaultAsync(x => x.Id == id);
             if (data == null)
             {
                 return null;
             }
 
-            var profile = await myDBContext.Profiles.FirstOrDefaultAsync(x=> x.UserId == id);
+            var profile = await myDBContext.Profiles.FirstOrDefaultAsync(x => x.UserId == id);
             var organisationUsers = await myDBContext.OrganisationUsers
-            .Include(x=> x.Organisation)
-            .Where(x=> x.UserId == data.Id).ToListAsync();
+            .Include(x => x.Organisation)
+            .Where(x => x.UserId == data.Id).ToListAsync();
 
             var userOrgList = new List<OrganisationDto>();
             foreach (var organisationUser in organisationUsers)
             {
                 userOrgList.Add(new OrganisationDto
                 {
-                    Org_id = organisationUser.Organisation.OrgId,
+                    //Org_id = organisationUser.Organisation.Id,
                     Name = organisationUser.Organisation.Name,
                     Description = organisationUser.Organisation.Description
 
                 });
             }
+            return null;
 
-            return new UserForReturnDto
-            {
-                Name = $"{data.FirstName} {data.LastName}",
-                Id = data.Id.ToString(),
-                Email = data.Email,
-                Profile = mapper.Map<ProfileForReturn>(profile),
-                Organisations = userOrgList,
-                Products = mapper.Map<List<ProductDto>>(data.Products)
-            };
+            //return new UserForReturnDto
+            //{
+            //    Name = $"{data.FirstName} {data.LastName}",
+            //    Id = data.Id.ToString(),
+            //    Email = data.Email,
+            //    Profile = mapper.Map<ProfileForReturn>(profile),
+            //    Organisations = userOrgList,
+            //    Products = mapper.Map<List<ProductDto>>(data.Products)
+            //};
         }
     }
 }

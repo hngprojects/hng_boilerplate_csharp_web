@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Hng.Domain.Models;
 using Hng.Infrastructure.Context;
-using Hng.Web.Repo.Interface;
+using Hng.Infrastructure.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hng.Web.Repo
+namespace Hng.Infrastructure.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : EntityBase
     {
@@ -17,7 +13,7 @@ namespace Hng.Web.Repo
         {
             this.myDBContext = myDBContext;
         }
-        public async Task<object> AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
             await myDBContext.AddAsync(entity);
             await myDBContext.SaveChangesAsync();
@@ -25,7 +21,7 @@ namespace Hng.Web.Repo
             return entity;
         }
 
-        public async Task<object> DeleteAsync(int id)
+        public async Task<T> DeleteAsync(Guid id)
         {
             var data = await GetAsync(id);
             if (data == null)
@@ -39,7 +35,7 @@ namespace Hng.Web.Repo
             return data;
         }
 
-        public async Task<bool> Exists(int id)
+        public async Task<bool> Exists(Guid id)
         {
             var data = await GetAsync(id);
             return data != null;
@@ -51,7 +47,7 @@ namespace Hng.Web.Repo
         }
 
 
-        public async Task<T> GetAsync(int id)
+        public async Task<T> GetAsync(Guid id)
         {
             return await myDBContext.Set<T>().FindAsync(id);
         }
