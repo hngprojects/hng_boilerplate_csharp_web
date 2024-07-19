@@ -7,8 +7,6 @@ namespace Hng.Domain.Entities;
         public string AvatarUrl { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public int ProfileId { get; set; }
-
 
         public Profile Profile { get; set; }
         public ICollection<Organisation> Organisations { get; set; }

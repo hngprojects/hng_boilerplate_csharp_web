@@ -8,6 +8,6 @@ namespace Hng.Domain.Entities
         public string PhoneNumber { get; set; }
         public string AvatarUrl { get; set; }
         public Guid UserId { get; set; }
-        public Guid User { get; set; }
+        public User User { get; set; }
     }
 }
