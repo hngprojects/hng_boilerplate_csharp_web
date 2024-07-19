@@ -1,4 +1,4 @@
-# [App Name] Integration Guide
+# [Database Schema task] Integration Guide
 
 ## Overview
 
@@ -171,3 +171,16 @@ dotnet run
 ### 4. Verify the Setup
 
 Depending on the IDE/code editor, you should be greeted with the Swagger documentation page else navigate to `/swagger` to view the documentation
+
+## Database Connection
+Update your appsettings.development file with details of your postgress connection
+
+```
+"DefaultConnectionString": "Server=server-here; Port=5432; Database=UserDb;User Id=postgres;Password=yourpasswordhere"
+```
+
+If you do not have pgAdmin installed, update program.cs to point to a remote pastgres database setup for you.
+
+```
+var connString = builder.Configuration.GetConnectionString("PostgresSQLConnectionRemote");
+```
