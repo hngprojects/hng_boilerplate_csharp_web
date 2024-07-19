@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Hng.Domain.Models;
 
 namespace Hng.Web.Repo.Interface
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> where T : EntityBase
     {
         Task<T> GetAsync(int id);
         Task<ICollection<T>> GetAllAsync();

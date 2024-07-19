@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hng.Domain.Models;
 using Hng.Infrastructure.Context;
 using Hng.Web.Repo.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hng.Web.Repo
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : EntityBase
     {
         private readonly MyDBContext myDBContext;
 
