@@ -34,40 +34,4 @@
     <Exec Command="git config core.hooksPath .githooks" />
   </Target>
 
-</Project><Project Sdk="Microsoft.NET.Sdk.Web">
-
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Hng.Web</RootNamespace>
-    <UserSecretsId>c9f3cba8-ef17-4cde-a0d3-8325c8446a22</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>.</DockerfileContext>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Middlewares\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\HNG-Boilerplate-Application\HNG-Boilerplate-Application.csproj" />
-    <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
-    <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="git config core.hooksPath .githooks" />
-  </Target>
-
 </Project>
