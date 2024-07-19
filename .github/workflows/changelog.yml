@@ -1,0 +1,98 @@
+name: Update Changelog
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update_changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Fetch latest changes
+        run: |
+          git fetch --all
+
+      - name: Prepare Change Log
+        run: |
+          if [ ! -f CHANGELOG.md ]; then
+            echo '# 📜 Changelog' > CHANGELOG.md
+            echo '> All notable changes to this project will be documented in this file.' >> CHANGELOG.md
+            echo '' >> CHANGELOG.md
+            echo '---' >> CHANGELOG.md
+            echo '' >> CHANGELOG.md
+          fi
+
+      - name: Parse commit message and get modified files
+        id: commit_info
+        run: |
+          MESSAGE="${{ github.event.head_commit.message }}"
+          echo "message<<EOF" >> $GITHUB_OUTPUT
+          echo "$MESSAGE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          MODIFIED_FILES=$(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | head -n 5 | sed 's/^/- /')
+          echo "modified_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$MODIFIED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Update Changelog
+        run: |
+          DATE=$(date +%Y-%m-%d)
+          PUSH_ID="${{ github.sha }}"
+          COMMITTER="${{ github.event.head_commit.committer.name }}"
+          MESSAGE="${{ steps.commit_info.outputs.message }}"
+          MODIFIED_FILES="${{ steps.commit_info.outputs.modified_files }}"
+
+          # Parse commit message for changelog entries
+          ADDED=$(echo "$MESSAGE" | grep -i "^add:" | sed 's/^add://i' | sed 's/^/- /')
+          CHANGED=$(echo "$MESSAGE" | grep -i "^change:" | sed 's/^change://i' | sed 's/^/- /')
+          DEPRECATED=$(echo "$MESSAGE" | grep -i "^deprecate:" | sed 's/^deprecate://i' | sed 's/^/- /')
+          REMOVED=$(echo "$MESSAGE" | grep -i "^remove:" | sed 's/^remove://i' | sed 's/^/- /')
+          FIXED=$(echo "$MESSAGE" | grep -i "^fix:" | sed 's/^fix://i' | sed 's/^/- /')
+          SECURITY=$(echo "$MESSAGE" | grep -i "^security:" | sed 's/^security://i' | sed 's/^/- /')
+
+          # Create a temporary file with the new log entry
+          echo "## 🚀 Release [\`${PUSH_ID:0:7}\`] - ${DATE}" > new_log.md
+          echo "" >> new_log.md
+          
+          echo "### 💬 Commit Message" >> new_log.md
+          echo "\`\`\`" >> new_log.md
+          echo "$MESSAGE" >> new_log.md
+          echo "\`\`\`" >> new_log.md
+          echo "" >> new_log.md
+          
+          echo "### 📁 Modified Files" >> new_log.md
+          echo "$MODIFIED_FILES" >> new_log.md
+          echo "" >> new_log.md
+          
+          [ ! -z "$ADDED" ] && { echo "### ✨ Added" >> new_log.md; echo "$ADDED" >> new_log.md; echo "" >> new_log.md; }
+          [ ! -z "$CHANGED" ] && { echo "### 🔄 Changed" >> new_log.md; echo "$CHANGED" >> new_log.md; echo "" >> new_log.md; }
+          [ ! -z "$DEPRECATED" ] && { echo "### ⚠️ Deprecated" >> new_log.md; echo "$DEPRECATED" >> new_log.md; echo "" >> new_log.md; }
+          [ ! -z "$REMOVED" ] && { echo "### 🗑️ Removed" >> new_log.md; echo "$REMOVED" >> new_log.md; echo "" >> new_log.md; }
+          [ ! -z "$FIXED" ] && { echo "### 🐛 Fixed" >> new_log.md; echo "$FIXED" >> new_log.md; echo "" >> new_log.md; }
+          [ ! -z "$SECURITY" ] && { echo "### 🔒 Security" >> new_log.md; echo "$SECURITY" >> new_log.md; echo "" >> new_log.md; }
+          
+          echo "### 👤 Committed by" >> new_log.md
+          echo "\`$COMMITTER\`" >> new_log.md
+          echo "" >> new_log.md
+          echo "---" >> new_log.md
+          echo "" >> new_log.md
+
+          # Prepend the new log entry to the CHANGELOG.md
+          cat new_log.md CHANGELOG.md > temp_changelog.md && mv temp_changelog.md CHANGELOG.md
+          rm new_log.md
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "📝 Update CHANGELOG.md" && git push)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
