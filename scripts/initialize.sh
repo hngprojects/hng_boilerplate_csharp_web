@@ -188,6 +188,11 @@ else
     echo "NGINX configuration file api.conf already exists. Skipping configuration."
 fi
 
+# Configure ssl
+sudo apt install -y snap
+sudo snap install --classic certbot
+sudo certbot --nginx -d api-csharp.boilerplate.hng.tech -d deployment.api-csharp.boilerplate.hng.tech -d staging.api-csharp.boilerplate.hng.tech --agree-tos --no-eff-email --email devops@hng.tech
+
 # PostgreSQL
 if ! command -v psql &> /dev/null
 then
