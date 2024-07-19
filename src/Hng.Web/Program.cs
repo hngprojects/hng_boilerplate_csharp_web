@@ -28,23 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler(appBuilder =>
-{
-    appBuilder.Run(async context =>
-    {
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-        context.Response.ContentType = "text/plain";
-
-        var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-        if (contextFeature != null)
-        {
-            var logger = LogManager.GetCurrentClassLogger();
-            logger.Error(contextFeature.Error, "Unhandled exception");
-
-            await context.Response.WriteAsync("An unexpected fault happened. Try again later.");
-        }
-    });
-});
+app.UseGlobalErrorHandler(app.Environment);
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
