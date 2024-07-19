@@ -1,0 +1,25 @@
+name: Build
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x' # Use the version of .NET you need
+
+    - name: Install dependencies
+      run: | 
+          dotnet restore ./Hng.Csharp.Web.sln
+
+    - name: Build Application
+      run: | 
+          dotnet build
