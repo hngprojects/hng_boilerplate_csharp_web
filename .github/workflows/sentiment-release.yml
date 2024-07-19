@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+      
+
+permissions:
+  contents: read # for checkout
+  packages: write # to publish packages
+
+jobs:
+  release:
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.x' # specify the .NET version you're using
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --configuration Release
+
+      - name: Install Semantic Release for .NET
+        run: dotnet tool install -g SemanticRelease
+
+      - name: Run Semantic Release
+        run: semantic-release --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }} #If you are publishing to a NuGet feed, you'll need to provide a NuGet API token here.
