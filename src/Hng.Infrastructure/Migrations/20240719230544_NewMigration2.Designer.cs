@@ -12,26 +12,24 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20240719022519_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240719230544_NewMigration2")]
+    partial class NewMigration2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Hng.Domain.Models.Organisation", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Organisation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -39,27 +37,27 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("OrgId")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Organisations");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Models.OrganisationUser", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.OrganisationUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("OrganisationId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -67,16 +65,14 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("OrganisationUsers");
+                    b.ToTable("OrganisationUser");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Models.Product", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -84,8 +80,8 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -94,13 +90,11 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Models.Profile", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Profile", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AvatarUrl")
                         .HasColumnType("text");
@@ -114,21 +108,25 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("User")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Profiles");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Models.User", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AvatarUrl")
                         .HasColumnType("text");
@@ -145,29 +143,28 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
-                    b.Property<int>("ProfileId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ProfileId1")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProfileId1");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Models.OrganisationUser", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Organisation", b =>
                 {
-                    b.HasOne("Hng.Domain.Models.Organisation", "Organisation")
+                    b.HasOne("Hng.Domain.Entities.User", null)
+                        .WithMany("Organisations")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.OrganisationUser", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.Organisation", "Organisation")
                         .WithMany("OrganisationUsers")
                         .HasForeignKey("OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Hng.Domain.Models.User", "User")
-                        .WithMany("OrganisationUsers")
+                    b.HasOne("Hng.Domain.Entities.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -177,9 +174,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Models.Product", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("Hng.Domain.Models.User", "User")
+                    b.HasOne("Hng.Domain.Entities.User", "User")
                         .WithMany("Products")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -188,25 +185,27 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Models.User", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Profile", b =>
                 {
-                    b.HasOne("Hng.Domain.Models.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId1");
-
-                    b.Navigation("Profile");
+                    b.HasOne("Hng.Domain.Entities.User", null)
+                        .WithOne("Profile")
+                        .HasForeignKey("Hng.Domain.Entities.Profile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Hng.Domain.Models.Organisation", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Organisation", b =>
                 {
                     b.Navigation("OrganisationUsers");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Models.User", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.User", b =>
                 {
-                    b.Navigation("OrganisationUsers");
+                    b.Navigation("Organisations");
 
                     b.Navigation("Products");
+
+                    b.Navigation("Profile");
                 });
 #pragma warning restore 612, 618
         }
