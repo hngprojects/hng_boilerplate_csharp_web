@@ -362,5 +362,16 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+
+# macOS
+.DS_Store
+
+# .NET SDK
+global.json
+
+# NLog internal log file
+src/Hng.Web/internal-nlog.txt
+
 # AppSettings
 appsettings.*.json
+
