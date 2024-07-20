@@ -1,6 +1,6 @@
-﻿using Hng.Application.Services.Implementation;
-using Hng.Application.Services.Interfaces;
-using Hng.Infrastructure.Context;
+﻿using Hng.Infrastructure.Context;
+using Hng.Infrastructure.Repository;
+using Hng.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hng.Web.Services
@@ -11,6 +11,7 @@ namespace Hng.Web.Services
         {
             services.AddDbContext<MyDBContext>(options => options.UseNpgsql(connectionString));
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<UserRepository>();
             return services;
         }
     }

@@ -16,7 +16,7 @@ builder.Services.AddConfiguredServices(connString);
 
 var app = builder.Build();
 
-await app.ExtendApp();
+await app.UseSeeder();
 
 
 // Configure the HTTP request pipeline.
