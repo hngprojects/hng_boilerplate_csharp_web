@@ -1,68 +1,141 @@
 #!/bin/bash
 
-# Accept app name and domain from arguments
-APP_NAME="$1"
-DOMAIN="$2"
-
-# Check if APP_NAME is provided
-if [ -z "$APP_NAME" ]; then
-  echo "Error: Application name is missing. Usage: $0 <APP_NAME> <DOMAIN>"
+# Function to show usage
+usage() {
+  echo "Usage: $0 <APP_NAME> <DOMAIN> [--force]"
   exit 1
-fi
-
-# Check if DOMAIN is provided
-if [ -z "$DOMAIN" ]; then
-  echo "Error: Domain is missing. Usage: $0 <APP_NAME> <DOMAIN>"
-  exit 1
-fi
-
-# Server Configuration
-SERVER_CONF_DIR="/etc/server.d"
-APP_CONFIG_FILE="${SERVER_CONF_DIR}/${APP_NAME}.conf"
-USER=$(logname)
-DEV_DOMAIN="deployment.${DOMAIN}"
-STAGING_DOMAIN="staging.${DOMAIN}"
-
-echo "DOMAIN=${DOMAIN}" >> $APP_CONFIG_FILE
-echo "DEV_DOMAIN=${DEV_DOMAIN}" >> $APP_CONFIG_FILE
-echo "STAGING_DOMAIN=${STAGING_DOMAIN}" >> $APP_CONFIG_FILE
-
-sudo apt-get update
-
-
-
-if [ ! -f "$APP_CONFIG_FILE" ]; then
-    sudo mkdir -p /etc/server_creds
-    sudo touch "$APP_CONFIG_FILE"
-    sudo chmod 600 "$APP_CONFIG_FILE"
-fi
-
-generate_password() {
-    tr -dc A-Za-z0-9 < /dev/urandom | head -c 12
 }
 
-store_password() {
+# Function to find the next available port
+find_next_available_port() {
+    local port=$1
+    while true; do
+        if ! ss -tuln | grep -q ":${port}"; then
+            echo $port
+            return
+        fi
+        port=$((port + 1))
+    done
+}
+
+# Function to create and start a Redis instance
+create_redis_instance() {
+    local instance_name=$1
+    local config_file=$2
+    local port=$3
+
+    echo "Creating Redis instance: ${instance_name} on port ${port}"
+
+    # Create Redis configuration file
+    echo "port ${port}" > ${config_file}
+    echo "dir /var/lib/redis/${instance_name}" >> ${config_file}
+    mkdir -p /var/lib/redis/${instance_name}
+    chown redis:redis /var/lib/redis/${instance_name}
+
+    # Start Redis instance with the new configuration
+    redis-server ${config_file} &
+    echo "Redis instance ${instance_name} started on port ${port}"
+}
+
+# Function to generate a password
+generate_password() {
     local user=$1
-    local password=$2
+    local extra_info=$2
+    local password=$(tr -dc A-Za-z0-9 < /dev/urandom | head -c 12)
+
+    if [ -z "$user" ]; then
+        echo "Error: Failed to pass user to generate password."
+        usage
+    fi
+
+    # Save the password and extra info if provided
     if ! grep -q "^$user:" "$APP_CONFIG_FILE"; then
-        echo "$user: $password" | sudo tee -a "$APP_CONFIG_FILE" > /dev/null
+        echo "$user: $password $extra_info" | sudo tee -a "$APP_CONFIG_FILE" > /dev/null
     else
         password=$(grep "^$user:" "$APP_CONFIG_FILE" | cut -d ' ' -f 2)
     fi
     echo "$password"
 }
 
-# Redis
-if ! command -v redis-server &> /dev/null
-then
+# Ensure script is run with sudo
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root."
+    exit 1
+fi
+
+# Initialize variables
+FORCE=false
+
+# Parse arguments
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    --force) FORCE=true; shift ;;
+    *) 
+      if [ -z "$APP_NAME" ]; then
+        APP_NAME="$1"
+      elif [ -z "$DOMAIN" ]; then
+        DOMAIN="$1"
+      else
+        usage
+      fi
+      shift ;;
+  esac
+done
+
+# Check if APP_NAME is provided
+if [ -z "$APP_NAME" ]; then
+  echo "Error: Application name is missing."
+  usage
+fi
+
+# Check if DOMAIN is provided
+if [ -z "$DOMAIN" ]; then
+  echo "Error: Domain is missing."
+  usage
+fi
+
+# Server Configuration
+SERVER_CONF_DIR="/etc/server.d"
+APP_CONFIG_FILE="${SERVER_CONF_DIR}/${APP_NAME}.conf"
+
+# Check if configuration file already exists
+if [ -f "$APP_CONFIG_FILE" ]; then
+  if [ "$FORCE" = false ]; then
+    echo "Error: Configuration for '$APP_NAME' already exists. Use --force to override."
+    exit 1
+  else
+    echo "Warning: Overriding existing configuration for '$APP_NAME'."
+  fi
+fi
+
+# Create and write configuration
+USER=$(logname)
+DEV_DOMAIN="deployment.${DOMAIN}"
+STAGING_DOMAIN="staging.${DOMAIN}"
+
+# Print the user running the script
+echo "Script is being run by user: $USER"
+
+sudo mkdir -p "$SERVER_CONF_DIR"
+sudo chmod 600 "$APP_CONFIG_FILE"
+echo '[ Server Configuration ]' | sudo tee $APP_CONFIG_FILE > /dev/null
+echo "USER=${USER}" | sudo tee -a $APP_CONFIG_FILE > /dev/null
+echo "DOMAIN=${DOMAIN}" | sudo tee -a $APP_CONFIG_FILE > /dev/null
+echo "DEV_DOMAIN=${DEV_DOMAIN}" | sudo tee -a $APP_CONFIG_FILE > /dev/null
+echo "STAGING_DOMAIN=${STAGING_DOMAIN}" | sudo tee -a $APP_CONFIG_FILE > /dev/null
+
+# Update packages
+sudo apt-get update
+
+# Redis setup
+if ! command -v redis-server &> /dev/null; then
     echo "Redis not found. Installing Redis..."
     sudo apt-get install redis-server -y
 else
     echo "Redis is already installed."
 fi
 
-if sudo systemctl is-active --quiet redis-server
-then
+if sudo systemctl is-active --quiet redis-server; then
     echo "Redis service is already running."
 else
     echo "Starting Redis service..."
@@ -70,31 +143,55 @@ else
     sudo systemctl start redis-server
 fi
 
-if redis-cli ping | grep -q "PONG"
-then
+if redis-cli ping | grep -q "PONG"; then
     echo "Redis installation and setup verified. Redis is running correctly."
 else
     echo "Redis setup verification failed. Please check the Redis installation."
     exit 1
 fi
 
-# Create Redis users with passwords (using ACL) if not already present
-if ! redis-cli ACL LIST | grep -q "user:redis_dev"; then
-    DEV_PASSWORD=$(store_password "redis_dev" $(generate_password))
-    redis-cli ACL SETUSER redis_dev on >"$DEV_PASSWORD" ~* &> /dev/null
-fi
+# Initial Redis port
+redis_port_start=6379
 
-if ! redis-cli ACL LIST | grep -q "user:redis_staging"; then
-    STAGING_PASSWORD=$(store_password "redis_staging" $(generate_password))
-    redis-cli ACL SETUSER redis_staging on >"$STAGING_PASSWORD" ~* &> /dev/null
-fi
+# Define environment names and their configurations
+environments=("dev" "staging" "prod")
 
-if ! redis-cli ACL LIST | grep -q "user:redis_prod"; then
-    PROD_PASSWORD=$(store_password "redis_prod" $(generate_password))
-    redis-cli ACL SETUSER redis_prod on >"$PROD_PASSWORD" ~* &> /dev/null
-fi
+# Create Redis instances and users
+echo "[ Redis Credentials ]" | sudo tee -a $APP_CONFIG_FILE > /dev/null
 
-echo "Redis users created and configured."
+for i in "${!environments[@]}"; do
+    env="${environments[$i]}"
+    instance_name="${APP_NAME}-${env}"
+    config_file="/etc/redis/${APP_NAME}-${env}.conf"
+    port=$(find_next_available_port $((redis_port_start + i)))
+
+    # Create Redis instance
+    create_redis_instance "$instance_name" "$config_file" "$port"
+
+    # Create Redis users with appropriate permissions
+    for role in user admin; do
+        user_name="${APP_NAME}-${env}-${role}"
+        if ! redis-cli -p ${port} ACL LIST | grep -q "user:${user_name}"; then
+            password=$(generate_password "${user_name}" "port=${port}")
+            if [ "$role" = "admin" ]; then
+                # Admin user with full permissions
+                redis-cli -p ${port} <<EOF
+ACL SETUSER ${user_name} on +@all >$password ~*
+EOF
+            else
+                # Normal user with limited permissions
+                redis-cli -p ${port} <<EOF
+ACL SETUSER ${user_name} on +@read +@write >$password ~*
+EOF
+            fi
+            echo "Created Redis user: ${user_name} for ${instance_name} with password: $password"
+        else
+            echo "Redis user ${user_name} already exists for ${instance_name}."
+        fi
+    done
+done
+
+echo "Redis instances and users created and configured."
 
 # NGINX
 if ! command -v nginx &> /dev/null
@@ -114,10 +211,7 @@ else
     sudo systemctl start nginx
 fi
 
-if [ ! -f /etc/nginx/sites-available/api.conf ]
-then
-    # Create NGINX configuration file for API
-    sudo bash -c 'cat > /etc/nginx/sites-available/api.conf <<EOF
+sudo bash -c 'cat > /etc/nginx/sites-available/api.conf <<EOF
 server {
     listen 80;
     server_name api-csharp.boilerplate.hng.tech;
@@ -192,6 +286,8 @@ fi
 sudo apt install -y snap
 sudo snap install --classic certbot
 sudo certbot --nginx -d api-csharp.boilerplate.hng.tech -d deployment.api-csharp.boilerplate.hng.tech -d staging.api-csharp.boilerplate.hng.tech --agree-tos --no-eff-email --email devops@hng.tech
+
+exit 0
 
 # PostgreSQL
 if ! command -v psql &> /dev/null
