@@ -1,4 +1,5 @@
 using System.Net;
+using Hng.Web.Extensions;
 using Hng.Web.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using NLog;
