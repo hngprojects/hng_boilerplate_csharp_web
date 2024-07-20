@@ -2,6 +2,7 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Context;
 using Hng.Infrastructure.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1;
 
 namespace Hng.Infrastructure.Repository
 {
@@ -33,6 +34,10 @@ namespace Hng.Infrastructure.Repository
             .Include(u => u.Organizations)
             .ToListAsync();
             return users;
+        }
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

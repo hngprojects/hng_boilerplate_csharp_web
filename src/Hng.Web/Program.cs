@@ -15,6 +15,9 @@ using NLog.Extensions.Logging;
 using NLog.Fluent;
 using NLog.Web;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,27 @@ builder.Host.UseNLog();
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddScoped<TokenService>(); // Use AddScoped for services that are instantiated per request
+builder.Services.AddScoped<IEmailService>(sp => new EmailService(
+    builder.Configuration["Smtp:Server"],
+    builder.Configuration["Smtp:User"],
+    builder.Configuration["Smtp:Pass"]));
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])), // Use config value
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        ClockSkew = TimeSpan.Zero
+    };
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
