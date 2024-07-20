@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Hng.Application.Dto;
 using Hng.Application.Interfaces;
+using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 
 namespace Hng.Application.Services
@@ -25,6 +26,15 @@ namespace Hng.Application.Services
             }
 
             return _mapper.Map<UserDto>(user);
+
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            System.Console.WriteLine(users.First().Profile.FirstName+"PROFILE NAME HERE");
+            return users;
+            
         }
     }
 }

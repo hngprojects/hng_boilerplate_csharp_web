@@ -6,7 +6,7 @@ namespace Hng.Application.Dto
         public Guid id { get; set; }
         public string email { get; set; }
         public ProfileDto profile { get; set; }
-        public List<OrganisationDto> organisations { get; set; }
-        public List<ProductDto> products { get; set; }
+        public IEnumerable<OrganisationDto> organisations { get; set; }
+        public IEnumerable<ProductDto> products { get; set; }
     }
 }

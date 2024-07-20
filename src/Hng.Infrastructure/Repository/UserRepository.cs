@@ -21,14 +21,18 @@ namespace Hng.Infrastructure.Repository
                 .Include(x => x.Products)
                 .Include(x => x.Profile)
                 .Include(x => x.Organisations)
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (user == null)
-            {
-                throw new KeyNotFoundException($"User with ID {id} was not found.");
-            }
-
+                .FirstOrDefaultAsync(x => x.Id == id) ?? throw new KeyNotFoundException($"User with ID {id} was not found.");
             return user;
+        }
+
+        public override async Task<ICollection<User>> GetAllAsync()
+        {
+            var users = await _context.Users
+            .Include(u => u.Profile)
+            .Include(u => u.Products)
+            .Include(u => u.Organisations)
+            .ToListAsync();
+            return users;
         }
     }
 }

@@ -1,0 +1,9 @@
+namespace Hng.Domain.Entities;
+public class OrganisationUser : EntityBase
+{
+    public Guid OrganisationId { get; set; }
+    public Guid UserId { get; set; }
+    public bool IsAdmin { get; set; } = false;
+    public Organisation Organisation { get; set; }
+    public User User { get; set; }
+}

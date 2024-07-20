@@ -46,7 +46,7 @@ namespace Hng.Infrastructure.Repository
             return await _dbSet.AnyAsync(e => e.Id == id);
         }
 
-        public async Task<ICollection<T>> GetAllAsync()
+        public virtual async Task<ICollection<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
