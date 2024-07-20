@@ -1,10 +1,11 @@
 using System.Text.Json.Serialization;
+using AutoMapper;
 using Hng.Application.Interfaces;
 using Hng.Application.Services;
-using Hng.Infrastructure.Context;
 using Hng.Infrastructure.Repository;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services;
+using Hng.Web.Mappers;
 using Hng.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +20,7 @@ builder.Services.AddSwaggerGen();
 
 var connString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 builder.Services.AddConfiguredServices(connString);
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();

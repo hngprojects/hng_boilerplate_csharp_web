@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20240719230544_NewMigration2")]
-    partial class NewMigration2
+    [Migration("20240720121056_NewMigration45")]
+    partial class NewMigration45
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Hng.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Hng.Domain.Entities.Organisation", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,35 +37,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Organisations");
-                });
-
-            modelBuilder.Entity("Hng.Domain.Entities.OrganisationUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("OrganisationId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrganisationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("OrganisationUser");
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
@@ -108,9 +82,6 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("User")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
@@ -148,30 +119,19 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Entities.Organisation", b =>
+            modelBuilder.Entity("OrganizationUser", b =>
                 {
-                    b.HasOne("Hng.Domain.Entities.User", null)
-                        .WithMany("Organisations")
-                        .HasForeignKey("UserId");
-                });
+                    b.Property<Guid>("OrganizationsId")
+                        .HasColumnType("uuid");
 
-            modelBuilder.Entity("Hng.Domain.Entities.OrganisationUser", b =>
-                {
-                    b.HasOne("Hng.Domain.Entities.Organisation", "Organisation")
-                        .WithMany("OrganisationUsers")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uuid");
 
-                    b.HasOne("Hng.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasKey("OrganizationsId", "UsersId");
 
-                    b.Navigation("Organisation");
+                    b.HasIndex("UsersId");
 
-                    b.Navigation("User");
+                    b.ToTable("OrganizationUser");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
@@ -187,22 +147,32 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.Profile", b =>
                 {
-                    b.HasOne("Hng.Domain.Entities.User", null)
+                    b.HasOne("Hng.Domain.Entities.User", "User")
                         .WithOne("Profile")
                         .HasForeignKey("Hng.Domain.Entities.Profile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Entities.Organisation", b =>
+            modelBuilder.Entity("OrganizationUser", b =>
                 {
-                    b.Navigation("OrganisationUsers");
+                    b.HasOne("Hng.Domain.Entities.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hng.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Organisations");
-
                     b.Navigation("Products");
 
                     b.Navigation("Profile");

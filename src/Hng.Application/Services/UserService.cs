@@ -29,11 +29,12 @@ namespace Hng.Application.Services
 
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllAsync();
-            System.Console.WriteLine(users.First().Profile.FirstName+"PROFILE NAME HERE");
-            return users;
+
+            
+            return _mapper.Map<IEnumerable<UserDto>>(users);
             
         }
     }

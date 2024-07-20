@@ -20,7 +20,7 @@ namespace Hng.Infrastructure.Repository
             var user = await _context.Users
                 .Include(x => x.Products)
                 .Include(x => x.Profile)
-                .Include(x => x.Organisations)
+                .Include(x => x.Organizations)
                 .FirstOrDefaultAsync(x => x.Id == id) ?? throw new KeyNotFoundException($"User with ID {id} was not found.");
             return user;
         }
@@ -30,7 +30,7 @@ namespace Hng.Infrastructure.Repository
             var users = await _context.Users
             .Include(u => u.Profile)
             .Include(u => u.Products)
-            .Include(u => u.Organisations)
+            .Include(u => u.Organizations)
             .ToListAsync();
             return users;
         }

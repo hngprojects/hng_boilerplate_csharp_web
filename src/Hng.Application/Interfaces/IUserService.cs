@@ -8,7 +8,7 @@ namespace Hng.Application.Interfaces
     {
         Task<UserDto> GetUserByIdAsync(Guid id);
 
-        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<IEnumerable<UserDto>> GetAllUsersAsync();
         
     }
 }

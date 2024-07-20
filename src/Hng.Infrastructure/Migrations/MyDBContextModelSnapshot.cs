@@ -22,7 +22,7 @@ namespace Hng.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Hng.Domain.Entities.Organisation", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,32 +36,7 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organisations");
-                });
-
-            modelBuilder.Entity("Hng.Domain.Entities.OrganisationUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("OrganisationId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrganisationId");
-
-                    b.HasIndex("UserId", "OrganisationId")
-                        .IsUnique();
-
-                    b.ToTable("OrganisationUser");
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
@@ -141,23 +116,19 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Entities.OrganisationUser", b =>
+            modelBuilder.Entity("OrganizationUser", b =>
                 {
-                    b.HasOne("Hng.Domain.Entities.Organisation", "Organisation")
-                        .WithMany("OrganisationUsers")
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Property<Guid>("OrganizationsId")
+                        .HasColumnType("uuid");
 
-                    b.HasOne("Hng.Domain.Entities.User", "User")
-                        .WithMany("OrganisationUsers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uuid");
 
-                    b.Navigation("Organisation");
+                    b.HasKey("OrganizationsId", "UsersId");
 
-                    b.Navigation("User");
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("OrganizationUser");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
@@ -182,15 +153,23 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Entities.Organisation", b =>
+            modelBuilder.Entity("OrganizationUser", b =>
                 {
-                    b.Navigation("OrganisationUsers");
+                    b.HasOne("Hng.Domain.Entities.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hng.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>
                 {
-                    b.Navigation("OrganisationUsers");
-
                     b.Navigation("Products");
 
                     b.Navigation("Profile");

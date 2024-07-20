@@ -10,7 +10,6 @@ public class User : EntityBase
 
     public Profile Profile { get; set; }
 
-    public ICollection<OrganisationUser> OrganisationUsers { get; set; } = new List<OrganisationUser>();
-    public ICollection<Organisation> Organisations { get; set; } = new List<Organisation>();
+    public ICollection<Organization> Organizations { get; set; } = new List<Organization>();
     public ICollection<Product> Products { get; set; } = new List<Product>();
 }

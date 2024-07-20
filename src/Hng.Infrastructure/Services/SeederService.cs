@@ -89,25 +89,25 @@ public class SeederService
 
     public async Task SeedOrganisation()
     {
-        if (await _dataContext.Organisations.AnyAsync()) return;
+        if (await _dataContext.Organizations.AnyAsync()) return;
 
         _logger.LogDebug("Inserting seed organisations");
 
         try
         {
 
-            List<Organisation> organisations =
+            List<Organization> organisations =
             [
-                CreateOrganisation("Org1"),
-                CreateOrganisation("Org2"),
-                CreateOrganisation("Org3")
+                CreateOrganisation(),
+                CreateOrganisation(),
+                CreateOrganisation()
             ];
-            Console.WriteLine("Organisation list created");
+            Console.WriteLine("Organization list created");
             await _dataContext.AddRangeAsync(organisations);
 
             await _dataContext.SaveChangesAsync();
 
-            _logger.LogDebug("Seed organisations inserted");
+            _logger.LogDebug("Seed organizations inserted");
         }
 
         catch (Exception ex)
@@ -144,45 +144,26 @@ public class SeederService
 
     }
 
-    public async Task SeedOrganisationUsers()
-    {
-        var set = _dataContext.Set<OrganisationUser>();
-        if (set.Any()) return;
-
-        _logger.LogDebug("Inserting seed organisation users");
-
-        try
-        {
-            var organisationUsers = new List<OrganisationUser>
-        {
-            CreateOrganisationUser("User1", "Org1"),
-            CreateOrganisationUser("User2", "Org2"),
-            CreateOrganisationUser("User1", "Org3")
-        };
-
-            await set.AddRangeAsync(organisationUsers);
-            await _dataContext.SaveChangesAsync();
-
-            _logger.LogDebug("Seed organisation users inserted");
-        }
-
-        catch (Exception ex)
-        {
-            _logger.LogError("Error inserting seed organisation users, {ex}", ex);
-        }
-
-    }
-
 
     private User CreateUser(string userKey)
     {
+        var organizations = new List<Organization>
+            {
+                CreateOrganisation(),
+                CreateOrganisation(),
+                CreateOrganisation()
+            };
         var user = new Faker<User>()
         .RuleFor(u => u.Id, _entityIds[userKey])
         .RuleFor(u => u.FirstName, f => f.Name.FirstName())
         .RuleFor(u => u.LastName, f => f.Name.LastName())
         .RuleFor(u => u.AvatarUrl, f => f.Internet.Avatar())
         .RuleFor(u => u.Email, (f, u) => f.Internet.Email(u.FirstName, u.LastName))
-        .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber()).Generate();
+        .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
+
+        .RuleFor(u => u.Organizations, f => organizations)
+
+        .Generate();
         return user;
     }
 
@@ -206,21 +187,14 @@ public class SeederService
         return product;
     }
 
-    private Organisation CreateOrganisation(string orgKey)
+    private Organization CreateOrganisation()
     {
-        var org = new Faker<Organisation>()
-        .RuleFor(o => o.Id, _entityIds[orgKey])
+        var org = new Faker<Organization>()
+        .RuleFor(o => o.Id, Guid.NewGuid())
         .RuleFor(o => o.Name, f => f.Company.CompanyName())
         .RuleFor(o => o.Description, f => f.Company.CatchPhrase()).Generate();
         return org;
     }
 
-    private OrganisationUser CreateOrganisationUser(string userKey, string organisationKey)
-    {
-
-        var organisationUser = new Faker<OrganisationUser>().RuleFor(o => o.UserId, _entityIds[userKey])
-                    .RuleFor(o => o.OrganisationId, _entityIds[organisationKey]).Generate();
-        return organisationUser;
-    }
 
 }
