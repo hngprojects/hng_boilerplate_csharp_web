@@ -361,5 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/src/Hng.Web/appsettings.Development.json
-/src/Hng.Web/appsettings.json
+
+# AppSettings
+appsettings.*.json
