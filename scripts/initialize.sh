@@ -49,11 +49,7 @@ generate_password() {
     fi
 
     # Save the password and extra info if provided
-    if ! grep -q "^$user:" "$APP_CONFIG_FILE"; then
-        echo "$user: $password $extra_info" | sudo tee -a "$APP_CONFIG_FILE" > /dev/null
-    else
-        password=$(grep "^$user:" "$APP_CONFIG_FILE" | cut -d ' ' -f 2)
-    fi
+    echo "$user: $password $extra_info" | sudo tee -a "$APP_CONFIG_FILE" > /dev/null
     echo "$password"
 }
 
@@ -157,11 +153,11 @@ redis_port_start=6379
 environments=("dev" "staging" "prod")
 
 # Create Redis instances and users
-echo "[ Redis Credentials ]" | sudo tee -a $APP_CONFIG_FILE > /dev/null
+echo -e "\n[ Redis Credentials ]" | sudo tee -a $APP_CONFIG_FILE > /dev/null
 
 for i in "${!environments[@]}"; do
     env="${environments[$i]}"
-    instance_name="${APP_NAME}-${env}"
+    instance_name="${APP_NAME}_${env}"
     config_file="/etc/redis/${APP_NAME}-${env}.conf"
     port=$(find_next_available_port $((redis_port_start + i)))
 
@@ -170,7 +166,7 @@ for i in "${!environments[@]}"; do
 
     # Create Redis users with appropriate permissions
     for role in user admin; do
-        user_name="${APP_NAME}-${env}-${role}"
+        user_name="${APP_NAME}_${env}_${role}"
         if ! redis-cli -p ${port} ACL LIST | grep -q "user:${user_name}"; then
             password=$(generate_password "${user_name}" "port=${port}")
             if [ "$role" = "admin" ]; then
@@ -193,17 +189,20 @@ done
 
 echo "Redis instances and users created and configured."
 
-# NGINX
-if ! command -v nginx &> /dev/null
-then
+# NGINX SETUP
+# Variables for dynamic configuration
+CONFIG_FILE="/etc/nginx/sites-available/${APP_NAME}.conf"
+
+# Check if NGINX is installed
+if ! command -v nginx &> /dev/null; then
     echo "NGINX not found. Installing NGINX..."
     sudo apt-get install nginx -y
 else
     echo "NGINX is already installed."
 fi
 
-if sudo systemctl is-active --quiet nginx
-then
+# Check if NGINX service is running
+if sudo systemctl is-active --quiet nginx; then
     echo "NGINX service is already running."
 else
     echo "Starting NGINX service..."
@@ -211,10 +210,11 @@ else
     sudo systemctl start nginx
 fi
 
-sudo bash -c 'cat > /etc/nginx/sites-available/api.conf <<EOF
+# Create NGINX configuration dynamically
+sudo cat > $CONFIG_FILE <<EOF
 server {
     listen 80;
-    server_name api-csharp.boilerplate.hng.tech;
+    server_name ${DOMAIN};
 
     location / {
         proxy_pass http://localhost:5000;
@@ -228,7 +228,7 @@ server {
 
 server {
     listen 80;
-    server_name staging.api-csharp.boilerplate.hng.tech;
+    server_name ${STAGING_DOMAIN};
 
     location / {
         proxy_pass http://localhost:5001;
@@ -242,7 +242,7 @@ server {
 
 server {
     listen 80;
-    server_name deployment.api-csharp.boilerplate.hng.tech;
+    server_name ${DEV_DOMAIN};
 
     location / {
         proxy_pass http://localhost:5002;
@@ -253,41 +253,34 @@ server {
         proxy_redirect off;
     }
 }
-EOF'
+EOF
 
-    # Create symbolic link for NGINX configuration
-    sudo ln -sf /etc/nginx/sites-available/api.conf /etc/nginx/sites-enabled/
+# Create symbolic link for NGINX configuration
+sudo ln -sf $CONFIG_FILE /etc/nginx/sites-enabled/
 
-    # Remove default symbolic link if it exists
-    if [ -f /etc/nginx/sites-enabled/default ]
-    then
-        sudo rm /etc/nginx/sites-enabled/default
-        echo "Removed default NGINX configuration from sites-enabled."
-    fi
+# Remove default symbolic link if it exists
+if [ -f /etc/nginx/sites-enabled/default ]; then
+    sudo rm /etc/nginx/sites-enabled/default
+    echo "Removed default NGINX configuration from sites-enabled."
+fi
 
-    # Verify NGINX configuration syntax
-    sudo nginx -t
+# Verify NGINX configuration syntax
+sudo nginx -t
 
-    # Reload NGINX to apply changes
-    sudo systemctl reload nginx
+# Reload NGINX to apply changes
+sudo systemctl reload nginx
 
-    # Verify NGINX is running with the new configuration
-    if sudo systemctl is-active --quiet nginx
-    then
-        echo "NGINX configuration applied successfully."
-    else
-        echo "NGINX configuration failed to apply. Please check the configuration."
-    fi
+# Verify NGINX is running with the new configuration
+if sudo systemctl is-active --quiet nginx; then
+    echo "NGINX configuration applied successfully."
 else
-    echo "NGINX configuration file api.conf already exists. Skipping configuration."
+    echo "NGINX configuration failed to apply. Please check the configuration."
 fi
 
 # Configure ssl
 sudo apt install -y snap
 sudo snap install --classic certbot
-sudo certbot --nginx -d api-csharp.boilerplate.hng.tech -d deployment.api-csharp.boilerplate.hng.tech -d staging.api-csharp.boilerplate.hng.tech --agree-tos --no-eff-email --email devops@hng.tech
-
-exit 0
+sudo certbot --nginx -d $DOMAIN -d $DEV_DOMAIN -d $STAGING_DOMAIN --agree-tos --no-eff-email --email devops@hng.tech
 
 # PostgreSQL
 if ! command -v psql &> /dev/null
@@ -307,75 +300,44 @@ else
     sudo systemctl start postgresql
 fi
 
-if [ -s "$APP_CONFIG_FILE" ] && grep -q "dbadmin:" "$APP_CONFIG_FILE"; then
-    echo "Password file already exists and is not empty. Skipping password generation."
-    # Read passwords from the file
-    dbadmin_PASSWORD=$(grep 'dbadmin:' $APP_CONFIG_FILE | cut -d ' ' -f 2)
-    DEV_USER_PASSWORD=$(grep 'dev_user:' $APP_CONFIG_FILE | cut -d ' ' -f 2)
-    PROD_USER_PASSWORD=$(grep 'prod_user:' $APP_CONFIG_FILE | cut -d ' ' -f 2)
-    STAGING_USER_PASSWORD=$(grep 'staging_user:' $APP_CONFIG_FILE | cut -d ' ' -f 2)
-else
-    # Generate random passwords
-    dbadmin_PASSWORD=$(openssl rand -base64 12)
-    DEV_USER_PASSWORD=$(openssl rand -base64 12)
-    PROD_USER_PASSWORD=$(openssl rand -base64 12)
-    STAGING_USER_PASSWORD=$(openssl rand -base64 12)
+# Create Postgres Servers and users
+echo -e "\n[ Postgres Credentials ]" | sudo tee -a $APP_CONFIG_FILE > /dev/null
 
-    store_password "dbadmin" "$dbadmin_PASSWORD"
-    store_password "dev_user" "$DEV_USER_PASSWORD"
-    store_password "prod_user" "$PROD_USER_PASSWORD"
-    store_password "staging_user" "$STAGING_USER_PASSWORD"
+DB_DEV_USER_PASS=$(generate_password "${APP_NAME}_dev_user")
+DB_DEV_ADMIN_PASS=$(generate_password "${APP_NAME}_dev_admin")
+DB_STAGING_ADMIN_PASS=$(generate_password "${APP_NAME}_staging_admin")
+DB_PROD_ADMIN_PASS=$(generate_password "${APP_NAME}_prod_admin")
 
-    echo "Passwords generated and stored in $APP_CONFIG_FILE."
-fi
+sudo -i -u postgres psql <<EOF
+-- Create users
+CREATE USER ${APP_NAME}_dev_user WITH PASSWORD '$DB_DEV_USER_PASS';
+CREATE USER ${APP_NAME}_dev_admin WITH PASSWORD '$DB_DEV_ADMIN_PASS';
+CREATE USER ${APP_NAME}_staging_admin WITH PASSWORD '$DB_STAGING_ADMIN_PASS';
+CREATE USER ${APP_NAME}_prod_admin WITH PASSWORD '$DB_PROD_ADMIN_PASS';
 
-USER_EXISTS=$(sudo -i -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='dbadmin'")
-if [ "$USER_EXISTS" != "1" ]; then
-    sudo -i -u postgres psql <<EOF
-    -- Create a user with all privileges
-    CREATE USER dbadmin WITH PASSWORD '$dbadmin_PASSWORD';
+-- Create databases
+CREATE DATABASE ${APP_NAME}_dev;
+CREATE DATABASE ${APP_NAME}_staging;
+CREATE DATABASE ${APP_NAME}_prod;
 
-    -- Create 3 users to manage the databases (Dev, Prod, Staging)
-    CREATE USER dev_user WITH PASSWORD '$DEV_USER_PASSWORD';
-    CREATE USER prod_user WITH PASSWORD '$PROD_USER_PASSWORD';
-    CREATE USER staging_user WITH PASSWORD '$STAGING_USER_PASSWORD';
+-- Revoke all privileges from these users
+REVOKE ALL PRIVILEGES ON DATABASE ${APP_NAME}_dev FROM ${APP_NAME}_dev_user;
+REVOKE ALL PRIVILEGES ON DATABASE ${APP_NAME}_staging FROM ${APP_NAME}_dev_user;
+REVOKE ALL PRIVILEGES ON DATABASE ${APP_NAME}_prod FROM ${APP_NAME}_dev_user;
 
-    -- Create databases
-    CREATE DATABASE dev_db;
-    CREATE DATABASE prod_db;
-    CREATE DATABASE staging_db;
+-- Give them read, write, update, and delete access for their respective databases
+GRANT CONNECT ON DATABASE ${APP_NAME}_dev TO ${APP_NAME}_dev_user;
+GRANT USAGE ON SCHEMA public TO ${APP_NAME}_dev_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ${APP_NAME}_dev_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ${APP_NAME}_dev_user;
 
-    -- Revoke all privileges from these users
-    REVOKE ALL PRIVILEGES ON DATABASE dev_db FROM dev_user;
-    REVOKE ALL PRIVILEGES ON DATABASE prod_db FROM prod_user;
-    REVOKE ALL PRIVILEGES ON DATABASE staging_db FROM staging_user;
-
-    -- Give them read, write, update, and delete access for their respective databases
-    GRANT CONNECT ON DATABASE dev_db TO dev_user;
-    GRANT CONNECT ON DATABASE prod_db TO prod_user;
-    GRANT CONNECT ON DATABASE staging_db TO staging_user;
-    GRANT USAGE ON SCHEMA public TO dev_user;
-    GRANT USAGE ON SCHEMA public TO prod_user;
-    GRANT USAGE ON SCHEMA public TO staging_user;
-    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO dev_user;
-    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO prod_user;
-    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO staging_user;
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO dev_user;
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO prod_user;
-    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO staging_user;
-
-    -- Grant privileges
-    GRANT ALL PRIVILEGES ON DATABASE dev_db TO dbadmin;
-    GRANT ALL PRIVILEGES ON DATABASE prod_db TO dbadmin;
-    GRANT ALL PRIVILEGES ON DATABASE staging_db TO dbadmin;
+-- Grant privileges
+GRANT ALL PRIVILEGES ON DATABASE ${APP_NAME}_dev TO ${APP_NAME}_dev_admin;
+GRANT ALL PRIVILEGES ON DATABASE ${APP_NAME}_staging TO ${APP_NAME}_staging_admin;
+GRANT ALL PRIVILEGES ON DATABASE ${APP_NAME}_prod TO ${APP_NAME}_prod_admin;
 EOF
-    echo "PostgreSQL user and databases created."
-else
-    echo "PostgreSQL user dbadmin already exists."
-fi
+echo "PostgreSQL user and databases created."
 
-sudo -i -u postgres psql -c "\du"
-sudo -i -u postgres psql -c "\l"
 
 # C# setup
 if ! command -v dotnet &> /dev/null
@@ -394,37 +356,3 @@ then
 else
     echo "dotnet installation successful."
 fi
-
-# Project Setup
-cd /home/$USER
-
-mkdir -p hng_boilerplate_csharp_web
-cd hng_boilerplate_csharp_web
-if [ ! -d ".git" ]; then
-  echo "Initializing a new git repository..."
-  git init
-fi
-
-ls -al
-
-REPO_URL="https://github.com/hngprojects/hng_boilerplate_csharp_web.git"
-
-if ! git ls-remote --exit-code origin &> /dev/null; then
-    echo "Remote 'origin' does not exist. Adding it now..."
-    git remote add origin "$REPO_URL"
-else
-    echo "Remote 'origin' already exists."
-    CURRENT_URL=$(git config --get remote.origin.url)
-    if [ "$CURRENT_URL" != "$REPO_URL" ]; then
-        echo "Updating remote 'origin' URL to $REPO_URL"
-        git remote set-url origin "$REPO_URL"
-    else
-        echo "Remote 'origin' URL is already set correctly."
-    fi
-fi
-
-git pull origin main
-
-cd /home/$USER
-
-echo "HNG C# Web Server installation completed. Ending script."
