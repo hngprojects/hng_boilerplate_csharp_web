@@ -29,6 +29,8 @@ create_redis_instance() {
     # Create Redis configuration file
     echo "port ${port}" > ${config_file}
     echo "dir /var/lib/redis/${instance_name}" >> ${config_file}
+    echo "protected-mode no" >> ${config_file}
+    echo "bind 0.0.0.0" >> ${config_file}
     mkdir -p /var/lib/redis/${instance_name}
     chown redis:redis /var/lib/redis/${instance_name}
 
@@ -282,23 +284,35 @@ sudo apt install -y snap
 sudo snap install --classic certbot
 sudo certbot --nginx -d $DOMAIN -d $DEV_DOMAIN -d $STAGING_DOMAIN --agree-tos --no-eff-email --email devops@hng.tech
 
-# PostgreSQL
-if ! command -v psql &> /dev/null
-then
-    echo "PostgreSQL not found. Installing PostgreSQL..."
-    sudo apt-get install postgresql postgresql-contrib -y
-else
-    echo "PostgreSQL is already installed."
-fi
+    # PostgreSQL
+    if ! command -v psql &> /dev/null
+    then
+        echo "PostgreSQL not found. Installing PostgreSQL..."
+        sudo apt-get install postgresql postgresql-contrib -y
+    else
+        echo "PostgreSQL is already installed."
+    fi
 
-if sudo systemctl is-active --quiet postgresql
-then
-    echo "PostgreSQL service is already running."
+    if sudo systemctl is-active --quiet postgresql
+    then
+        echo "PostgreSQL service is already running."
 else
     echo "Starting PostgreSQL service..."
     sudo systemctl enable postgresql
     sudo systemctl start postgresql
 fi
+
+HBA_PATH=$(sudo -u postgres psql -t -P format=unaligned -c 'SHOW hba_file;')
+
+# Update pg_hba.conf to allow all users from any IP address to connect
+echo "Updating pg_hba.conf..."
+echo -e "\n# Allow all users from any IP address to connect to all databases using MD5-encrypted passwords" | sudo tee -a "$HBA_PATH" > /dev/null
+echo "host    all    all    0.0.0.0/0    md5" | sudo tee -a "$HBA_PATH" > /dev/null
+echo "host    all    all    ::/0         md5" | sudo tee -a "$HBA_PATH" > /dev/null
+
+# Restart PostgreSQL to apply changes
+echo "Restarting PostgreSQL service..."
+sudo systemctl restart postgresql
 
 # Create Postgres Servers and users
 echo -e "\n[ Postgres Credentials ]" | sudo tee -a $APP_CONFIG_FILE > /dev/null
@@ -336,6 +350,8 @@ GRANT ALL PRIVILEGES ON DATABASE ${APP_NAME}_dev TO ${APP_NAME}_dev_admin;
 GRANT ALL PRIVILEGES ON DATABASE ${APP_NAME}_staging TO ${APP_NAME}_staging_admin;
 GRANT ALL PRIVILEGES ON DATABASE ${APP_NAME}_prod TO ${APP_NAME}_prod_admin;
 EOF
+
+
 echo "PostgreSQL user and databases created."
 
 
