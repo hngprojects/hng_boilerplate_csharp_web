@@ -1,40 +1,40 @@
 #!/bin/bash
 
-export DOMAIN_NAME="api-csharp.boilerplate.hng.tech"
-export DEV_DOMAIN_NAME="staging.api-csharp.boilerplate.hng.tech"
-export STAGING_DOMAIN_NAME="deployment.api-csharp.boilerplate.hng.tech"
+# Accept app name and domain from arguments
+APP_NAME="$1"
+DOMAIN="$2"
 
-export DOMAIN_IP="91.229.239.238"
+# Check if APP_NAME is provided
+if [ -z "$APP_NAME" ]; then
+  echo "Error: Application name is missing. Usage: $0 <APP_NAME> <DOMAIN>"
+  exit 1
+fi
 
-echo "DOMAIN_NAME=${DOMAIN_NAME}" >> ~/.bashrc
-echo "DEV_DOMAIN_NAME=${DEV_DOMAIN_NAME}" >> ~/.bashrc
-echo "STAGING_DOMAIN_NAME=${STAGING_DOMAIN_NAME}" >> ~/.bashrc
-echo "DOMAIN_IP=${DOMAIN_IP}" >> ~/.bashrc
+# Check if DOMAIN is provided
+if [ -z "$DOMAIN" ]; then
+  echo "Error: Domain is missing. Usage: $0 <APP_NAME> <DOMAIN>"
+  exit 1
+fi
 
-source ~/.bashrc
+# Server Configuration
+SERVER_CONF_DIR="/etc/server.d"
+APP_CONFIG_FILE="${SERVER_CONF_DIR}/${APP_NAME}.conf"
+USER=$(logname)
+DEV_DOMAIN="deployment.${DOMAIN}"
+STAGING_DOMAIN="staging.${DOMAIN}"
 
-# Verify the environment variables
-echo "DOMAIN_NAME: $DOMAIN_NAME"
-echo "DEV_DOMAIN_NAME: $DEV_DOMAIN_NAME"
-echo "STAGING_DOMAIN_NAME: $STAGING_DOMAIN_NAME"
-echo "DOMAIN_IP: $DOMAIN_IP"
+echo "DOMAIN=${DOMAIN}" >> $APP_CONFIG_FILE
+echo "DEV_DOMAIN=${DEV_DOMAIN}" >> $APP_CONFIG_FILE
+echo "STAGING_DOMAIN=${STAGING_DOMAIN}" >> $APP_CONFIG_FILE
 
 sudo apt-get update
-# get logged-in user
-USER=$(logname)
 
-# get from env
-DOMAIN_NAME=$DOMAIN_NAME
-DEV_DOMAIN_NAME=$DEV_DOMAIN_NAME
-STAGING_DOMAIN_NAME=$STAGING_DOMAIN_NAME
 
-# Credentials
-CREDENTIALS_FILE="/etc/server_creds/credentials.txt"
 
-if [ ! -f "$CREDENTIALS_FILE" ]; then
+if [ ! -f "$APP_CONFIG_FILE" ]; then
     sudo mkdir -p /etc/server_creds
-    sudo touch "$CREDENTIALS_FILE"
-    sudo chmod 600 "$CREDENTIALS_FILE"
+    sudo touch "$APP_CONFIG_FILE"
+    sudo chmod 600 "$APP_CONFIG_FILE"
 fi
 
 generate_password() {
@@ -44,10 +44,10 @@ generate_password() {
 store_password() {
     local user=$1
     local password=$2
-    if ! grep -q "^$user:" "$CREDENTIALS_FILE"; then
-        echo "$user: $password" | sudo tee -a "$CREDENTIALS_FILE" > /dev/null
+    if ! grep -q "^$user:" "$APP_CONFIG_FILE"; then
+        echo "$user: $password" | sudo tee -a "$APP_CONFIG_FILE" > /dev/null
     else
-        password=$(grep "^$user:" "$CREDENTIALS_FILE" | cut -d ' ' -f 2)
+        password=$(grep "^$user:" "$APP_CONFIG_FILE" | cut -d ' ' -f 2)
     fi
     echo "$password"
 }
@@ -211,13 +211,13 @@ else
     sudo systemctl start postgresql
 fi
 
-if [ -s "$CREDENTIALS_FILE" ] && grep -q "dbadmin:" "$CREDENTIALS_FILE"; then
+if [ -s "$APP_CONFIG_FILE" ] && grep -q "dbadmin:" "$APP_CONFIG_FILE"; then
     echo "Password file already exists and is not empty. Skipping password generation."
     # Read passwords from the file
-    dbadmin_PASSWORD=$(grep 'dbadmin:' $CREDENTIALS_FILE | cut -d ' ' -f 2)
-    DEV_USER_PASSWORD=$(grep 'dev_user:' $CREDENTIALS_FILE | cut -d ' ' -f 2)
-    PROD_USER_PASSWORD=$(grep 'prod_user:' $CREDENTIALS_FILE | cut -d ' ' -f 2)
-    STAGING_USER_PASSWORD=$(grep 'staging_user:' $CREDENTIALS_FILE | cut -d ' ' -f 2)
+    dbadmin_PASSWORD=$(grep 'dbadmin:' $APP_CONFIG_FILE | cut -d ' ' -f 2)
+    DEV_USER_PASSWORD=$(grep 'dev_user:' $APP_CONFIG_FILE | cut -d ' ' -f 2)
+    PROD_USER_PASSWORD=$(grep 'prod_user:' $APP_CONFIG_FILE | cut -d ' ' -f 2)
+    STAGING_USER_PASSWORD=$(grep 'staging_user:' $APP_CONFIG_FILE | cut -d ' ' -f 2)
 else
     # Generate random passwords
     dbadmin_PASSWORD=$(openssl rand -base64 12)
@@ -230,7 +230,7 @@ else
     store_password "prod_user" "$PROD_USER_PASSWORD"
     store_password "staging_user" "$STAGING_USER_PASSWORD"
 
-    echo "Passwords generated and stored in $CREDENTIALS_FILE."
+    echo "Passwords generated and stored in $APP_CONFIG_FILE."
 fi
 
 USER_EXISTS=$(sudo -i -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='dbadmin'")
