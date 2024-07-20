@@ -16,8 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets"
-      Version="1.19.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
@@ -27,6 +26,7 @@
 
   <ItemGroup>
     <!--<ProjectReference Include="..\HNG-Boilerplate-Application\HNG-Boilerplate-Application.csproj" />-->
+    <ProjectReference Include="..\Hng.Application\Hng.Application.csproj" />
     <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>

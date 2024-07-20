@@ -1,17 +1,17 @@
 ﻿using Hng.Domain.Entities.Models;
 using Hng.Infrastructure.Context;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Hng.Infrastructure.Seeder
 {
     public static class Seeder
     {
 
-        public static async Task Seed(MyDBContext context, UserManager<User> usermanager)
+        public static async Task Seed(MyDBContext context)
         {
             await SeedOrganization(context);
-            await SeedUser(usermanager);
+            await SeedUser(context);
             await SeedUserOrganisation(context);
             await SeedUserProfile(context);
         }
@@ -39,9 +39,9 @@ namespace Hng.Infrastructure.Seeder
             }
         }
 
-        private async static Task SeedUser(UserManager<User> userManager)
+        private async static Task SeedUser(MyDBContext context)
         {
-            var users = await userManager.Users.AnyAsync();
+            var users = await context.Users.AnyAsync();
             if (!users)
             {
                 List<User> newUsers = new List<User>()
@@ -56,11 +56,8 @@ namespace Hng.Infrastructure.Seeder
                    }
                 };
 
-                foreach (var user in newUsers)
-                {
-                    var createUser = await userManager.CreateAsync(user, "Password");
-                    if (!createUser.Succeeded) break;
-                }
+                await context.AddRangeAsync(newUsers);
+                await context.SaveChangesAsync();
 
             };
         }
@@ -103,6 +100,4 @@ namespace Hng.Infrastructure.Seeder
             await context.SaveChangesAsync();
         }
     }
-
-  
 }

@@ -1,11 +1,9 @@
 ﻿using Hng.Domain.Entities.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hng.Infrastructure.Context
 {
-    public class MyDBContext(DbContextOptions options) : IdentityDbContext<IdentityUser<long>, IdentityRole<long>, long>(options)
+    public class MyDBContext(DbContextOptions options) : DbContext(options)
     {
         public DbSet<User> Users {  get; set; }
         public DbSet<Profile> Profiles {  get; set; }
