@@ -1,0 +1,29 @@
+name: Build and Test
+
+on:
+  pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x' # Use the version of .NET you need
+
+    - name: Install dependencies
+      run: |
+        dotnet restore ./Hng.Csharp.Web.sln
+
+    - name: Build Application
+      run: |
+        dotnet build --configuration Release
+
+    - name: Run Unit Tests
+      run: |
+        dotnet test ./src/Hng.Application.Test/Hng.Application.Test.csproj --configuration Release --no-build --verbosity normal
