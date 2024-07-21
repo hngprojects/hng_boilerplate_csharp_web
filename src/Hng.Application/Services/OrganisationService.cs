@@ -23,6 +23,25 @@ namespace Hng.Application.Services
 
 		public async Task<OrganisationInviteResponseModel> SendInvites(OrganisationInviteRequestModel request)
 		{
+			OrganisationInviteResponseModel responseModel = new OrganisationInviteResponseModel();
+   
+			List<InvitationResponse> response = new List<InvitationResponse>();
+
+			foreach (var item in request.emails)
+			{
+				//Implement sending of mail using a team 
+
+				response.Add(new InvitationResponse
+				{
+                 email = item.Email,
+				 org_id = item.Id,
+				 expires_at = DateTime.Now().AddSeconds(50)
+				});
+			}
+			responseModel.invitations = response;
+			responseModel.message = ""
+
+			return responseModel;
 
 		}
 	}
