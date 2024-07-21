@@ -3,10 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Hng.Application.Models;
     using Hng.Application.Services;
     using Hng.Domain.Entities;
     using Hng.Infrastructure.Context;
+    using Hng.Infrastructure.Models;
+    using Hng.Infrastructure.Services;
     using Microsoft.EntityFrameworkCore;
     using Moq;
     using Xunit;

@@ -1,6 +1,7 @@
 ﻿using Hng.Application.Interfaces;
-using Hng.Application.Models;
 using Hng.Domain.Entities;
+using Hng.Infrastructure.Models;
+using Hng.Infrastructure.Repository.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
