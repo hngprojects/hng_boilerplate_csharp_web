@@ -4,8 +4,8 @@ set -e
 # navigate to repo root and fetch lates change
 cd  $(git rev-parse --show-toplevel)
 
-git checkout main
-git pull origin main
+git checkout staging
+git pull origin staging
 
 # install dependencies
 dotnet restore Hng.Csharp.Web.sln
@@ -17,5 +17,5 @@ dotnet build -c Release
 dotnet publish -c Release
 
 # restart the systemd service
-sudo systemctl restart hng-web
+sudo systemctl restart hng-web-staging
 
