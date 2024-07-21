@@ -13,6 +13,9 @@ namespace Hng.Web.Mappers
             CreateMap<UserDto, User>()
                 .ForMember(dest => dest.Organizations, opt => opt.MapFrom(src => src.organizations));
 
+            CreateMap<NewsLetterSubscriber, NewsLetterSubscriptionDto>()
+                .ReverseMap();
+
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<Profile, ProfileDto>().ReverseMap();
             CreateMap<Organization, OrganizationDto>().ReverseMap();

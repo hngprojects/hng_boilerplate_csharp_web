@@ -3,6 +3,7 @@ using System;
 using Hng.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240721165515_NewsLetterSubscription")]
+    partial class NewsLetterSubscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +42,7 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NewsLetterSubscribers", (string)null);
+                    b.ToTable("NewsLetterSubscribers");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
@@ -56,7 +59,7 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations", (string)null);
+                    b.ToTable("Organizations");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
@@ -78,7 +81,7 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Profile", b =>
@@ -107,7 +110,7 @@ namespace Hng.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Profiles", (string)null);
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>
@@ -133,7 +136,7 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("OrganizationUser", b =>
@@ -148,7 +151,7 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("OrganizationUser", (string)null);
+                    b.ToTable("OrganizationUser");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
