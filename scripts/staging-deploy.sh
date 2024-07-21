@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 # navigate to repo root and fetch lates change
 cd  $(git rev-parse --show-toplevel)
 

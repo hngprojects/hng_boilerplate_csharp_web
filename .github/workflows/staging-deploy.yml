@@ -24,4 +24,5 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          ./hng_boilerplate_csharp_web/scripts/stage-deploy.sh
+          cd hng_boilerplate_csharp_web/scripts
+          ./staging-deploy.sh
