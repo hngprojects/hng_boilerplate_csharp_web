@@ -4,11 +4,12 @@ using Hng.Infrastructure.Context;
 using Hng.Infrastructure.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace Hng.Infrastructure.Repository
 {
     public class TokenService : ITokenService
     {
-        private readonly TimeSpan _tokenExpiry = TimeSpan.FromMinutes(30);
+        private readonly TimeSpan _tokenExpiry = TimeSpan.FromMinutes(5);
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly MyDBContext _context;
@@ -49,7 +50,9 @@ namespace Hng.Infrastructure.Repository
             };
             if (existingToken != null)
             {
-                _mapper.Map(userTokenDto, existingToken);
+                existingToken.Token = token;
+                existingToken.Expiry = DateTime.UtcNow.Add(_tokenExpiry);
+                 _context.Update(existingToken);
             }
             else
             {

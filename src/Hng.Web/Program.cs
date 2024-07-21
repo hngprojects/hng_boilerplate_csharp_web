@@ -63,7 +63,7 @@ var app = builder.Build();
 
 await app.MigrateAndSeed();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
