@@ -8,17 +8,24 @@ namespace Hng.Web.Mappers
         public MappingProfile()
         {
             CreateMap<User, UserDto>()
-                .ForMember(dest => dest.organizations, opt => opt.MapFrom(src => src.Organizations));
-
-            CreateMap<UserDto, User>()
-                .ForMember(dest => dest.Organizations, opt => opt.MapFrom(src => src.organizations));
+                .ForMember(dest => dest.name, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                .ReverseMap();
 
             CreateMap<NewsLetterSubscriber, NewsLetterSubscriptionDto>()
                 .ReverseMap();
 
             CreateMap<Product, ProductDto>().ReverseMap();
-            CreateMap<Profile, ProfileDto>().ReverseMap();
-            CreateMap<Organization, OrganizationDto>().ReverseMap();
+
+            CreateMap<Profile, ProfileDto>()
+                .ForMember(dest => dest.first_name, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.last_name, opt => opt.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.phone_number, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.avatar_url, opt => opt.MapFrom(src => src.AvatarUrl))
+                .ReverseMap();
+
+            CreateMap<Organization, OrganizationDto>()
+                .ForMember(dest => dest.org_id, opt => opt.MapFrom(src => src.Id))
+                .ReverseMap();
         }
     }
 }
