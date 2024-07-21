@@ -39,7 +39,7 @@ namespace Hng.Application.Services
 				});
 			}
 			responseModel.invitations = response;
-			responseModel.message = ""
+			responseModel.message = "Invitation(s) sent successfully";
 
 			return responseModel;
 
