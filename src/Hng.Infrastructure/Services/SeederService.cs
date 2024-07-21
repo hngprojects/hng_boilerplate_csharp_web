@@ -143,34 +143,7 @@ public class SeederService
         }
 
     }
-
-    public async Task SeedJobListings()
-    {
-        if (await _dataContext.JobListings.AnyAsync()) return;
-
-        _logger.LogDebug("Inserting seed job listings");
-
-        try
-        {
-            List<JobListing> jobListings =
-            [
-                CreateJobListing(),
-                CreateJobListing(),
-                CreateJobListing(),
-                CreateJobListing(),
-            ];
-
-            await _dataContext.AddRangeAsync(jobListings);
-            await _dataContext.SaveChangesAsync();
-
-            _logger.LogDebug("Seed job listings inserted");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error inserting seed job listings, {ex}", ex);
-        }
-    }
-
+    
     private User CreateUser(string userKey)
     {
         var organizations = new List<Organization>
@@ -220,21 +193,6 @@ public class SeederService
         .RuleFor(o => o.Name, f => f.Company.CompanyName())
         .RuleFor(o => o.Description, f => f.Company.CatchPhrase()).Generate();
         return org;
-    }
-
-    private JobListing CreateJobListing()
-    {
-        var jobListing = new Faker<JobListing>()
-            .RuleFor(j => j.Id, Guid.NewGuid())
-            .RuleFor(j => j.Title, f => f.Name.JobTitle())
-            .RuleFor(j => j.Description, f => f.Lorem.Paragraph())
-            .RuleFor(j => j.Location, f => f.Address.City() + ", " + f.Address.Country())
-            .RuleFor(j => j.Salary, f => "$" + f.Random.Number(30000, 200000).ToString())
-            .RuleFor(j => j.JobType, f => f.PickRandom(new[] { "Full-time", "Part-time", "Contract", "Temporary", "Internship" }))
-            .RuleFor(j => j.CompanyName, f => f.Company.CompanyName())
-            .RuleFor(j => j.CreatedAt, f => f.Date.Past(1))
-            .Generate();
-        return jobListing;
     }
 }
 
