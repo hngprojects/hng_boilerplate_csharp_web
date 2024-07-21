@@ -31,6 +31,7 @@ namespace Hng.Infrastructure.Repository
             .Include(u => u.Profile)
             .Include(u => u.Products)
             .Include(u => u.Organizations)
+            //.Include(u => u.SubscriptionPlan)
             .ToListAsync();
             return users;
         }

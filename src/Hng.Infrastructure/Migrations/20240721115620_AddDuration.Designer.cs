@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20240720121056_NewMigration45")]
-    partial class NewMigration45
+    [Migration("20240721115620_AddDuration")]
+    partial class AddDuration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,28 @@ namespace Hng.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Hng.Domain.Entities.Feature", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("SubscriptionPlanId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionPlanId");
+
+                    b.ToTable("Features");
+                });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
                 {
@@ -93,6 +115,29 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("Profiles");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.SubscriptionPlan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Duration")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubscriptionPlans");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -134,6 +179,17 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("OrganizationUser");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.Feature", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.SubscriptionPlan", "SubscriptionPlan")
+                        .WithMany("Features")
+                        .HasForeignKey("SubscriptionPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubscriptionPlan");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
                     b.HasOne("Hng.Domain.Entities.User", "User")
@@ -169,6 +225,11 @@ namespace Hng.Infrastructure.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.SubscriptionPlan", b =>
+                {
+                    b.Navigation("Features");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>

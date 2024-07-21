@@ -16,6 +16,7 @@ namespace Hng.Web.Services
             await seeder.SeedProfile();
             await seeder.SeedProducts();
             await seeder.SeedOrganisation();
+           await seeder.SeedSubscriptionPlan();
             // await seeder.SeedOrganisationUsers();
             return app;
         }

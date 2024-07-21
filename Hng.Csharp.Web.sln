@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hng.Application", "src\Hng.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hng.Web", "src\Hng.Web\Hng.Web.csproj", "{9774A8A9-24E7-4DF0-99FE-28377C71A396}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hng.Application.Test", "src\Hng.Application.Test\Hng.Application.Test.csproj", "{D4B9422C-9838-4E41-B817-882A53C2B7A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hng.Application.Test", "src\Hng.Application.Test\Hng.Application.Test.csproj", "{D4B9422C-9838-4E41-B817-882A53C2B7A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9C8ED73B-91A5-48D3-BE61-C6275F9CBFE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,6 +3,7 @@ using System;
 using Hng.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240720230733_AddSubscriptionPlanTable")]
+    partial class AddSubscriptionPlanTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,14 +37,14 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("SubscriptionPlanId")
+                    b.Property<Guid?>("SubscriptionPlanId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SubscriptionPlanId");
 
-                    b.ToTable("Features");
+                    b.ToTable("Feature");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
@@ -121,9 +124,6 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<string>("Duration")
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -156,7 +156,15 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
+                    b.Property<string>("SubscriptionPlan")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("SubscriptionPlanId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionPlanId");
 
                     b.ToTable("Users");
                 });
@@ -178,13 +186,9 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.Feature", b =>
                 {
-                    b.HasOne("Hng.Domain.Entities.SubscriptionPlan", "SubscriptionPlan")
+                    b.HasOne("Hng.Domain.Entities.SubscriptionPlan", null)
                         .WithMany("Features")
-                        .HasForeignKey("SubscriptionPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SubscriptionPlan");
+                        .HasForeignKey("SubscriptionPlanId");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
@@ -209,6 +213,13 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.User", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.SubscriptionPlan", null)
+                        .WithMany("Users")
+                        .HasForeignKey("SubscriptionPlanId");
+                });
+
             modelBuilder.Entity("OrganizationUser", b =>
                 {
                     b.HasOne("Hng.Domain.Entities.Organization", null)
@@ -227,6 +238,8 @@ namespace Hng.Infrastructure.Migrations
             modelBuilder.Entity("Hng.Domain.Entities.SubscriptionPlan", b =>
                 {
                     b.Navigation("Features");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>

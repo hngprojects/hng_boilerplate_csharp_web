@@ -11,4 +11,4 @@ dotnet build
 dotnet publish
 
 # restart the systemd service
-sudo systemctl restart hng-web-dev
+sudo systemctl restart hng-web-staging

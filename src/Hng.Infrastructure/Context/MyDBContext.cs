@@ -17,5 +17,7 @@ namespace Hng.Infrastructure.Context
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
+        public DbSet<Feature> Features { get; set; }
     }
 }

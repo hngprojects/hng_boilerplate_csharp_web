@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hng.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigration45 : Migration
+    public partial class AddSubscriptionPlanTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +25,39 @@ namespace Hng.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SubscriptionPlans",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Price = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubscriptionPlans", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Feature",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    SubscriptionPlanId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Feature", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Feature_SubscriptionPlans_SubscriptionPlanId",
+                        column: x => x.SubscriptionPlanId,
+                        principalTable: "SubscriptionPlans",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -33,11 +66,18 @@ namespace Hng.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "text", nullable: true),
                     AvatarUrl = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true)
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    SubscriptionPlan = table.Column<string>(type: "text", nullable: true),
+                    SubscriptionPlanId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_SubscriptionPlans_SubscriptionPlanId",
+                        column: x => x.SubscriptionPlanId,
+                        principalTable: "SubscriptionPlans",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -107,6 +147,11 @@ namespace Hng.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Feature_SubscriptionPlanId",
+                table: "Feature",
+                column: "SubscriptionPlanId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrganizationUser_UsersId",
                 table: "OrganizationUser",
                 column: "UsersId");
@@ -121,11 +166,19 @@ namespace Hng.Infrastructure.Migrations
                 table: "Profiles",
                 column: "UserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_SubscriptionPlanId",
+                table: "Users",
+                column: "SubscriptionPlanId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Feature");
+
             migrationBuilder.DropTable(
                 name: "OrganizationUser");
 
@@ -140,6 +193,9 @@ namespace Hng.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "SubscriptionPlans");
         }
     }
 }

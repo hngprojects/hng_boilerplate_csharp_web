@@ -196,5 +196,31 @@ public class SeederService
         return org;
     }
 
+    public async Task SeedSubscriptionPlan()
+    {
+        if (await _dataContext.SubscriptionPlans.AnyAsync()) return;
+
+        _logger.LogDebug("Inserting seed subscription plans");
+
+        try
+        {
+            var plans = new List<SubscriptionPlan>
+        {
+            new SubscriptionPlan { Name = "Basic", Price = 9, Description = "Basic plan", Features = new List<Feature> { new Feature { Name = "Feature 1" }, new Feature { Name = "Feature 2" } } },
+            new SubscriptionPlan { Name = "Pro", Price = 19, Description = "Pro plan", Features = new List<Feature> { new Feature { Name = "Feature 1" }, new Feature { Name = "Feature 2" }, new Feature { Name = "Feature 3" } } },
+            new SubscriptionPlan { Name = "Enterprise", Price = 49, Description = "Enterprise plan", Features = new List<Feature> { new Feature { Name = "Feature 1" }, new Feature { Name = "Feature 2" }, new Feature { Name = "Feature 3" }, new Feature { Name = "Feature 4" } } }
+        };
+
+            await _dataContext.SubscriptionPlans.AddRangeAsync(plans);
+            await _dataContext.SaveChangesAsync();
+
+            _logger.LogDebug("Seed subscription plans inserted");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error inserting seed subscription plans, {ex}", ex);
+        }
+    }
+
 
 }

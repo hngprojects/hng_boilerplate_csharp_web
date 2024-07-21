@@ -1,4 +1,4 @@
-name: Staging Deployment
+name: Deploy
 
 on:
   push: 
@@ -24,5 +24,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          cd staging/scripts
-          ./staging-deploy.sh
+          cd hng_boilerplate_csharp_web/scripts
+          git checkout staging
+          git pull origin staging
+          ./stage-deploy.sh

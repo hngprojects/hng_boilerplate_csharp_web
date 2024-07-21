@@ -1,4 +1,4 @@
-name: Production Deployment
+name: Deploy
 
 on:
   push: 
@@ -24,5 +24,7 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          cd production/scripts
+          cd hng_boilerplate_csharp_web/scripts
+          git checkout main
+          git pull origin main
           ./prod-deploy.sh
