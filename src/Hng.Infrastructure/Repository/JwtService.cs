@@ -1,4 +1,5 @@
 ﻿using Hng.Domain.Entities;
+using Hng.Infrastructure.Repository.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -11,16 +12,16 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Services
 {
-    public class JwtService
-    {
-        private readonly IConfiguration _config;
-
-        public JwtService(IConfiguration config)
+        public class JwtService : IJwtService
         {
-            _config = config;
-        }
+            private readonly IConfiguration _config;
 
-        public string GenerateToken(User user)
+            public JwtService(IConfiguration config)
+            {
+                _config = config;
+            }
+
+            public string GenerateToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

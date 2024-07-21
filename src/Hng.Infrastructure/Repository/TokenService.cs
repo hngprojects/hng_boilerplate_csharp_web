@@ -1,19 +1,11 @@
 ﻿using AutoMapper;
-using Hng.Application.Dto;
 using Hng.Application.Interfaces;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Context;
 using Hng.Infrastructure.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hng.Application.Services
+namespace Hng.Infrastructure.Repository
 {
     public class TokenService : ITokenService
     {
@@ -49,7 +41,7 @@ namespace Hng.Application.Services
             }
             var existingToken = await _context.UserTokens
             .FirstOrDefaultAsync(ut => ut.Email == email);
-            var userTokenDto = new UserTokenDto
+            var userTokenDto = new UserToken
             {
                 Email = email,
                 Token = token,

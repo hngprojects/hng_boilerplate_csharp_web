@@ -13,12 +13,12 @@ namespace Hng.Web.Controllers
     {
         private readonly IEmailService _emailService;
         private readonly ITokenService _tokenService;
-        private readonly JwtService _jwtService;
+        private readonly IJwtService _jwtService;
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
  
 
-        public AuthController(IEmailService emailService, ITokenService tokenService, IConfiguration configuration, IUserRepository userRepository, JwtService jwtService)
+        public AuthController(IEmailService emailService, ITokenService tokenService, IConfiguration configuration, IUserRepository userRepository, IJwtService jwtService)
         {
             _userRepository = userRepository;
             _emailService = emailService;
