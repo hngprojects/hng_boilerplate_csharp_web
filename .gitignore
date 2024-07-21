@@ -374,4 +374,4 @@ src/Hng.Web/internal-nlog.txt
 
 # AppSettings
 appsettings.*.json
-
+appsettings.json
