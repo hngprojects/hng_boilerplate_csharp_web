@@ -24,7 +24,4 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          cd hng_boilerplate_csharp_web/scripts
-          git checkout main
-          git pull origin main
-          ./prod-deploy.sh
+          ./hng_boilerplate_csharp_web/scripts/prod-deploy.sh
