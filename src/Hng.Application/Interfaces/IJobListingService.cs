@@ -1,6 +1,9 @@
-namespace Hng.Application.Interfaces;
+using Hng.Application.Dto;
 
-public interface IJobListing
+namespace Hng.Application.Interfaces
 {
-    
+    public interface IJobListingService
+    {
+        Task<JobListingDto> CreateJobListingAsync(CreateJobListingDto createJobListingDto);
+    }
 }
