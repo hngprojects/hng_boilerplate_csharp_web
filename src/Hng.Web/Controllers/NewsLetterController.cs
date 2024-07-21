@@ -1,6 +1,7 @@
 ﻿using Hng.Application.Dto;
 using Hng.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Hng.Web.Controllers
 {
@@ -15,13 +16,15 @@ namespace Hng.Web.Controllers
             _newsLetterSubscriptionService = newsLetterSubscriptionService;
         }
         [HttpPost]
-        public async Task<ActionResult<NewsLetterSubscriptionDto>> RegisterSubscriber(NewsLetterSubscriptionDto subscriber)
+        [EndpointDescription("Subscribe To News Letter")]
+        [ProducesResponseType<SuccessResponseDto>((int)HttpStatusCode.Created)]
+        [ProducesResponseType<FailureResponseDto>((int)HttpStatusCode.Unauthorized)]
+        public async Task<IActionResult> RegisterSubscriber(NewsLetterSubscriptionDto subscriber)
         {
             var result = await _newsLetterSubscriptionService.AddToNewsLetter(subscriber);
             if (result is null)
-                return BadRequest("Subscriber Already Exists");
-            return Ok(result);
-
+                return Unauthorized(new FailureResponseDto("Email already exists.", (int)HttpStatusCode.Unauthorized));
+            return StatusCode((int)HttpStatusCode.Created, new SuccessResponseDto("Email was successfully stored.", (int)HttpStatusCode.Created));
         }
     }
 }
