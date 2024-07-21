@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hng.Application.Dto;
 using Hng.Application.Interfaces;
 using Hng.Application.Services;
 using Hng.Infrastructure.Repository.Interface;
@@ -11,16 +12,19 @@ namespace Hng.Web.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IEmailService _emailService;
-        private readonly TokenService _tokenService;
+        private readonly ITokenService _tokenService;
+        private readonly JwtService _jwtService;
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
+ 
 
-        public AuthController(IEmailService emailService, TokenService tokenService, IConfiguration configuration, IUserRepository userRepository)
+        public AuthController(IEmailService emailService, ITokenService tokenService, IConfiguration configuration, IUserRepository userRepository, JwtService jwtService)
         {
             _userRepository = userRepository;
             _emailService = emailService;
             _tokenService = tokenService;
             _configuration = configuration;
+            _jwtService = jwtService;
         }
 
         [HttpGet("signin-token")]
@@ -37,7 +41,7 @@ namespace Hng.Web.Controllers
             }
 
             var token = _tokenService.GenerateToken();
-            _tokenService.StoreToken(email, token);
+            await _tokenService.StoreTokenAsync(email, token);
             try
             {
                 await _emailService.SendEmailAsync(email, "Your Sign-In Token", $"Your sign-in token is {token}");
@@ -49,5 +53,27 @@ namespace Hng.Web.Controllers
 
             return Ok(new { message = $"Sign-in token sent to {email}", status_code = 200 });
         }
+
+        [HttpPost("signin-token")]
+        public async Task<IActionResult> VerifySignInToken([FromBody] VerifyTokenRequestDto request)
+        {
+            if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Token))
+            {
+                return Unauthorized(new { message = "Invalid token or email", status_code = 401 });
+            }
+
+            var user = await _userRepository.GetByEmailAsync(request.Email);
+            if (user == null || !await _tokenService.ValidateTokenAsync(request.Email, request.Token))
+            {
+                return Unauthorized(new { message = "Invalid token or email", status_code = 401 });
+            }
+
+            // Generate JWT token
+            var jwtToken = _jwtService.GenerateToken(user);
+
+            return Ok(new { message = "Sign-in successful", token = jwtToken, status_code = 200 });
+        }
     }
+
+  
 }

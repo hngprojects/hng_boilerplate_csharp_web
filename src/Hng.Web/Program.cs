@@ -25,7 +25,8 @@ builder.Host.UseNLog();
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddScoped<TokenService>(); // Use AddScoped for services that are instantiated per request
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IEmailService>(sp => new EmailService(
     builder.Configuration["Smtp:Server"],
     builder.Configuration["Smtp:User"],

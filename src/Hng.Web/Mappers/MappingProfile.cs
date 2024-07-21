@@ -16,6 +16,7 @@ namespace Hng.Web.Mappers
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<Profile, ProfileDto>().ReverseMap();
             CreateMap<Organization, OrganizationDto>().ReverseMap();
+            CreateMap<UserToken, UserTokenDto>().ReverseMap();
         }
     }
 }

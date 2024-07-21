@@ -1,4 +1,11 @@
-﻿using System;
+﻿using AutoMapper;
+using Hng.Application.Dto;
+using Hng.Application.Interfaces;
+using Hng.Domain.Entities;
+using Hng.Infrastructure.Context;
+using Hng.Infrastructure.Repository.Interface;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +15,21 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Services
 {
-    public class TokenService
+    public class TokenService : ITokenService
     {
-        private readonly ConcurrentDictionary<string, (string Token, DateTime Expiry)> _tokens = new();
-        private readonly TimeSpan _tokenExpiry = TimeSpan.FromMinutes(5);
+        private readonly TimeSpan _tokenExpiry = TimeSpan.FromMinutes(30);
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+        private readonly MyDBContext _context;
+
+        public TokenService(IUserRepository userRepository, IMapper mapper, MyDBContext context)
+        {
+            _userRepository = userRepository;
+            _mapper = mapper;
+            _context = context;
+        }
+
+
 
         public string GenerateToken()
         {
@@ -22,23 +40,42 @@ namespace Hng.Application.Services
             return token.ToString("D6");
         }
 
-        public void StoreToken(string email, string token)
+        public async Task StoreTokenAsync(string email, string token)
         {
-            var expiry = DateTime.UtcNow.Add(_tokenExpiry);
-            _tokens[email] = (token, expiry);
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found", nameof(email));
+            }
+            var existingToken = await _context.UserTokens
+            .FirstOrDefaultAsync(ut => ut.Email == email);
+            var userTokenDto = new UserTokenDto
+            {
+                Email = email,
+                Token = token,
+                Expiry = DateTime.UtcNow.Add(_tokenExpiry),
+                UserId = user.Id
+            };
+            if (existingToken != null)
+            {
+                _mapper.Map(userTokenDto, existingToken);
+            }
+            else
+            {
+                var userToken = _mapper.Map<UserToken>(userTokenDto);
+                _context.UserTokens.Add(userToken);
+            }
+            await _context.SaveChangesAsync();
         }
 
-        public bool ValidateToken(string email, string token)
+        public async Task<bool> ValidateTokenAsync(string email, string token)
         {
-            if (_tokens.TryGetValue(email, out var storedToken))
-            {
-                if (storedToken.Token == token && storedToken.Expiry > DateTime.UtcNow)
-                {
-                    _tokens.TryRemove(email, out _);
-                    return true;
-                }
-            }
-            return false;
+            var userToken = await _context.UserTokens
+                .Where(t => t.Email == email && t.Token == token && t.Expiry > DateTime.UtcNow)
+                .FirstOrDefaultAsync();
+
+            return userToken != null;
         }
+
     }
 }
