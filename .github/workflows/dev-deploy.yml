@@ -1,4 +1,4 @@
-name: Deploy
+name: Dev Deployment
 
 on:
   push: 
@@ -24,7 +24,5 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          cd hng_boilerplate_csharp_web/scripts
-          git checkout dev
-          git pull origin dev
+          cd development/scripts
           ./dev-deploy.sh
