@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -45,5 +46,7 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="git config core.hooksPath .githooks" />
   </Target>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="https://json.schemastore.org/azure-deviceupdate-update-manifest-5.json" /></VisualStudio></ProjectExtensions>
 
 </Project>

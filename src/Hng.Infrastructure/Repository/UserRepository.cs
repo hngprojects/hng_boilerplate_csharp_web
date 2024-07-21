@@ -9,6 +9,7 @@ namespace Hng.Infrastructure.Repository
     {
         private readonly MyDBContext _context;
 
+
         public UserRepository(MyDBContext context) : base(context)
         {
             _context = context;

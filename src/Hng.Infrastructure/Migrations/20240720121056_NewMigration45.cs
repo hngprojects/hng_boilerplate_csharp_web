@@ -33,7 +33,10 @@ namespace Hng.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "text", nullable: true),
                     AvatarUrl = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true)
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "text", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -9,6 +9,11 @@ namespace Hng.Application.Interfaces
         Task<UserDto> GetUserByIdAsync(Guid id);
 
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
-        
+
+
+        Task<(bool IsSuccess, string ErrorMessage)> IsEmailUniqueAsync(string email);
+        Task<UserResponseDto> CreateUserAsync(UserSignupDto userSignupDto);
+        string GenerateJwtToken(UserResponseDto user);
+
     }
 }

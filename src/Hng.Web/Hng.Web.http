@@ -1,6 +1,15 @@
-@Hng.Web_HostAddress = http://localhost:5288
+@Hng.Web_HostAddress = https://localhost:7142
 
 GET {{Hng.Web_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+POST {{Hng.Web_HostAddress}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  //UserSignupDto
+}
 
 ###
