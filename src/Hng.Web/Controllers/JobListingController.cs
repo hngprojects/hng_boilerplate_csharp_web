@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Hng.Application.Dto;
 using Hng.Application.Interfaces;
@@ -7,6 +8,7 @@ namespace Hng.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class JobsController : ControllerBase
     {
         private readonly IJobListingService _jobListingService;
