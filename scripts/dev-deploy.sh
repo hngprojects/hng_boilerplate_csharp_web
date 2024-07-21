@@ -14,7 +14,7 @@ dotnet restore Hng.Csharp.Web.sln
 dotnet build -c Debug -o ./src/Hng.Web/bin/Development/build
 
 # publish app
-dotnet build -c Debug -o ./src/Hng.Web/bin/Development/publish
+dotnet publish -c Debug -o ./src/Hng.Web/bin/Development/publish
 
 # restart the systemd service
 sudo systemctl restart hng-web-dev
