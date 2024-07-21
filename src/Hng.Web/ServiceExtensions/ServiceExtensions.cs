@@ -11,7 +11,7 @@ namespace Hng.Web.Services
             services.AddScoped<DbContext, MyDBContext>();
 
             services.AddDbContext<MyDBContext>(options =>
-                options.UseMySQL(connectionString));
+                options.UseNpgsql(connectionString));
 
             return services;
         }
