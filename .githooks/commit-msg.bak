@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 REGEX="^((Merge[ a-z-]* branch.*)|(Revert*)|((build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.*\))?!?: .*))"
 

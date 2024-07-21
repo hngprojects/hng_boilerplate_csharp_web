@@ -1,22 +1,15 @@
-using System.Net;
-using System.Text.Json.Serialization;
-using AutoMapper;
-using Hng.Application.Interfaces;
-using Hng.Application.Services;
-using Hng.Infrastructure.Repository;
-using Hng.Infrastructure.Repository.Interface;
+using Hng.Domain.Models;
 using Hng.Infrastructure.Services;
-using Hng.Web.Mappers;
-using Hng.Web.Services;
+using Hng.Web.Bootstrappers;
 using Hng.Web.Extensions;
-using Microsoft.EntityFrameworkCore;
-using NLog;
-using NLog.Extensions.Logging;
-using NLog.Fluent;
+using Hng.Web.Services;
 using NLog.Web;
-using Microsoft.AspNetCore.Diagnostics;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//map appsettings.json to Appsettings class
+var appSettings = builder.Configuration.Get<AppSettings>() ?? new AppSettings();
 
 builder.Host.UseNLog();
 
@@ -26,17 +19,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connString = builder.Configuration.GetConnectionString("DefaultConnectionString");
-builder.Services.AddConfiguredServices(connString);
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services
+    .AddDependencies(appSettings)
+    .AddConfiguredServices(appSettings.ConnectionStrings.DefaultConnectionString);
+
 builder.Services.AddScoped<SeederService>();
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 var app = builder.Build();
 
-await app.MigrateAndSeed();
+//only seed db if using actual implementation
+if (!appSettings.Settings.UseMockForDatabase)
+{
+    await app.MigrateAndSeed();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

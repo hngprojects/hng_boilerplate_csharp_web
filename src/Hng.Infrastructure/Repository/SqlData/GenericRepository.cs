@@ -2,11 +2,8 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Context;
 using Hng.Infrastructure.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Hng.Infrastructure.Repository
+namespace Hng.Infrastructure.Repository.SqlData
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : EntityBase
     {

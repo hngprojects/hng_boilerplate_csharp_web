@@ -1,6 +1,5 @@
 ﻿using Hng.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Hng.Web.Services
 {
