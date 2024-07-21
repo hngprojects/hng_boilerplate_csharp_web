@@ -11,10 +11,10 @@ git pull origin staging
 dotnet restore Hng.Csharp.Web.sln
 
 # build app
-dotnet build -c Release -o ./src/Hng.Web/bin/Staging/build
+dotnet build -c Release
 
 # publish app
-dotnet publish -c Release -o ./src/Hng.Web/bin/Staging/publish
+dotnet publish -c Release
 
 # restart the systemd service
 sudo systemctl restart hng-web-staging
