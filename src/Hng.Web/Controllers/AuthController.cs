@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Hng.Application.Dto;
-using Hng.Application.Interfaces;
-using Hng.Application.Services;
+﻿using Hng.Application.Dto;
 using Hng.Infrastructure.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
 

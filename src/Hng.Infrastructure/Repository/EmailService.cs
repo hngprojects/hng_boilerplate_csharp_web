@@ -1,10 +1,10 @@
-﻿using Hng.Application.Interfaces;
+﻿using Hng.Infrastructure.Repository.Interface;
 using MailKit.Net.Smtp;
 using MimeKit;
 using System;
 using System.Threading.Tasks;
 
-namespace Hng.Application.Services
+namespace Hng.Infrastructure.Repository
 {
     public class EmailService : IEmailService
     {

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Hng.Application.Interfaces;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Context;
 using Hng.Infrastructure.Repository.Interface;

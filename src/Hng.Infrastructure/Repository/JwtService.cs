@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hng.Application.Services
+namespace Hng.Infrastructure.Repository
 {
         public class JwtService : IJwtService
         {

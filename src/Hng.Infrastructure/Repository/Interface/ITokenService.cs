@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hng.Application.Interfaces
+namespace Hng.Infrastructure.Repository.Interface
 {
     public interface ITokenService
     {
