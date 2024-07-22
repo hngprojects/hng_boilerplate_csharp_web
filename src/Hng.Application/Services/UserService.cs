@@ -35,7 +35,7 @@ namespace Hng.Application.Services
 
 
             return _mapper.Map<IEnumerable<UserDto>>(users);
-            
+
         }
     }
 }
