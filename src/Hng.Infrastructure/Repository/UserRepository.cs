@@ -34,5 +34,14 @@ namespace Hng.Infrastructure.Repository
             .ToListAsync();
             return users;
         }
+
+        public async Task<IEnumerable<User>> GetUsersByStatusAsync(string org_id, string status, int page, int limit)
+        {
+            return await _context.Users
+            .Where(u => u.Org_id == org_id && u.Status == status)
+            .Skip((page - 1) * limit)
+            .Take(limit)
+            .ToListAsync();
+        }
     }
 }
