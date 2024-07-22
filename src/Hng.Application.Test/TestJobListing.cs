@@ -2,10 +2,9 @@ using Hng.Web.Controllers;
 using Hng.Application.Dto;
 using Hng.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Xunit;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-
+using System.Security.Claims;
+using Xunit;
 
 namespace Hng.Application.Test
 {
@@ -18,22 +17,44 @@ namespace Hng.Application.Test
         {
             _stubJobListingService = new StubJobListingService();
             _controller = new JobsController(_stubJobListingService);
-            
-            // Set up the controller with routing information
+        }
+
+        private void SetUpAuthorizedController()
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "testuser"),
+                new Claim(ClaimTypes.NameIdentifier, "1"),
+                new Claim("custom-claim", "example claim value"),
+            }, "mock"));
+
             var httpContext = new DefaultHttpContext();
-            var routeData = new RouteData();
-            routeData.Values["controller"] = "Jobs";
-            _controller.ControllerContext = new ControllerContext
+            httpContext.User = user;
+
+            var controllerContext = new ControllerContext()
             {
                 HttpContext = httpContext,
-                RouteData = routeData
             };
+
+            _controller.ControllerContext = controllerContext;
+        }
+
+        private void SetUpUnauthorizedController()
+        {
+            var httpContext = new DefaultHttpContext();
+            var controllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext,
+            };
+
+            _controller.ControllerContext = controllerContext;
         }
 
         [Fact]
         public async Task CreateJob_ReturnsCreatedAtActionResult_WithJobListing()
         {
             // Arrange
+            SetUpAuthorizedController();
             var createDto = new CreateJobListingDto
             {
                 Title = "Software Developer",
@@ -73,6 +94,7 @@ namespace Hng.Application.Test
         public async Task CreateJob_WithInvalidData_ReturnsBadRequest()
         {
             // Arrange
+            SetUpAuthorizedController();
             var invalidDto = new CreateJobListingDto(); // Empty DTO
 
             // Act
@@ -88,14 +110,8 @@ namespace Hng.Application.Test
         public void InvalidMethod_ReturnsMethodNotAllowed()
         {
             // Arrange
-            var httpContext = new DefaultHttpContext();
-            httpContext.Request.Method = "DELETE";
-            httpContext.Request.Path = "/api/v1/jobs";
-            var controllerContext = new ControllerContext()
-            {
-                HttpContext = httpContext,
-            };
-            _controller.ControllerContext = controllerContext;
+            SetUpAuthorizedController();
+            _controller.ControllerContext.HttpContext.Request.Method = "DELETE";
 
             // Act
             var result = _controller.CreateJobListing(new CreateJobListingDto());
@@ -103,6 +119,29 @@ namespace Hng.Application.Test
             // Assert
             var statusCodeResult = Assert.IsType<StatusCodeResult>(result.Result);
             Assert.Equal(405, statusCodeResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task CreateJob_WithoutAuthorization_ReturnsUnauthorized()
+        {
+            // Arrange
+            SetUpUnauthorizedController();
+            var createDto = new CreateJobListingDto
+            {
+                Title = "Software Developer",
+                Description = "We are looking for a talented software developer...",
+                Location = "New York, NY",
+                Salary = "$80,000 - $120,000",
+                JobType = "Full-time",
+                CompanyName = "Tech Innovations Inc."
+            };
+
+            // Act
+            var result = await _controller.CreateJobListing(createDto);
+
+            // Assert
+            var unauthorizedResult = Assert.IsType<UnauthorizedResult>(result.Result);
+            Assert.Equal(401, unauthorizedResult.StatusCode);
         }
     }
 
