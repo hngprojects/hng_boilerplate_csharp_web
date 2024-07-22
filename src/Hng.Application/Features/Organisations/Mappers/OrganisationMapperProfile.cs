@@ -8,7 +8,6 @@ namespace Hng.Application.Features.Organisations.Mappers
         public OrganisationMapperProfile()
         {
             CreateMap<Organization, OrganizationDto>()
-                .ForMember(dest => dest.org_id, opt => opt.MapFrom(src => src.Id))
                 .ReverseMap();
         }
     }
