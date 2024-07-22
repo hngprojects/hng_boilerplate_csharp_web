@@ -1,16 +1,17 @@
 name: Production Deployment
 
 on:
-  push: 
-    branches: 
-        - main
+  push:
+    branches:
+      - main
+
 jobs:
-  deploy:
+  deploy_to_production:
     runs-on: ubuntu-latest
 
     environment:
       name: "production"
-      url: ${{env.URL}}
+      url: ${{ env.URL }}
 
     steps:
     - name: Checkout repository
