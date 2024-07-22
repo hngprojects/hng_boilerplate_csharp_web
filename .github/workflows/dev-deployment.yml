@@ -1,11 +1,12 @@
 name: Dev Deployment
 
 on:
-  push: 
-    branches: 
-        - dev
+  push:
+    branches:
+      - dev
+
 jobs:
-  dev-deploy:
+  deploy_to_dev:
     runs-on: ubuntu-latest
 
     environment:
