@@ -25,7 +25,7 @@ namespace Hng.Web.Controllers
             {
                 return StatusCode(StatusCodes.Status405MethodNotAllowed);
             }
-            
+
             var createdJobListing = await _jobListingService.CreateJobListingAsync(createJobListingDto);
             return CreatedAtAction(nameof(CreateJobListing), new { id = createdJobListing.Id }, createdJobListing);
         }

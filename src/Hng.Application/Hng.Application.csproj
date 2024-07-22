@@ -1,25 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>Hng.Application</RootNamespace>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>Hng.Application</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Models\**" />
-    <EmbeddedResource Remove="Models\**" />
-    <None Remove="Models\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Models\**"/>
+        <EmbeddedResource Remove="Models\**"/>
+        <None Remove="Models\**"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.1"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
-    <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj"/>
+        <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj"/>
+    </ItemGroup>
 
 </Project>

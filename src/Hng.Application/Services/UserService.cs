@@ -26,16 +26,14 @@ namespace Hng.Application.Services
             }
 
             return _mapper.Map<UserDto>(user);
-
         }
 
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllAsync();
 
-            
+
             return _mapper.Map<IEnumerable<UserDto>>(users);
-            
         }
     }
 }

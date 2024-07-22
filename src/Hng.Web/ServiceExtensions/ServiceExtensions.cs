@@ -6,7 +6,8 @@ namespace Hng.Web.Services
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddConfiguredServices(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddConfiguredServices(this IServiceCollection services,
+            string connectionString)
         {
             services.AddScoped<DbContext, MyDBContext>();
 
