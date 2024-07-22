@@ -4,21 +4,25 @@ on:
   pull_request
 
 jobs:
-  test:
+  build_and_test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Use the version of .NET you need
+        dotnet-version: '8.0.x'
 
     - name: Install dependencies
       run: |
         dotnet restore ./Hng.Csharp.Web.sln
+
+    - name: Check Code Formatting
+      run: |
+        dotnet format ./Hng.Csharp.Web.sln --verify-no-changes
 
     - name: Build Application
       run: |
@@ -26,4 +30,4 @@ jobs:
 
     - name: Run Unit Tests
       run: |
-        dotnet test ./src/Hng.Application.Test/Hng.Application.Test.csproj --configuration Release --no-build --verbosity normal
+        dotnet test ./src/Hng.Application.Test/Hng.Application.Test.csproj --configuration Release --no-build --no-restore --verbosity normal
