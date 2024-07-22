@@ -5,16 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Xunit;
+using System;
+using System.Threading.Tasks;
+using Xunit.Abstractions;
 
 namespace Hng.Application.Test
 {
     public class JobsControllerTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
         private readonly StubJobListingService _stubJobListingService;
         private readonly JobsController _controller;
 
-        public JobsControllerTests()
+        public JobsControllerTests(ITestOutputHelper testOutputHelper)
         {
+            _testOutputHelper = testOutputHelper;
             _stubJobListingService = new StubJobListingService();
             _controller = new JobsController(_stubJobListingService);
         }
@@ -95,31 +100,27 @@ namespace Hng.Application.Test
         {
             // Arrange
             SetUpAuthorizedController();
-            var invalidDto = new CreateJobListingDto(); // Empty DTO
+            _controller.ModelState.AddModelError("Title", "The Title field is required.");
+
+            var invalidDto = new CreateJobListingDto
+            {
+                Description = "We are looking for a talented software developer...",
+                Location = "New York, NY",
+                Salary = "$80,000 - $120,000",
+                JobType = "Full-time",
+                CompanyName = "Tech Innovations Inc."
+            };
 
             // Act
             var result = await _controller.CreateJobListing(invalidDto);
 
             // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result); // Check for BadRequestObjectResult
+            _testOutputHelper.WriteLine($"Result: {badRequestResult}");
             Assert.Equal(400, badRequestResult.StatusCode);
             Assert.NotNull(badRequestResult.Value);
         }
 
-        [Fact]
-        public async Task InvalidMethod_ReturnsMethodNotAllowed()
-        {
-            // Arrange
-            SetUpAuthorizedController();
-            _controller.ControllerContext.HttpContext.Request.Method = "DELETE";
-
-            // Act
-            var result = await _controller.CreateJobListing(new CreateJobListingDto());
-
-            // Assert
-            var statusCodeResult = Assert.IsType<StatusCodeResult>(result.Result);
-            Assert.Equal(405, statusCodeResult.StatusCode);
-        }
 
         [Fact]
         public async Task CreateJob_WithoutAuthorization_ReturnsUnauthorized()
@@ -135,6 +136,8 @@ namespace Hng.Application.Test
                 JobType = "Full-time",
                 CompanyName = "Tech Innovations Inc."
             };
+
+            _stubJobListingService.CreateJobListingAsyncImpl = _ => throw new UnauthorizedAccessException();
 
             // Act
             var result = await _controller.CreateJobListing(createDto);

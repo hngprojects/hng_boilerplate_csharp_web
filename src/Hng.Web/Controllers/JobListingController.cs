@@ -1,13 +1,14 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Hng.Application.Dto;
 using Hng.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hng.Web.Controllers
 {
-    [ApiController]
     [Route("api/v1/jobs")]
+    [ApiController]
     [Authorize]
     public class JobsController : ControllerBase
     {
@@ -21,11 +22,7 @@ namespace Hng.Web.Controllers
         [HttpPost]
         public async Task<ActionResult<JobListingDto>> CreateJobListing(CreateJobListingDto createJobListingDto)
         {
-            if (HttpContext.Request.Method != "POST")
-            {
-                return StatusCode(StatusCodes.Status405MethodNotAllowed);
-            }
-
+            // Check for model state validity
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -34,11 +31,6 @@ namespace Hng.Web.Controllers
             try
             {
                 var createdJobListing = await _jobListingService.CreateJobListingAsync(createJobListingDto);
-                if (createdJobListing == null)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Error creating job listing");
-                }
-
                 return CreatedAtAction(nameof(CreateJobListing), new { id = createdJobListing.Id }, createdJobListing);
             }
             catch (UnauthorizedAccessException)
@@ -47,8 +39,8 @@ namespace Hng.Web.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception (ex) if needed
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+                // Log the exception details if needed
+                return StatusCode(500, "An error occurred while creating the job listing.");
             }
         }
     }
