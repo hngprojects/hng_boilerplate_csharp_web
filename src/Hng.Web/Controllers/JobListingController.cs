@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Hng.Application.Dto;
 using Hng.Application.Interfaces;
-
+using System.Threading.Tasks;
 
 namespace Hng.Web.Controllers
 {
@@ -24,6 +24,11 @@ namespace Hng.Web.Controllers
             if (HttpContext.Request.Method != "POST")
             {
                 return StatusCode(StatusCodes.Status405MethodNotAllowed);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var createdJobListing = await _jobListingService.CreateJobListingAsync(createJobListingDto);
