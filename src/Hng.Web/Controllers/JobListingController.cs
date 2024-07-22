@@ -31,8 +31,25 @@ namespace Hng.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            var createdJobListing = await _jobListingService.CreateJobListingAsync(createJobListingDto);
-            return CreatedAtAction(nameof(CreateJobListing), new { id = createdJobListing.Id }, createdJobListing);
+            try
+            {
+                var createdJobListing = await _jobListingService.CreateJobListingAsync(createJobListingDto);
+                if (createdJobListing == null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Error creating job listing");
+                }
+
+                return CreatedAtAction(nameof(CreateJobListing), new { id = createdJobListing.Id }, createdJobListing);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (ex) if needed
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
         }
     }
 }
