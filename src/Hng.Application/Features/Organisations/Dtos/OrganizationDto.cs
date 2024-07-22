@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
 using Hng.Application.Features.UserManagement.Dtos;
 
+namespace Hng.Application.Features.Organisations.Dtos;
+
 public class OrganizationDto
 {
     public Guid Id { get; set; }
