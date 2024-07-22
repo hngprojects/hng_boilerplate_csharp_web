@@ -107,14 +107,14 @@ namespace Hng.Application.Test
         }
 
         [Fact]
-        public void InvalidMethod_ReturnsMethodNotAllowed()
+        public async Task InvalidMethod_ReturnsMethodNotAllowed()
         {
             // Arrange
             SetUpAuthorizedController();
             _controller.ControllerContext.HttpContext.Request.Method = "DELETE";
 
             // Act
-            var result = _controller.CreateJobListing(new CreateJobListingDto());
+            var result = await _controller.CreateJobListing(new CreateJobListingDto());
 
             // Assert
             var statusCodeResult = Assert.IsType<StatusCodeResult>(result.Result);
