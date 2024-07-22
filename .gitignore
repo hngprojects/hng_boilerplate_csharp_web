@@ -375,3 +375,5 @@ src/Hng.Web/internal-nlog.txt
 # AppSettings
 appsettings.*.json
 
+# Rider folder
+.idea
