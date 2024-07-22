@@ -1,10 +1,10 @@
-name: Build and Test
+name: CI Build, Lint, and Test
 
 on:
   pull_request
 
 jobs:
-  build_and_test:
+  build_lint_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,12 +22,12 @@ jobs:
 
     - name: Check Code Formatting
       run: |
-        dotnet format ./Hng.Csharp.Web.sln --verify-no-changes
+        dotnet format ./Hng.Csharp.Web.sln --verify-no-changes --no-restore
 
     - name: Build Application
       run: |
-        dotnet build --configuration Release
+        dotnet build --configuration Release --no-restore
 
     - name: Run Unit Tests
       run: |
-        dotnet test ./src/Hng.Application.Test/Hng.Application.Test.csproj --configuration Release --no-build --no-restore --verbosity normal
+        dotnet test ./src/Hng.Application.Test/Hng.Application.Test.csproj --configuration Release --no-build --verbosity normal
