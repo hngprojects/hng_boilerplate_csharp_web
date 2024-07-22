@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
 using NLog;
 using System.Net;
 
@@ -28,7 +25,7 @@ namespace Hng.Web.Extensions
                         {
                             await context.Response.WriteAsync(contextFeature.Error.ToString());
                         }
-                         else
+                        else
                         {
                             await context.Response.WriteAsync("An unexpected fault happened. Try again later.");
                         }

@@ -9,11 +9,11 @@ public class SeederService
 {
     private readonly Dictionary<string, Guid> _entityIds;
 
-    private readonly MyDBContext _dataContext;
+    private readonly ApplicationDbContext _dataContext;
 
     private readonly ILogger<SeederService> _logger;
 
-    public SeederService(MyDBContext dataContext, ILogger<SeederService> logger)
+    public SeederService(ApplicationDbContext dataContext, ILogger<SeederService> logger)
     {
         _entityIds = [];
         _dataContext = dataContext;
