@@ -21,6 +21,11 @@ namespace Hng.Web.Controllers
         [HttpPost]
         public async Task<ActionResult<JobListingDto>> CreateJobListing(CreateJobListingDto createJobListingDto)
         {
+            if (HttpContext.Request.Method != "POST")
+            {
+                return StatusCode(StatusCodes.Status405MethodNotAllowed);
+            }
+            
             var createdJobListing = await _jobListingService.CreateJobListingAsync(createJobListingDto);
             return CreatedAtAction(nameof(CreateJobListing), new { id = createdJobListing.Id }, createdJobListing);
         }
