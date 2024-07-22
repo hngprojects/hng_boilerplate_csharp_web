@@ -13,7 +13,8 @@ namespace Hng.Web.Controllers
     public class UserController(IUserService userService) : ControllerBase
     {
         private readonly IUserService userService = userService;
-        
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {

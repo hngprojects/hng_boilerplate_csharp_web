@@ -33,7 +33,7 @@ namespace Hng.Application.Services
         {
             var users = await _userRepository.GetAllAsync();
 
-            
+
             return _mapper.Map<IEnumerable<UserDto>>(users);
             
         }
