@@ -9,15 +9,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hng.Infrastructure.Services
+namespace Hng.Application.Services
 {
     public class ProductService : IProductService
     {
+        //private readonly List<Product> _products;
         MyDBContext _context;
-
         public ProductService(MyDBContext context)
         {
             _context = context;
+
+            //_products = new List<Product>
+            //{
+            //    new Product { Id = Guid.NewGuid(), Name = "White T-shirt with image", Category = "kids", Price = 200, Description = "A white T-shirt with tom and jerry image", ImageUrl = "http://example.com/images/white_t_shirt_tom_jerry_image.jpg" },
+            //    new Product { Id = Guid.NewGuid(), Name = "Black T-shirt", Category = "kids", Price = 150, Description = "A Black t-shirt", ImageUrl = "http://example.com/images/black_t_shirt.jpg" },
+            //};
         }
         public PaginatedResult<Product> SearchProducts(SearchParameters parameters, int page = 1, int pageSize = 10)
         {
@@ -64,9 +70,9 @@ namespace Hng.Infrastructure.Services
             }
             catch (Exception)
             {
-                // Log the exception here
                 throw;
             }
         }
     }
 }
+
