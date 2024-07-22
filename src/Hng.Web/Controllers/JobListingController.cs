@@ -7,7 +7,7 @@ using Hng.Application.Interfaces;
 namespace Hng.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/jobs")]
     [Authorize]
     public class JobsController : ControllerBase
     {

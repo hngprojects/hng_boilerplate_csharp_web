@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Hng.Application\Hng.Application.csproj" />
+    <ProjectReference Include="..\Hng.Web\Hng.Web.csproj" />
+  </ItemGroup>
+
 </Project>
