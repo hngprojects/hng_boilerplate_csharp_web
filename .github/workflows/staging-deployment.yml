@@ -1,22 +1,23 @@
 name: Staging Deployment
 
 on:
-  push: 
-    branches: 
-        - staging
+  push:
+    branches:
+      - staging
+
 jobs:
-  deploy:
+  deploy_to_staging:
     runs-on: ubuntu-latest
 
     environment:
       name: "staging"
-      url: ${{env.URL}}
+      url: ${{ env.URL }}
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Deploy To Stage Server
+    - name: Deploy To Staging Server
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
