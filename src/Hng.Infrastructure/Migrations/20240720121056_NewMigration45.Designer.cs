@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hng.Infrastructure.Migrations
 {
-    [DbContext(typeof(MyDBContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240720121056_NewMigration45")]
     partial class NewMigration45
     {
