@@ -11,10 +11,10 @@ git pull origin dev
 dotnet restore Hng.Csharp.Web.sln
 
 # build app
-dotnet build -c Debug
+dotnet build -c Debug --no-restore
 
 # publish app
-dotnet publish -c Debug
+dotnet publish -c Debug --no-build
 
 # restart the systemd service
 sudo systemctl restart hng-web-dev
