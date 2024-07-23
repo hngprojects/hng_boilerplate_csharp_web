@@ -8,6 +8,17 @@ namespace Hng.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
+                      .UseIdentityColumn();
+            });
+
+            modelBuilder.Entity<Product>()
+           .HasMany(p => p.Categories)
+           .WithMany(c => c.Products)
+           .UsingEntity(j => j.ToTable("ProductCategories"));
 
         }
 
