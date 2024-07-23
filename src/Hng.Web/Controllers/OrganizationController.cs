@@ -17,7 +17,7 @@ public class OrganizationController : ControllerBase
         _mediator = mediator;
     }
     
-    //[Authorize]
+    [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<OrganizationDto>> CreateOrganization([FromBody] CreateOrganizationDto body)
