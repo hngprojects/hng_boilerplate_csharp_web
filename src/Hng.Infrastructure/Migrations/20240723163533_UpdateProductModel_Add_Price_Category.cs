@@ -6,15 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hng.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateProductmodel_Add_Price_Category : Migration
+    public partial class UpdateProductModel_Add_Price_Category : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AddColumn<string[]>(
                 name: "Category",
                 table: "Products",
-                type: "text",
+                type: "text[]",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
