@@ -27,4 +27,8 @@
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\PaymentIntegrations\Paystack\Handlers\Commands\" />
+  </ItemGroup>
+
 </Project>
