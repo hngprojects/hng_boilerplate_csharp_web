@@ -7,6 +7,8 @@ public class User : EntityBase
     public string AvatarUrl { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
+    public string Password { get; set; }
+    public string PasswordSalt { get; set; }
 
     public Profile Profile { get; set; }
 
