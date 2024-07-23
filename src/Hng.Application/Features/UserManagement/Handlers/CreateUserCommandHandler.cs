@@ -22,6 +22,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
         {
             var user = _mapper.Map<User>(request.UserBody);
             await _userRepo.AddAsync(user);
+            await _userRepo.SaveChanges();
             return _mapper.Map<UserDto>(user);
         }
     }
