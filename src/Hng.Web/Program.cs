@@ -24,8 +24,8 @@ await app.MigrateAndSeed();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(c => c.RouteTemplate = "docs/{documentName}/swagger.json");
+    app.UseSwaggerUI(e => e.RoutePrefix = "docs");
 }
 
 app.UseGlobalErrorHandler(app.Environment);
