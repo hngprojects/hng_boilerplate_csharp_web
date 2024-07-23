@@ -22,6 +22,10 @@ public class CreateOrganizationCommandHandler :IRequestHandler<CreateOrganizatio
     public async Task<OrganizationDto> Handle(CreateOrganizationCommand request, CancellationToken cancellationToken)
     {
         var organization = _mapper.Map<Organization>(request.OrganizationBody);
+        
+        organization.CreatedAt = DateTime.UtcNow;
+        organization.UpdatedAt = DateTime.UtcNow;
+        
         await _organizationRepository.AddAsync(organization);
         await _organizationRepository.SaveChanges();
         return _mapper.Map<OrganizationDto>(organization);
