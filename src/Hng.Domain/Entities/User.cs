@@ -12,4 +12,6 @@ public class User : EntityBase
 
     public ICollection<Organization> Organizations { get; set; } = new List<Organization>();
     public ICollection<Product> Products { get; set; } = new List<Product>();
+
+    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

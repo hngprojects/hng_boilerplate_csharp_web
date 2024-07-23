@@ -5,11 +5,13 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses
     public record VerifyTransferResponse
     {
         public bool Status { get; set; }
+
         public string Message { get; set; }
-        public Data Data { get; set; }
+
+        public TransferData Data { get; set; }
     }
 
-    public record Data
+    public record TransferData
     {
         public int Integration { get; set; }
         public Recipient Recipient { get; set; }
