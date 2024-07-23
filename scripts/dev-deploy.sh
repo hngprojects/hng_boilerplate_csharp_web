@@ -8,13 +8,13 @@ git checkout dev
 git pull origin dev
 
 # install dependencies
-dotnet restore Hng.Csharp.Web.sln
+dotnet restore ./Hng.Csharp.Web.sln
 
 # build app
-dotnet build -c Debug --no-restore
+dotnet build --no-restore -c Debug
 
 # publish app
-dotnet publish -c Debug --no-build
+dotnet publish ./src/Hng.Web/Hng.Web.csproj --no-build -c Debug
 
 # restart the systemd service
 sudo systemctl restart hng-web-dev
