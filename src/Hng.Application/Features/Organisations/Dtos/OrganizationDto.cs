@@ -7,7 +7,7 @@ public class OrganizationDto
 {
     public Guid Id { get; set; }
 
-    [JsonPropertyName("id")]
+    [JsonPropertyName("name")]
     public string Name { get; set; }
 
     [JsonPropertyName("description")]
@@ -41,7 +41,7 @@ public class OrganizationDto
     public DateTime UpdatedAt { get; set; }
 
     [JsonPropertyName("owner_id")]
-    public string OwnerId { get; set; }
+    public Guid OwnerId { get; set; }
 
     [JsonPropertyName("users")]
     public ICollection<UserDto> Users { get; set; }
