@@ -22,7 +22,7 @@ namespace Hng.Application
                     {
                         jwtOptions.TokenValidationParameters = TokenService.GetTokenValidationParameters(configurations);
                     });
-                services.AddAuthorization();
+            services.AddAuthorization();
 
             return services;
         }

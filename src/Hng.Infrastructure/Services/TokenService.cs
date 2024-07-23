@@ -8,7 +8,7 @@ using Hng.Infrastructure.Services.Interfaces;
 
 namespace Hng.Infrastructure.Services
 {
-    public class TokenService(IConfiguration config):ITokenService
+    public class TokenService(IConfiguration config) : ITokenService
     {
         private readonly IConfiguration _config = config;
 
@@ -18,7 +18,7 @@ namespace Hng.Infrastructure.Services
             ValidateIssuer = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey=GetSecurityKey(_config),
+            IssuerSigningKey = GetSecurityKey(_config),
         };
 
         public string GenerateJwt(User userData)
@@ -28,9 +28,9 @@ namespace Hng.Infrastructure.Services
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             Claim[] claims = [
-                new(ClaimTypes.Sid,userData.Id.ToString()),
-                new(ClaimTypes.Email,userData.Email),
-                new(ClaimTypes.Name,userData.FirstName)
+                new(ClaimTypes.Sid, userData.Id.ToString()),
+                new(ClaimTypes.Email, userData.Email),
+                new(ClaimTypes.Name, userData.FirstName)
                 ];
 
             var expireInMinutes = Convert.ToInt32(_config["Jwt:ExpireInMinute"]);

@@ -14,8 +14,8 @@ namespace Hng.Infrastructure
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<DbContext, ApplicationDbContext>();
-            services.AddScoped<ITokenService,TokenService>();
-            services.AddScoped<IPasswordService,PasswordService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<SeederService>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
