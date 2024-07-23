@@ -26,7 +26,7 @@ public class Organization : EntityBase
 
     public DateTime UpdatedAt { get; set; }
 
-    public string OwnerId { get; set; }
+    public Guid OwnerId { get; set; }
 
     public ICollection<User> Users { get; set; } = new List<User>();
 }
