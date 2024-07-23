@@ -9,7 +9,7 @@ namespace Hng.Application.Features.Organisations.Mappers
         {
             CreateMap<Organization, OrganizationDto>()
                 .ReverseMap();
-            
+
             CreateMap<CreateOrganizationDto, Organization>();
         }
     }

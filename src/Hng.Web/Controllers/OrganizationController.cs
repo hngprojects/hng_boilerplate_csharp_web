@@ -16,7 +16,7 @@ public class OrganizationController : ControllerBase
     {
         _mediator = mediator;
     }
-    
+
     [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status201Created)]
