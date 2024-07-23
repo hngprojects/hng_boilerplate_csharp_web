@@ -3,26 +3,25 @@ using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Organisations.Handlers;
 using Hng.Application.Features.Organisations.Mappers;
-using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
 using Xunit;
 
-namespace Hng.Application.Test.Features.Organisations
+namespace Hng.Application.Test.Features.Organization
 {
-    public class CreateOrganizationCommandHandlerTests
+    public class CreateOrganizationShould
     {
         private readonly IMapper _mapper;
-        private readonly Mock<IRepository<Organization>> _repositoryMock;
+        private readonly Mock<IRepository<Domain.Entities.Organization>> _repositoryMock;
         private readonly CreateOrganizationCommandHandler _handler;
 
-        public CreateOrganizationCommandHandlerTests()
+        public CreateOrganizationShould()
         {
             var mappingProfile = new OrganizationMapperProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
             _mapper = new Mapper(configuration);
 
-            _repositoryMock = new Mock<IRepository<Organization>>();
+            _repositoryMock = new Mock<IRepository<Domain.Entities.Organization>>();
             _handler = new CreateOrganizationCommandHandler(_repositoryMock.Object, _mapper);
         }
 
@@ -42,7 +41,7 @@ namespace Hng.Application.Test.Features.Organisations
                 State = "State"
             };
 
-            var organization = new Organization
+            var organization = new Domain.Entities.Organization
             {
                 Id = expectedId,
                 Name = createDto.Name,
@@ -58,8 +57,8 @@ namespace Hng.Application.Test.Features.Organisations
                 OwnerId = Guid.NewGuid()
             };
 
-            _repositoryMock.Setup(r => r.AddAsync(It.IsAny<Organization>()))
-                .ReturnsAsync((Organization org) =>
+            _repositoryMock.Setup(r => r.AddAsync(It.IsAny<Domain.Entities.Organization>()))
+                .ReturnsAsync((Domain.Entities.Organization org) =>
                 {
                     org.Id = expectedId;
                     return org;
