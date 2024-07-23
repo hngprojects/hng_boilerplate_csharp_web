@@ -3,12 +3,14 @@ using Hng.Domain.Entities;
 
 namespace Hng.Application.Features.Organisations.Mappers
 {
-    public class OrganisationMapperProfile : AutoMapper.Profile
+    public class OrganizationMapperProfile : AutoMapper.Profile
     {
-        public OrganisationMapperProfile()
+        public OrganizationMapperProfile()
         {
             CreateMap<Organization, OrganizationDto>()
                 .ReverseMap();
+            
+            CreateMap<CreateOrganizationDto, Organization>();
         }
     }
 }
