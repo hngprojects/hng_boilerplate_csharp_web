@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Hng.Application.Features.Organisations.Handlers;
 
-public class CreateOrganizationCommandHandler :IRequestHandler<CreateOrganizationCommand, OrganizationDto>
+public class CreateOrganizationCommandHandler : IRequestHandler<CreateOrganizationCommand, OrganizationDto>
 {
     private IRepository<Organization> _organizationRepository;
     private IMapper _mapper;
@@ -22,10 +22,10 @@ public class CreateOrganizationCommandHandler :IRequestHandler<CreateOrganizatio
     public async Task<OrganizationDto> Handle(CreateOrganizationCommand request, CancellationToken cancellationToken)
     {
         var organization = _mapper.Map<Organization>(request.OrganizationBody);
-        
+
         organization.CreatedAt = DateTime.UtcNow;
         organization.UpdatedAt = DateTime.UtcNow;
-        
+
         await _organizationRepository.AddAsync(organization);
         await _organizationRepository.SaveChanges();
         return _mapper.Map<OrganizationDto>(organization);

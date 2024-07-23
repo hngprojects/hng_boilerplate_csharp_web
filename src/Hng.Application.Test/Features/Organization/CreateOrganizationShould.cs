@@ -70,7 +70,7 @@ namespace Hng.Application.Test.Features.Organisations
             var result = await _handler.Handle(command, default);
 
             Assert.NotNull(result);
-            Assert.Equal(expectedId, result.Id); 
+            Assert.Equal(expectedId, result.Id);
             Assert.Equal(createDto.Name, result.Name);
             Assert.Equal(createDto.Description, result.Description);
             Assert.Equal(createDto.Email, result.Email);

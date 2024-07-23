@@ -24,7 +24,7 @@ namespace Hng.Application.Features.Organisations.Dtos
 
         [JsonPropertyName("address")]
         public string Address { get; set; }
-        
+
         [JsonPropertyName("state")]
         public string State { get; set; }
     }
