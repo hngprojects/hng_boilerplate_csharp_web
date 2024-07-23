@@ -16,7 +16,6 @@ namespace Hng.Infrastructure.Services
             return (salt, hashedPassword);
         }
 
-
         public bool IsPasswordEqual(string plainPassword, string passwordSalt, string passwordHash)
         {
             var newHash = GeneratePasswordHash(plainPassword, passwordSalt);
