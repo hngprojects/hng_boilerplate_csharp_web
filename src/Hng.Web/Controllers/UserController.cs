@@ -39,13 +39,5 @@ namespace Hng.Web.Controllers
             return Ok(users);
         }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
-        public async Task<ActionResult<UserDto>> CreateUser([FromBody] UserCreationDto body)
-        {
-            var command = new CreateUserCommand(body);
-            var response = await _mediator.Send(command);
-            return CreatedAtAction(nameof(CreateUser), response);
-        }
     }
 }
