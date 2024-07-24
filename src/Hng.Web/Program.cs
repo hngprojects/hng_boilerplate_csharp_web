@@ -5,8 +5,6 @@ using NLog.Web;
 using Hng.Application;
 using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
-using Hng.Infrastructure.Services;
-using Microsoft.OpenApi.Models;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +17,6 @@ builder.Services.AddSwaggerDocs();
 builder.Services.AddApplicationConfig(builder.Configuration);
 builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"));
 builder.Services.Configure<JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-builder.Services.AddConfigurationSettings(builder.Configuration);
 
 builder.Services.AddSwaggerGen(c =>
 {
