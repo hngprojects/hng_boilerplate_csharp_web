@@ -33,7 +33,13 @@ namespace Hng.Application.Features.UserManagement.Handlers
             var user = await _userRepo.GetBySpec(u => u.Email == request.LoginRequestBody.Email);
             if (user == null || !_passwordService.IsPasswordEqual(request.LoginRequestBody.Password, user.PasswordSalt, user.Password))
             {
-                return null;
+                return new UserLoginResponseDto
+                {
+                    Data = null,
+                    AccessToken = null,
+                    Message = "Invalid credentials"
+                  
+                };
             }
 
             var token = _tokenService.GenerateJwt(user);
@@ -44,7 +50,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             {
                 Data = userDto,
                 AccessToken = token,
-
+                Message = "Login successful"
             };
         }
 

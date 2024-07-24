@@ -16,24 +16,27 @@ using Xunit;
 
 namespace Hng.Application.Test.Features.UserManagement
 {
-    public class LoginUserQueryShould
+    public class LoginUserCommandShould
     {
         private readonly IMapper _mapper;
+        private readonly Mock<IRepository<User>> _userRepositoryMock;
+        private readonly Mock<IPasswordService> _passwordServiceMock;
+        private readonly Mock<ITokenService> _tokenServiceMock;
+        private readonly User _user;
 
-        public LoginUserQueryShould()
+        public LoginUserCommandShould()
         {
-
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<User, UserDto>();
             });
             _mapper = config.CreateMapper();
-        }
-        [Fact]
-        public async Task ReturnLoginResponseDtoForValidCredentials()
-        {
-            // Arrange
-            var user = new User
+
+            _userRepositoryMock = new Mock<IRepository<User>>();
+            _passwordServiceMock = new Mock<IPasswordService>();
+            _tokenServiceMock = new Mock<ITokenService>();
+
+            _user = new User
             {
                 Id = Guid.NewGuid(),
                 Email = "test@example.com",
@@ -42,20 +45,22 @@ namespace Hng.Application.Test.Features.UserManagement
                 Password = "hashedpassword",
                 PasswordSalt = "salt"
             };
+        }
 
-            var userRepositoryMock = new Mock<IRepository<User>>();
-            userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
-                .ReturnsAsync(user);
+        [Fact]
+        public async Task ReturnLoginResponseDtoForValidCredentials()
+        {
+            // Arrange
+            _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+                .ReturnsAsync(_user);
 
-            var passwordServiceMock = new Mock<IPasswordService>();
-            passwordServiceMock.Setup(service => service.IsPasswordEqual("password", user.PasswordSalt, user.Password))
+            _passwordServiceMock.Setup(service => service.IsPasswordEqual("password", _user.PasswordSalt, _user.Password))
                 .Returns(true);
 
-            var tokenServiceMock = new Mock<ITokenService>();
-            tokenServiceMock.Setup(service => service.GenerateJwt(It.IsAny<User>()))
+            _tokenServiceMock.Setup(service => service.GenerateJwt(It.IsAny<User>()))
                 .Returns("token");
 
-            var handler = new LoginUserCommandHandler(userRepositoryMock.Object, _mapper, passwordServiceMock.Object, tokenServiceMock.Object);
+            var handler = new LoginUserCommandHandler(_userRepositoryMock.Object, _mapper, _passwordServiceMock.Object, _tokenServiceMock.Object);
 
             var command = new CreateUserLoginCommand(new UserLoginRequestDto
             {
@@ -68,38 +73,23 @@ namespace Hng.Application.Test.Features.UserManagement
 
             // Assert
             Assert.NotNull(result);
-            //Assert.Equal("Login successful", result.Message);
+            Assert.Equal("Login successful", result.Message);
             Assert.Equal("token", result.AccessToken);
             Assert.NotNull(result.Data);
-            Assert.Equal(user.Email, result.Data.Email);
+            Assert.Equal(_user.Email, result.Data.Email);
         }
-
 
         [Fact]
         public async Task ReturnNullForInvalidCredentials()
         {
             // Arrange
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Email = "test@example.com",
-                FirstName = "John",
-                LastName = "Doe",
-                Password = "hashedpassword",
-                PasswordSalt = "salt"
-            };
+            _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+                .ReturnsAsync(_user);
 
-            var userRepositoryMock = new Mock<IRepository<User>>();
-            userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
-                .ReturnsAsync(user);
-
-            var passwordServiceMock = new Mock<IPasswordService>();
-            passwordServiceMock.Setup(service => service.IsPasswordEqual("invalidpassword", user.PasswordSalt, user.Password))
+            _passwordServiceMock.Setup(service => service.IsPasswordEqual("invalidpassword", _user.PasswordSalt, _user.Password))
                 .Returns(false);
 
-            var tokenServiceMock = new Mock<ITokenService>();
-
-            var handler = new LoginUserCommandHandler(userRepositoryMock.Object, _mapper, passwordServiceMock.Object, tokenServiceMock.Object);
+            var handler = new LoginUserCommandHandler(_userRepositoryMock.Object, _mapper, _passwordServiceMock.Object, _tokenServiceMock.Object);
 
             var command = new CreateUserLoginCommand(new UserLoginRequestDto
             {
@@ -111,23 +101,19 @@ namespace Hng.Application.Test.Features.UserManagement
             var result = await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Null(result);
-
+            Assert.Null(result.Data);
+            Assert.Null(result.AccessToken);
+            Assert.Equal("Invalid credentials", result.Message);
         }
 
         [Fact]
         public async Task ReturnNullForNonExistentUser()
         {
             // Arrange
-            var userRepositoryMock = new Mock<IRepository<User>>();
-            userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+            _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
                 .ReturnsAsync((User)null);
 
-            var passwordServiceMock = new Mock<IPasswordService>();
-
-            var tokenServiceMock = new Mock<ITokenService>();
-
-            var handler = new LoginUserCommandHandler(userRepositoryMock.Object, _mapper, passwordServiceMock.Object, tokenServiceMock.Object);
+            var handler = new LoginUserCommandHandler(_userRepositoryMock.Object, _mapper, _passwordServiceMock.Object, _tokenServiceMock.Object);
 
             var command = new CreateUserLoginCommand(new UserLoginRequestDto
             {
@@ -139,8 +125,9 @@ namespace Hng.Application.Test.Features.UserManagement
             var result = await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Null(result);
+            Assert.Null(result.Data);
+            Assert.Null(result.AccessToken);
+            Assert.Equal("Invalid credentials", result.Message);
         }
-
     }
 }

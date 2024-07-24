@@ -58,7 +58,12 @@ namespace Hng.Web.Controllers
 
             if (response.Data == null)
             {
-                return BadRequest(response);
+                return BadRequest(new
+                {
+                    message = "Invalid credentials",
+                    error = "Invalid email or password.",
+                    status_code = StatusCodes.Status400BadRequest
+                });
             }
 
             return Ok(response);
