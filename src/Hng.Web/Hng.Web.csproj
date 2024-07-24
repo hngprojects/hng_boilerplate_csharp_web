@@ -43,8 +43,8 @@
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>
 
-  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="git config core.hooksPath .githooks" />
-  </Target>-->
+  </Target>
 
 </Project>
