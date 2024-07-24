@@ -11,8 +11,8 @@ public record OrganizationInviteDto
     [JsonPropertyName("email")]
     public string Email { get; init; }
 
-    [JsonPropertyName("organization")]
-    public string OrganizationName { get; init; }
+    [JsonPropertyName("organization_id")]
+    public string OrganizationId { get; init; }
 
     [JsonPropertyName("invite_link")]
     public string InviteLink { get; init; }

@@ -42,9 +42,10 @@ public class OrganizationController : ControllerBase
 
     public async Task<ActionResult<CreateOrganizationDto>> CreateOrganizationInvite([FromBody] CreateOrganizationInviteDto body)
     {
-        var inviterIdString = HttpContext.User.FindFirst(ClaimTypes.Sid)!.Value;
+        var inviterIdString = "ed15ceef-7da1-4956-9f3e-a447b3a309fa";
         var inviterId = Guid.Parse(inviterIdString);
         body.UserId = inviterId;
+        body.OrganizationId = "d790bca0-3e74-4921-9da5-1430e2988564";
 
         var command = new CreateOrganizationInviteCommand(body);
         var response = await _mediator.Send(command);

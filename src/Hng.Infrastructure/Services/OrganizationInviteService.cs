@@ -13,9 +13,9 @@ public class OrganizationInviteService(IRepository<Organization> Organizationrep
 
     public async Task<OrganizationInvite> CreateInvite(Guid userId, Guid orgId, string email)
     {
-        Organization org = await organizationrepository.GetAsync(orgId);
-
         if (await DoesInviteExist(email, orgId)) return null;
+
+        Organization org = await organizationrepository.GetAsync(orgId);
 
         if (org.OwnerId != userId) return null;
 
