@@ -6,12 +6,15 @@ using Hng.Application;
 using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
 using System.Reflection;
+using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLog();
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocs();
 builder.Services.AddApplicationConfig(builder.Configuration);
