@@ -18,7 +18,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
         private readonly ITokenService _tokenService;
 
 
-        public UserSignUpCommandHandler(IRepository<User> userRepository, IMapper mapper,ILogger<UserSignUpCommandHandler> logger, IPasswordService passwordService, ITokenService tokenService)
+        public UserSignUpCommandHandler(IRepository<User> userRepository, IMapper mapper, ILogger<UserSignUpCommandHandler> logger, IPasswordService passwordService, ITokenService tokenService)
         {
             _userRepository = userRepository;
             _mapper = mapper;

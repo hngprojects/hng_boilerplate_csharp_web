@@ -13,7 +13,7 @@ namespace Hng.Application.Features.UserManagement.Mappers
                 .ReverseMap();
 
             CreateMap<UserSignUpDto, User>()
-                .ReverseMap(); 
+                .ReverseMap();
 
             CreateMap<User, UserResponseDto>()
                 .ReverseMap();
