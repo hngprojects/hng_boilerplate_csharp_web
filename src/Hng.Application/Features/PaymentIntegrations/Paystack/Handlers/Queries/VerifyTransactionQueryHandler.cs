@@ -1,9 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
-using Hng.Domain.Entities;
 using Hng.Domain.Enums;
-using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Utilities.StringKeys;
 using MediatR;
 
