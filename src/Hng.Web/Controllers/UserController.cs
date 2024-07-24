@@ -2,10 +2,12 @@ using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.UserManagement.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/users")]
     public class UserController : ControllerBase
