@@ -16,9 +16,8 @@ namespace Hng.Web.Controllers
         }
 
         [HttpPost("initialize")]
-       // [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-       // [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> InitializeTransaction([FromBody] InitializeTransactionCommand command)
+        public async Task<IActionResult>  
+                    InitializeTransaction([FromBody] InitializeTransactionCommand command)
         {
             var result = await _mediator.Send(command);
 
