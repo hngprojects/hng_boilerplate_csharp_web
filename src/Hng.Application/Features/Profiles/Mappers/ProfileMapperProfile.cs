@@ -1,3 +1,4 @@
+using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
 using Hng.Application.Features.Profiles.Dtos;
 using Hng.Domain.Entities;
 
@@ -13,6 +14,10 @@ namespace Hng.Application.Features.Profiles.Mappers
                 .ForMember(dest => dest.phone_number, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ForMember(dest => dest.avatar_url, opt => opt.MapFrom(src => src.AvatarUrl))
                 .ReverseMap();
+
+            CreateMap<Transaction, InitializeTransactionCommand>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+            .ReverseMap();
         }
     }
 }

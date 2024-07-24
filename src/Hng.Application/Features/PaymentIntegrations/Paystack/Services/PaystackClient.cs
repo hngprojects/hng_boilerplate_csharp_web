@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
 {
-    public class PaystackClient
+    public class PaystackClient : IPaystackClient
     {
         private const string Authorization = nameof(Authorization);
         private const string Bearer = nameof(Bearer);
@@ -21,11 +21,10 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
             PropertyNamingPolicy = new LowerCaseNamingPolicy()
         };
 
-        private static class Endpoints
+        public static class Endpoints
         {
             public static string VerifyTransfer => "transfer/verify/{0}";
-
-            public static string VerifyTransaction => "transaction/verify/{0}";
+            public static string TransactionInitialize => "transaction/initialize";
         }
 
         public PaystackClient(HttpClient client)
@@ -36,10 +35,10 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
         public async Task<Result<VerifyTransferResponse>> VerifyTransfer(VerifyTransactionRequest request)
             => await FetchFromPaystack<VerifyTransferResponse, VerifyTransactionRequest>(request, Endpoints.VerifyTransfer);
 
-        public async Task<Result<VerifyTransactionResponse>> VerifyTransaction(VerifyTransactionRequest request)
-            => await FetchFromPaystack<VerifyTransactionResponse, VerifyTransactionRequest>(request, Endpoints.VerifyTransaction);
+        public async Task<Result<InitializeTransactionResponse>> InitializeTransaction(InitializeTransactionRequest request)
+    => await SendToPaystack<InitializeTransactionResponse, InitializeTransactionRequest>(request, Endpoints.TransactionInitialize);
 
-        private async Task<Result<U>> SendToPaystack<U, T>(T request, string endpoint) where T : PaymentRequestBase
+        private async Task<Result<TResponse>> SendToPaystack<TResponse, TRequest>(TRequest request, string endpoint) where TRequest : PaymentRequestBase
         {
             ArgumentNullException.ThrowIfNull(request.BusinessAuthorizationToken);
             var authorizedClient = SetAuthToken(_client, request.BusinessAuthorizationToken);
@@ -49,21 +48,24 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
                 var body = new StringContent(serializedRequest, Encoding.UTF8, MediaType);
                 var httpResponse = await authorizedClient.PostAsync(endpoint, body);
 
-                if (!httpResponse.IsSuccessStatusCode)
-                    return Result.Failure<U>(await httpResponse.Content.ReadAsStringAsync());
 
+                if (!httpResponse.IsSuccessStatusCode)
+                    return Result.Failure<TResponse>(await httpResponse.Content.ReadAsStringAsync());
+
+    //            var response2 =
+    //System.Text.Json.JsonSerializer.Deserialize< Dictionary < String, dynamic>> (await httpResponse.Content.ReadAsStringAsync());
+                
                 var response =
-                    JsonConvert.DeserializeObject<U>(await httpResponse.Content.ReadAsStringAsync());
+                    JsonConvert.DeserializeObject<TResponse>(await httpResponse.Content.ReadAsStringAsync());
                 return Result.Success(response);
             }
             catch (Exception ex)
             {
-                return Result.Failure<U>(ex.Message);
+                return Result.Failure<TResponse>(ex.Message);
             }
         }
 
-        private async Task<Result<U>> FetchFromPaystack<U, T>(T requestParam, string endpoint)
-            where T : PaymentQueryBase<string>
+        private async Task<Result<U>> FetchFromPaystack<U, T>(T requestParam, string endpoint) where T : PaymentQueryBase<string>
         {
             var authorizedClient = SetAuthToken(_client, requestParam.BusinessAuthorizationToken);
             try
@@ -86,8 +88,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
         private static HttpClient SetAuthToken(HttpClient client, string businessAuthorizationToken)
         {
             client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add(Authorization,
-                string.Format("{0} {1}", Bearer, businessAuthorizationToken));
+            client.DefaultRequestHeaders.Add(Authorization, $"{Bearer} {businessAuthorizationToken}");
             return client;
         }
     }

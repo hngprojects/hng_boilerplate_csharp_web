@@ -6,6 +6,7 @@ using Hng.Application;
 using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
 using Hng.Infrastructure.Services;
+using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.Configure<JsonOptions>(options => options.SerializerOptions.Ref
 builder.Services.AddConfigurationSettings(builder.Configuration);
 
 var app = builder.Build();
+
+
 
 await app.MigrateAndSeed();
 

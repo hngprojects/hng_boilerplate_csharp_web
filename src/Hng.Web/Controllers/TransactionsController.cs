@@ -15,6 +15,20 @@ namespace Hng.Web.Controllers
             _mediator = mediator;
         }
 
+        [HttpPost("initialize")]
+       // [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+       // [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> InitializeTransaction([FromBody] InitializeTransactionCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+        }
+
+
         [HttpGet("{reference}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
