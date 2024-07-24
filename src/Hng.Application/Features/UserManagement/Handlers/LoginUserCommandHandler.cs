@@ -36,7 +36,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 return new UserLoginResponseDto
                 {
                     Data = null,
-                    access_token = null,
+                    AccessToken = null,
                     Message = "Invalid credentials"
 
                 };
@@ -49,7 +49,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             return new UserLoginResponseDto
             {
                 Data = userDto,
-                access_token = token,
+                AccessToken = token,
                 Message = "Login successful"
             };
         }

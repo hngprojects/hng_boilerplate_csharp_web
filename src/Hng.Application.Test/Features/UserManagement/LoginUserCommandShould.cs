@@ -74,7 +74,7 @@ namespace Hng.Application.Test.Features.UserManagement
             // Assert
             Assert.NotNull(result);
             Assert.Equal("Login successful", result.Message);
-            Assert.Equal("token", result.access_token);
+            Assert.Equal("token", result.AccessToken);
             Assert.NotNull(result.Data);
             Assert.Equal(_user.Email, result.Data.Email);
         }
@@ -102,7 +102,7 @@ namespace Hng.Application.Test.Features.UserManagement
 
             // Assert
             Assert.Null(result.Data);
-            Assert.Null(result.access_token);
+            Assert.Null(result.AccessToken);
             Assert.Equal("Invalid credentials", result.Message);
         }
 
@@ -126,7 +126,7 @@ namespace Hng.Application.Test.Features.UserManagement
 
             // Assert
             Assert.Null(result.Data);
-            Assert.Null(result.access_token);
+            Assert.Null(result.AccessToken);
             Assert.Equal("Invalid credentials", result.Message);
         }
     }
