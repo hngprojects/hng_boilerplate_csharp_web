@@ -16,11 +16,11 @@ namespace Hng.Web.Controllers
         }
 
         [HttpPost("initialize")]
-        public async Task<IActionResult>InitializeTransaction([FromBody]InitializeTransactionCommand command)
+        public async Task<IActionResult> InitializeTransaction([FromBody] InitializeTransactionCommand command)
         {
             var result = await _mediator.Send(command);
 
-        if (result.IsSuccess)
+            if (result.IsSuccess)
                 return Ok(result.Value);
 
             return BadRequest(result.Error);

@@ -50,7 +50,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
 
                 if (!httpResponse.IsSuccessStatusCode)
                     return Result.Failure<TResponse>(await httpResponse.Content.ReadAsStringAsync());
-                
+
                 var response = JsonConvert.DeserializeObject<TResponse>(await httpResponse.Content.ReadAsStringAsync());
                 return Result.Success(response);
             }
