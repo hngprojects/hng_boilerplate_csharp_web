@@ -16,8 +16,7 @@ namespace Hng.Web.Controllers
         }
 
         [HttpPost("initialize")]
-        public async Task<IActionResult>  
-                    InitializeTransaction([FromBody] InitializeTransactionCommand command)
+        public async Task<IActionResult> InitializeTransaction([FromBody] InitializeTransactionCommand command)
         {
             var result = await _mediator.Send(command);
 
@@ -26,7 +25,6 @@ namespace Hng.Web.Controllers
 
             return BadRequest(result.Error);
         }
-
 
         [HttpGet("{reference}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]

@@ -48,15 +48,10 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
                 var body = new StringContent(serializedRequest, Encoding.UTF8, MediaType);
                 var httpResponse = await authorizedClient.PostAsync(endpoint, body);
 
-
                 if (!httpResponse.IsSuccessStatusCode)
                     return Result.Failure<TResponse>(await httpResponse.Content.ReadAsStringAsync());
-
-    //            var response2 =
-    //System.Text.Json.JsonSerializer.Deserialize< Dictionary < String, dynamic>> (await httpResponse.Content.ReadAsStringAsync());
                 
-                var response =
-                    JsonConvert.DeserializeObject<TResponse>(await httpResponse.Content.ReadAsStringAsync());
+                var response = JsonConvert.DeserializeObject<TResponse>(await httpResponse.Content.ReadAsStringAsync());
                 return Result.Success(response);
             }
             catch (Exception ex)
