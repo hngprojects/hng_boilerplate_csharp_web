@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
 using Hng.Domain.Entities;
@@ -12,20 +11,14 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Queries
 {
     public class VerifyTransactionQueryHandler : IRequestHandler<VerifyTransactionQuery, Result<string>>
     {
-        private readonly IRepository<Transaction> _paymentRepo;
         private readonly PaystackClient _paystackClient;
-        private readonly IMapper _mapper;
         private readonly PaystackApiKeys _apiKey;
 
         public VerifyTransactionQueryHandler(
-            IRepository<Transaction> paymentRepo,
             PaystackClient paystackClient,
-            IMapper mapper,
             PaystackApiKeys apiKey)
         {
-            _paymentRepo = paymentRepo;
             _paystackClient = paystackClient;
-            _mapper = mapper;
             _apiKey = apiKey;
         }
 
@@ -45,7 +38,6 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Queries
             }
 
             return Result.Failure<string>("Verification Failed");
-
         }
     }
 }

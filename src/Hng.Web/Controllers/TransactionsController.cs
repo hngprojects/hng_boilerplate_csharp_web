@@ -1,6 +1,9 @@
 ﻿using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
+using Hng.Infrastructure.Utilities.StringKeys;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Hng.Web.Controllers
 {
@@ -15,7 +18,12 @@ namespace Hng.Web.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{reference}")]
+        /// <summary>
+        /// Used to Verify Transaction from Paystack
+        /// </summary>
+        /// <param name="reference"></param>
+        /// <returns></returns>
+        [HttpGet("verify/{reference}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> VerifyTransaction(string reference)
@@ -26,6 +34,23 @@ namespace Hng.Web.Controllers
                 return BadRequest(response.Error);
 
             return Ok(response);
+        }
+
+        /// <summary>
+        /// Used to listen to Paystack webhook event
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("paymentconfirmation")]
+        public async Task<IActionResult> GetTransferStatsusForRecipients([FromBody] dynamic content)
+        {
+            var data = JsonConvert.DeserializeObject<TransactionSuccessfulCommand>(content.ToString());
+
+            if (data.Event == PaystackEventKeys.charge_success)
+                await _mediator.Send(data);
+
+            return Ok(new { Status = true, Message = "success" });
         }
     }
 }

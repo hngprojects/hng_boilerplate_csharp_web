@@ -23,6 +23,8 @@ namespace Hng.Domain.Entities
         public string Reference { get; set; }
 
         public DateTime CreatedAt { get; set; }
+        
+        public string PaidAt { get; set; }
 
         public DateTime? ModifiedAt { get; set; }
     }
