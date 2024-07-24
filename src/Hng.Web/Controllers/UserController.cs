@@ -1,4 +1,3 @@
-using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.UserManagement.Queries;
 using MediatR;
@@ -10,21 +9,14 @@ namespace Hng.Web.Controllers
     [Authorize]
     [ApiController]
     [Route("api/v1/users")]
-    public class UserController : ControllerBase
+    public class UserController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public UserController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<UserDto>> GetUserById(Guid id)
         {
             var query = new GetUserByIdQuery(id);
-            var response = await _mediator.Send(query);
+            var response = await mediator.Send(query);
             return response is null ? NotFound(new
             {
                 message = "User not found",
@@ -37,7 +29,7 @@ namespace Hng.Web.Controllers
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-            var users = await _mediator.Send(new GetUsersQuery());
+            var users = await mediator.Send(new GetUsersQuery());
             return Ok(users);
         }
 
