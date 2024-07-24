@@ -16,7 +16,11 @@ namespace Hng.Application.Features.Products.Commands
         }
 
         public ProductCreationDto productBody { get; }
+
+        internal class ProductBody : ProductCreationDto
+        {
+        }
     }
-   
+    
     
 }

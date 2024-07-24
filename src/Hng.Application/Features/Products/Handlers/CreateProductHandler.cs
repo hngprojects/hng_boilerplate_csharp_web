@@ -17,13 +17,13 @@ namespace Hng.Application.Features.Products.Handlers
         private IRepository<Product> _productRepo;
         private IMapper _mapper;
 
-        public CreateProductHandler(IRepository<Product> productreposiotry, IMapper mapper)
+        public CreateProductHandler(IRepository<Product> productReposiotry, IMapper mapper)
         {
-            _productRepo = productreposiotry;
+            _productRepo = productReposiotry;
             _mapper = mapper;
         }
 
-        public async Task<ProductDto> Handle(CreateProductCommand    request, CancellationToken cancellationToken)
+        public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             var product = _mapper.Map<Product>(request.productBody);
             await _productRepo.AddAsync(product);
