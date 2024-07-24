@@ -30,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+	<Folder Include="Features\UserManagement\Commands\" />
+	<Folder Include="Features\Products\Handlers\" />
+	<Folder Include="Features\Products\Commands\" />
     <Folder Include="Features\Products\Queries\" />
   </ItemGroup>
 
