@@ -101,5 +101,10 @@ namespace Hng.Infrastructure.Repository
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
     }
 }

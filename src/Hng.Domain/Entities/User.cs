@@ -19,6 +19,9 @@ public class User : EntityBase
     public string PhoneNumber { get; set; }
     public string Password { get; set; }
     public string PasswordSalt { get; set; }
+    public string PasswordHash { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
     public Profile Profile { get; set; }
 

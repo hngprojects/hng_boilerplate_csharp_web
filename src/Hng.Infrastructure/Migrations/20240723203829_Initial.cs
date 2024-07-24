@@ -45,7 +45,10 @@ namespace Hng.Infrastructure.Migrations
                     Email = table.Column<string>(type: "text", nullable: true),
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
                     Password = table.Column<string>(type: "text", nullable: true),
-                    PasswordSalt = table.Column<string>(type: "text", nullable: true)
+                    PasswordSalt = table.Column<string>(type: "text", nullable: true),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "text", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

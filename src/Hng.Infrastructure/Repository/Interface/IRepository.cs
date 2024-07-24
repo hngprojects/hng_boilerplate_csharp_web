@@ -18,5 +18,6 @@ namespace Hng.Infrastructure.Repository.Interface
         Task<int> CountAsync();
         Task<int> CountAsync(Expression<Func<T, bool>> predicate);
         Task SaveChanges();
+        Task<bool> EmailExistsAsync(string email);
     }
 }
