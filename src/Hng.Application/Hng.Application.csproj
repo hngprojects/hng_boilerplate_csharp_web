@@ -11,6 +11,8 @@
     <Compile Remove="Models\**" />
     <EmbeddedResource Remove="Models\**" />
     <None Remove="Models\**" />
+    <Compile Remove="Features\UserManagement\Commands\CreateUserCommand.cs" />
+    <Compile Remove="Features\UserManagement\Dtos\UserCreationDto.cs" />
   </ItemGroup>
 
   <ItemGroup>
