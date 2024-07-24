@@ -1,5 +1,9 @@
-﻿using Hng.Application.Features.Organisations.Commands;
+﻿using System.Security.Claims;
+using Hng.Application.Features.OrganisationInvite.Commands;
+using Hng.Application.Features.OrganisationInvite.Dtos;
+using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
+using Hng.Web.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,5 +34,26 @@ public class OrganizationController : ControllerBase
         var command = new CreateOrganizationCommand(body);
         var response = await _mediator.Send(command);
         return CreatedAtAction(nameof(CreateOrganization), response);
+    }
+
+    // [Authorize]
+    [HttpPost("invite")]
+    [ProducesResponseType(typeof(CreateOrganizationDto), StatusCodes.Status201Created)]
+
+    public async Task<ActionResult<CreateOrganizationDto>> CreateOrganizationInvite([FromBody] CreateOrganizationInviteDto body)
+    {
+        var inviterIdString = HttpContext.User.FindFirst(ClaimTypes.Sid)!.Value;
+        var inviterId = Guid.Parse(inviterIdString);
+        body.UserId = inviterId;
+
+        var command = new CreateOrganizationInviteCommand(body);
+        var response = await _mediator.Send(command);
+        
+        if (response == null)
+        {
+            return UnprocessableEntity();
+        }
+
+        return this.CreatedResult("Invitation created successfully", new { invitation = response });
     }
 }
