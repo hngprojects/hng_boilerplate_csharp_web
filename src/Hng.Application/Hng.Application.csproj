@@ -15,13 +15,17 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="MediatR" Version="12.3.0" />
+    <PackageReference Include="MediatR" Version="12.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\UserManagement\Commands\" />
   </ItemGroup>
 
   <ItemGroup>
