@@ -135,8 +135,8 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("PaidAt")
-                        .HasColumnType("text");
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Partners")
                         .HasColumnType("integer");

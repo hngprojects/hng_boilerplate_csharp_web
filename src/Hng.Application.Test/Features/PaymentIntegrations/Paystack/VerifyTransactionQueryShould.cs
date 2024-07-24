@@ -41,26 +41,5 @@ namespace Hng.Application.Test.Features.PaymentIntegrations.Paystack
             Assert.NotNull(result.Error);
             Assert.Equal(result.Error, "Reference cannot be null!");
         }
-
-        //[Fact]
-        //public async Task Handle_ShouldReturnSuccessOnValidReference()
-        //{
-        //    var request = new VerifyTransactionQuery("frsgtgfrg");
-        //    var verifyRequest = new VerifyTransactionRequest(request.Reference) { BusinessAuthorizationToken = "gfrtshdjuenmmndda" };
-        //    var response = new VerifyTransactionResponse() { status = true, message = "success", 
-        //    data = new Application.Features.PaymentIntegrations.Paystack.Dtos.Responses.Data() 
-        //    { 
-        //        status = PaystackResponseStatus.success.ToString()
-        //    }};
-
-        //    _repositoryMock.Setup(r => r.VerifyTransaction(verifyRequest))
-        //        .ReturnsAsync(Result.Success(response));
-
-        //    var result = await _handler.Handle(request, default);
-
-        //    Assert.True(result.IsSuccess);
-        //    Assert.NotNull(result.Value);
-        //    Assert.Equal(result.Value, "Success");
-        //}
     }
 }

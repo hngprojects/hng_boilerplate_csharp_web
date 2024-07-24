@@ -23,7 +23,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
                 return Result.Failure<string>("Transaction not found");
 
             transaction.Status = Domain.Enums.TransactionStatus.Completed;
-            transaction.PaidAt = request.Data?.PaidAt;
+            transaction.PaidAt = Convert.ToDateTime(request.Data?.PaidAt);
             transaction.ModifiedAt = DateTime.UtcNow;
 
             await _paymentRepo.SaveChanges();

@@ -42,7 +42,7 @@ namespace Hng.Web.Controllers
         /// <param name="content"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost("paymentconfirmation")]
+        [HttpPost("callback")]
         public async Task<IActionResult> GetTransferStatsusForRecipients([FromBody] dynamic content)
         {
             var data = JsonConvert.DeserializeObject<TransactionSuccessfulCommand>(content.ToString());

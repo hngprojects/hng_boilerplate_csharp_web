@@ -24,7 +24,7 @@ namespace Hng.Domain.Entities
 
         public DateTime CreatedAt { get; set; }
         
-        public string PaidAt { get; set; }
+        public DateTime? PaidAt { get; set; }
 
         public DateTime? ModifiedAt { get; set; }
     }
