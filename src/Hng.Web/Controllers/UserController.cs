@@ -1,41 +1,37 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Hng.Application.Interfaces;
-using Hng.Infrastructure.Repository.Interface;
+using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Application.Features.UserManagement.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/users")]
-    public class UserController(IUserService userService) : ControllerBase
+    public class UserController(IMediator mediator) : ControllerBase
     {
-        private readonly IUserService userService = userService;
-        
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(Guid id)
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserDto>> GetUserById(Guid id)
         {
-            var dataFromRepo = await userService.GetUserByIdAsync(id);
-            if (dataFromRepo == null)
+            var query = new GetUserByIdQuery(id);
+            var response = await mediator.Send(query);
+            return response is null ? NotFound(new
             {
-                return NotFound(new
-                {
-                    message = "User not found",
-                    is_successful = false,
-                    status_code = 404
-                });
-            }
-
-            return Ok(dataFromRepo);
+                message = "User not found",
+                is_successful = false,
+                status_code = 404
+            }) : Ok(response);
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> GetUsers()
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-            var users = await userService.GetAllUsersAsync();
+            var users = await mediator.Send(new GetUsersQuery());
             return Ok(users);
         }
+
     }
 }

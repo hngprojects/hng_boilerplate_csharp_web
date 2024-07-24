@@ -1,0 +1,19 @@
+name: Close Stale PRs
+
+on:
+  schedule:
+  - cron: '37 7 * * *'
+
+jobs:
+  manage_stale:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+    - uses: actions/stale@v5
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        stale-pr-message: 'This pull request has been marked as stale due to inactivity.'
+        stale-pr-label: 'no-pr-activity'

@@ -1,0 +1,33 @@
+name: CI Build, Lint, and Test
+
+on:
+  pull_request
+
+jobs:
+  build_lint_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install dependencies
+      run: |
+        dotnet restore ./Hng.Csharp.Web.sln
+
+    - name: Check Code Formatting
+      run: |
+        dotnet format ./Hng.Csharp.Web.sln --verify-no-changes --no-restore
+
+    - name: Build Application
+      run: |
+        dotnet build --configuration Release --no-restore
+
+    - name: Run Unit Tests
+      run: |
+        dotnet test ./src/Hng.Application.Test/Hng.Application.Test.csproj --configuration Release --no-build --verbosity normal
