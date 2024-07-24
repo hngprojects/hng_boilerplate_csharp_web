@@ -7,9 +7,7 @@ namespace Hng.Application.Features.Products.Mappers
     {
         public CategoryMapperProfile()
         {
-            CreateMap<Category, CategoryDto>()
-                .ForMember(dest => dest.Parent_id, opt => opt.MapFrom(src => src.ParentId))
-                .ReverseMap();
+            CreateMap<Category, CategoryDto>().ReverseMap();
         }
     }
 }

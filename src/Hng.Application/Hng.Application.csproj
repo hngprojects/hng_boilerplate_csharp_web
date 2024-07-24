@@ -28,8 +28,6 @@
 
   <ItemGroup>
     <Folder Include="Features\UserManagement\Commands\" />
-	<Folder Include="Features\Products\Commands\" />
-    <Folder Include="Features\Products\Commands\" />
   </ItemGroup>
 
 </Project>

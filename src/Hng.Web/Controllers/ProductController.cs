@@ -1,7 +1,6 @@
-﻿using Hng.Application.Features.Products.Dtos;
-using Hng.Application.Features.Products.Enums;
+﻿using Hng.Application.Features.Products.Commands;
+using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Queries;
-using Hng.Application.Features.UserManagement.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,17 +22,13 @@ namespace Hng.Web.Controllers
         /// Product Deletion - deletes a product owned by a specific user
         /// </summary>
         [HttpDelete("{id}")]
-        [Authorize]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<UserDto>> DeleteProductById(Guid id)
+        public async Task<ActionResult> DeleteProductById(Guid id)
         {
-            var query = new DeleteProductByIdQuery(id);
-            var response = await _mediator.Send(query);
-            return response is ProductQueryStatusEnum.NotFound ? NotFound(new
-            {
-                message = "Product not found",
-                status_code = 404
-            }) : NoContent();
+            var command = new DeleteProductByIdCommand(id);
+            await _mediator.Send(command);
+            return NoContent();
         }
 
         /// <summary>
