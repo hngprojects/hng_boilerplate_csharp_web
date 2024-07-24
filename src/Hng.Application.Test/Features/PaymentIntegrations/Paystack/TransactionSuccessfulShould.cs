@@ -33,19 +33,18 @@ namespace Hng.Application.Test.Features.PaymentIntegrations.Paystack
 
             Assert.True(result.IsSuccess);
             Assert.NotNull(result.Value);
-            Assert.Equal(result.Value, "success");
+            Assert.Equal("success", result.Value);
         }
 
         [Fact]
         public async Task Handle_ShouldReturnFailureOnWrongReferenceEvent()
         {
             var request = new TransactionSuccessfulCommand() { Event = PaystackEventKeys.charge_success };
-           
             var result = await _handler.Handle(request, default);
 
             Assert.True(result.IsFailure);
             Assert.NotNull(result.Error);
-            Assert.Equal(result.Error, "Transaction not found");
+            Assert.Equal("Transaction not found", result.Error);
         }
     }
 }

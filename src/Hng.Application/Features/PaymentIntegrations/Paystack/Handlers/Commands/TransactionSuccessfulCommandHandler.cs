@@ -19,7 +19,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
         {
             var transaction = await _paymentRepo.GetBySpec(r => r.Reference == request.Data.Reference);
 
-            if (transaction == null) 
+            if (transaction == null)
                 return Result.Failure<string>("Transaction not found");
 
             transaction.Status = Domain.Enums.TransactionStatus.Completed;

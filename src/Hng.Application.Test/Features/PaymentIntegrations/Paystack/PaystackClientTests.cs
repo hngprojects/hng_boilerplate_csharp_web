@@ -9,7 +9,6 @@ namespace Hng.Application.Test.Features.PaymentIntegrations.Paystack
 {
     public class PaystackClientTests
     {
-       
         [Fact]
         public async Task VerifyTransactionRecipientResponse_Handles_SuccessResponse_AsExpected()
         {
