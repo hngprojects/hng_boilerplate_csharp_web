@@ -10,6 +10,6 @@ namespace Hng.Application.Features.UserManagement.Dtos
     {
         public string Message { get; set; }
         public UserDto Data { get; set; }
-        public string AccessToken { get; set; }
+        public string access_token { get; set; }
     }
 }
