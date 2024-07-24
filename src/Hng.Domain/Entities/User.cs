@@ -6,14 +6,14 @@ public class User : EntityBase
 {
     [Required]
     public string FirstName { get; set; }
-    
+
     [Required]
     public string LastName { get; set; }
     public string AvatarUrl { get; set; }
-    
+
     [EmailAddress]
     public string Email { get; set; }
-    
+
     [Phone(ErrorMessage = "Please enter a valid phone number.")]
     [Required]
     public string PhoneNumber { get; set; }
