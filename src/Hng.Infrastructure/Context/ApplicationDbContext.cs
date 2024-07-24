@@ -12,6 +12,7 @@ namespace Hng.Infrastructure.Context
             modelBuilder.Entity<Product>()
                 .Property(p => p.Id)
                 .ValueGeneratedOnAdd();
+
         }   
 
         public DbSet<User> Users { get; set; }
