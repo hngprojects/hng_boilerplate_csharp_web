@@ -26,4 +26,14 @@
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>
 
+<<<<<<< HEAD
+=======
+  <ItemGroup>
+    <Folder Include="Features\UserManagement\Commands\" />
+	<Folder Include="Features\Products\Handlers\" />
+	<Folder Include="Features\Products\Commands\" />
+    <Folder Include="Features\Products\Queries\" />
+  </ItemGroup>
+
+>>>>>>> f978e74044223b3e954b39530a4695e5c02ff1f2
 </Project>

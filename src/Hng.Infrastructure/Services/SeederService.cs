@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using Hng.Infrastructure.Context;
-using Microsoft.Extensions.Logging;
-using Hng.Domain.Entities;
 using Bogus;
+using Hng.Domain.Entities;
+using Hng.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Hng.Infrastructure.Services;
 public class SeederService
@@ -181,8 +181,13 @@ public class SeederService
     private Product CreateProduct(string userKey)
     {
         var product = new Faker<Product>()
+       .RuleFor(p => p.Id, Guid.NewGuid())
        .RuleFor(p => p.Name, f => f.Commerce.ProductName())
+       .RuleFor(p => p.Price, f => f.Finance.Amount())
+       .RuleFor(p => p.Category, f => f.Commerce.Categories(1).First())
        .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
+       .RuleFor(p => p.CreatedAt, f => f.Date.Recent())
+       .RuleFor(p => p.UpdatedAt, f => f.Date.Recent())
        .RuleFor(p => p.UserId, _entityIds[userKey]).Generate();
         return product;
     }
