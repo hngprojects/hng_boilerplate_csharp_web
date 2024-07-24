@@ -183,7 +183,7 @@ public class SeederService
         var product = new Faker<Product>()
        .RuleFor(p => p.Name, f => f.Commerce.ProductName())
        .RuleFor(p => p.Price, f => f.Finance.Amount())
-       .RuleFor(p => p.Category, f => f.Commerce.Categories(1))
+       .RuleFor(p => p.Category, f => f.Commerce.ProductDescription())
        .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
        .RuleFor(p => p.CreatedAt, f => f.Date.Recent())
        .RuleFor(p => p.UpdatedAt, f => f.Date.Recent())
