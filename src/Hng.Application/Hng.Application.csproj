@@ -26,11 +26,8 @@
 
   <ItemGroup>
     <Folder Include="Features\UserManagement\Commands\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Products\Handlers\" />
-    <Folder Include="Features\Products\Commands\" />
+	<Folder Include="Features\Products\Handlers\" />
+	<Folder Include="Features\Products\Commands\" />
     <Folder Include="Features\Products\Queries\" />
   </ItemGroup>
 
