@@ -23,6 +23,7 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <param name="reference"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("verify/{reference}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
