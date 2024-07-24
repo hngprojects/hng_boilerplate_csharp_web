@@ -7,6 +7,7 @@ using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
 using Hng.Infrastructure.Services;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,13 @@ builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionStri
 builder.Services.Configure<JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddConfigurationSettings(builder.Configuration);
 
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
+
 var app = builder.Build();
 
 await app.MigrateAndSeed();
@@ -27,7 +35,10 @@ await app.MigrateAndSeed();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger(c => c.RouteTemplate = "docs/{documentName}/swagger.json");
-    app.UseSwaggerUI(e => e.RoutePrefix = "docs");
+    app.UseSwaggerUI(c =>
+    {
+        c.RoutePrefix = "docs";
+    });
 }
 
 app.UseGlobalErrorHandler(app.Environment);
