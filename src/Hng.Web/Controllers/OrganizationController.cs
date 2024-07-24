@@ -17,6 +17,11 @@ public class OrganizationController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary>
+    /// Creates an Organization
+    /// </summary>
+    /// <param name="body"></param>
+    /// <returns></returns>
     [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status201Created)]
