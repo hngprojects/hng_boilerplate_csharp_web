@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.Json;
 using System.Reflection;
 using Hng.Infrastructure.Services.Interfaces;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLog();

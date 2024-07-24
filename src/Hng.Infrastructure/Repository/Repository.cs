@@ -15,7 +15,6 @@ namespace Hng.Infrastructure.Repository
             _context = context;
         }
 
-
         public async Task<T> AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
@@ -63,6 +62,7 @@ namespace Hng.Infrastructure.Repository
         {
             return await _context.Set<T>().FindAsync(id);
         }
+
 
         public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties)
         {
