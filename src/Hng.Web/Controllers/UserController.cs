@@ -47,5 +47,21 @@ namespace Hng.Web.Controllers
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(CreateUser), response);
         }
+
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(UserLoginResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserLoginResponseDto), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserLoginResponseDto>> Login([FromBody] UserLoginRequestDto loginRequest)
+        {
+            var command = new CreateUserLoginCommand(loginRequest);
+            var response = await _mediator.Send(command);
+
+            if (response.Data == null)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
     }
 }
