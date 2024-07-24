@@ -9,7 +9,6 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
     public class TransactionSuccessfulCommandHandler : IRequestHandler<TransactionSuccessfulCommand, Result<string>>
     {
         private readonly IRepository<Transaction> _paymentRepo;
-        
         public TransactionSuccessfulCommandHandler(IRepository<Transaction> paymentRepo)
         {
             _paymentRepo = paymentRepo;
