@@ -28,10 +28,9 @@ namespace Hng.Application.Features.UserManagement.Handlers
             _tokenService = tokenService;
         }
 
-        public  async Task<UserLoginResponseDto> Handle(CreateUserLoginCommand request, CancellationToken cancellationToken)
+        public async Task<UserLoginResponseDto> Handle(CreateUserLoginCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepo.GetBySpec(u => u.Email == request.LoginRequestBody.Email);
-
             if (user == null || !_passwordService.IsPasswordEqual(request.LoginRequestBody.Password, user.PasswordSalt, user.Password))
             {
                 return null;
@@ -45,7 +44,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             {
                 Data = userDto,
                 AccessToken = token,
-               
+
             };
         }
 

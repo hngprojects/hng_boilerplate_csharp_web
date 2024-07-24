@@ -112,7 +112,7 @@ namespace Hng.Application.Test.Features.UserManagement
 
             // Assert
             Assert.Null(result);
-           
+
         }
 
         [Fact]
