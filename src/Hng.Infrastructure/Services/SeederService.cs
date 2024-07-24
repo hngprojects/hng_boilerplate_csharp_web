@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using Hng.Infrastructure.Context;
-using Microsoft.Extensions.Logging;
-using Hng.Domain.Entities;
 using Bogus;
+using Hng.Domain.Entities;
+using Hng.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Hng.Infrastructure.Services;
 public class SeederService
@@ -144,6 +144,34 @@ public class SeederService
 
     }
 
+    public async Task SeedCategory()
+    {
+        if (await _dataContext.Categories.AnyAsync()) return;
+
+        _logger.LogDebug("Inserting seed categories");
+
+        try
+        {
+
+            List<Category> categories =
+            [
+                CreateCategory(),
+                CreateCategory(),
+                CreateCategory()
+            ];
+
+            Console.WriteLine("Category list created");
+            await _dataContext.AddRangeAsync(categories);
+            await _dataContext.SaveChangesAsync();
+
+            _logger.LogDebug("Seed categories inserted");
+        }
+
+        catch (Exception ex)
+        {
+            _logger.LogError("Error inserting seed categories, {ex}", ex);
+        }
+    }
 
     private User CreateUser(string userKey)
     {
@@ -181,7 +209,10 @@ public class SeederService
     private Product CreateProduct(string userKey)
     {
         var product = new Faker<Product>()
+       .RuleFor(p => p.Id, Guid.NewGuid())
        .RuleFor(p => p.Name, f => f.Commerce.ProductName())
+       .RuleFor(p => p.Price, f => f.Finance.Amount())
+       .RuleFor(p => p.Category, f => f.Commerce.Categories(1).First())
        .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
        .RuleFor(p => p.UserId, _entityIds[userKey]).Generate();
         return product;
@@ -196,5 +227,14 @@ public class SeederService
         return org;
     }
 
+    private Category CreateCategory()
+    {
+        var cat = new Faker<Category>()
+        .RuleFor(o => o.Id, Guid.NewGuid())
+        .RuleFor(o => o.Name, f => f.Commerce.Categories(1).First())
+        .RuleFor(o => o.Slug, f => f.Name.Suffix())
+        .RuleFor(o => o.Description, f => f.Company.CatchPhrase()).Generate();
 
+        return cat;
+    }
 }
