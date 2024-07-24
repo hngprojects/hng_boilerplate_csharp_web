@@ -11,11 +11,11 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Queries
 {
     public class VerifyTransactionQueryHandler : IRequestHandler<VerifyTransactionQuery, Result<string>>
     {
-        private readonly PaystackClient _paystackClient;
+        private readonly IPaystackClient _paystackClient;
         private readonly PaystackApiKeys _apiKey;
 
         public VerifyTransactionQueryHandler(
-            PaystackClient paystackClient,
+            IPaystackClient paystackClient,
             PaystackApiKeys apiKey)
         {
             _paystackClient = paystackClient;

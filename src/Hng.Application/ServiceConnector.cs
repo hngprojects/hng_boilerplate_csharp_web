@@ -9,7 +9,7 @@ namespace Hng.Infrastructure.Services
     {
         public static void AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddHttpClient<PaystackClient>(c =>
+            services.AddHttpClient<IPaystackClient, PaystackClient>(c =>
             {
                 c.BaseAddress = new(configuration.GetSection("PaystackApiKeys").Get<PaystackApiKeys>().Endpoint);
             });

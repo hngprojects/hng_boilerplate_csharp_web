@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
 {
-    public class PaystackClient
+    public class PaystackClient : IPaystackClient
     {
         private const string Authorization = nameof(Authorization);
         private const string Bearer = nameof(Bearer);
