@@ -11,10 +11,10 @@ namespace Hng.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string[]>(
+            migrationBuilder.AddColumn<string>(
                 name: "Category",
                 table: "Products",
-                type: "text[]",
+                type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
@@ -35,8 +35,7 @@ namespace Hng.Infrastructure.Migrations
                 name: "UpdatedAt",
                 table: "Products",
                 type: "timestamp with time zone",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+                nullable: true);
         }
 
         /// <inheritdoc />

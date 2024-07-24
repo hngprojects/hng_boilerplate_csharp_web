@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240723163533_UpdateProductModel_Add_Price_Category")]
+    [Migration("20240724151850_UpdateProductModel_Add_Price_Category")]
     partial class UpdateProductModel_Add_Price_Category
     {
         /// <inheritdoc />
@@ -48,8 +48,8 @@ namespace Hng.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string[]>("Category")
-                        .HasColumnType("text[]");
+                    b.Property<string>("Category")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -63,7 +63,7 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
@@ -121,6 +121,12 @@ namespace Hng.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordSalt")
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
