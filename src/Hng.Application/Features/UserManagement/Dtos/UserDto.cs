@@ -19,9 +19,11 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonPropertyName("profile")]
         public ProfileDto Profile { get; set; }
 
+        [JsonIgnore]
         [JsonPropertyName("organisation")]
         public IEnumerable<OrganizationDto> Organizations { get; set; }
 
+        [JsonIgnore]
         [JsonPropertyName("products")]
         public IEnumerable<ProductDto> Products { get; set; }
     }
