@@ -6,6 +6,8 @@ using Hng.Application;
 using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
 using System.Reflection;
+using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +19,7 @@ builder.Services.AddSwaggerDocs();
 builder.Services.AddApplicationConfig(builder.Configuration);
 builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"));
 builder.Services.Configure<JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddSwaggerGen(c =>
 {
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
