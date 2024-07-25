@@ -35,7 +35,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
             var initializeRequest = new InitializeTransactionRequest(amountInKobo.ToString(), request.Email)
             {
                 BusinessAuthorizationToken = _apiKeys.SecretKey,
-                Reference = reference, 
+                Reference = reference,
                 Metadata = JsonConvert.SerializeObject(new
                 {
                     product_id = request.ProductId
