@@ -21,6 +21,7 @@ namespace Hng.Application.Features.Products.Handlers
             _repository = productReposiotry;
             _mapper = mapper;
         }
+
         public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             var product = _mapper.Map<Product>(request.productBody);

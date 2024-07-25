@@ -18,7 +18,7 @@ namespace Hng.Application.Features.Products.Dtos
 
         public decimal Price { get; set; }
 
-        [JsonPropertyName("userid")]
+        [JsonPropertyName("user_id")]
         public Guid UserId { get; set; }
 
         [JsonIgnore]

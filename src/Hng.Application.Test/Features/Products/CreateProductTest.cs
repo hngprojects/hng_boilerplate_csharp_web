@@ -1,8 +1,4 @@
 ﻿using AutoMapper;
-using Hng.Application.Features.Organisations.Commands;
-using Hng.Application.Features.Organisations.Dtos;
-using Hng.Application.Features.Organisations.Handlers;
-using Hng.Application.Features.Organisations.Mappers;
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Handlers;
@@ -10,11 +6,6 @@ using Hng.Application.Features.Products.Mappers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Hng.Application.Test.Features.Products
