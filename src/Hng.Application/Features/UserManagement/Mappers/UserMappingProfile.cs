@@ -12,6 +12,11 @@ namespace Hng.Application.Features.UserManagement.Mappers
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ReverseMap();
 
+            CreateMap<UserSignUpDto, User>()
+                .ReverseMap();
+
+            CreateMap<User, UserResponseDto>()
+                .ReverseMap();
         }
     }
 }

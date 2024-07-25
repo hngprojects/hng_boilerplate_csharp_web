@@ -19,6 +19,8 @@ public class User : EntityBase
     public string PhoneNumber { get; set; }
     public string Password { get; set; }
     public string PasswordSalt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public Profile Profile { get; set; }
     public ICollection<Organization> Organizations { get; set; } = new List<Organization>();
     public ICollection<Product> Products { get; set; } = new List<Product>();
