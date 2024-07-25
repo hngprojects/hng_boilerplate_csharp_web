@@ -19,9 +19,8 @@ public class User : EntityBase
     public string PhoneNumber { get; set; }
     public string Password { get; set; }
     public string PasswordSalt { get; set; }
-
     public Profile Profile { get; set; }
-
     public ICollection<Organization> Organizations { get; set; } = new List<Organization>();
     public ICollection<Product> Products { get; set; } = new List<Product>();
+    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }
