@@ -9,6 +9,10 @@ namespace Hng.Infrastructure.Context
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Id)
+                .ValueGeneratedOnAdd();
+
         }
 
         public DbSet<User> Users { get; set; }
