@@ -11,12 +11,18 @@
     <Compile Remove="Models\**" />
     <EmbeddedResource Remove="Models\**" />
     <None Remove="Models\**" />
+    <Compile Remove="Features\UserManagement\Commands\CreateUserCommand.cs" />
+    <Compile Remove="Features\UserManagement\Dtos\UserCreationDto.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.5" />
+    <PackageReference Include="JasperFx.Core" Version="1.8.0" />
     <PackageReference Include="MediatR" Version="12.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\UserManagement\Commands\" />
+  <Folder Include="Features\UserManagement\Commands\" />
+	<Folder Include="Features\Products\Handlers\" />
+	<Folder Include="Features\Products\Commands\" />
+    <Folder Include="Features\Products\Queries\" />
   </ItemGroup>
+
 
 </Project>

@@ -3,6 +3,7 @@ using Hng.Application.Features.OrganisationInvite.Commands;
 using Hng.Application.Features.OrganisationInvite.Dtos;
 using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
+using Hng.Application.Features.Organisations.Queries;
 using Hng.Web.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -10,45 +11,47 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/organizations")]
-public class OrganizationController : ControllerBase
+public class OrganizationController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
 
-    public OrganizationController(IMediator mediator)
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<OrganizationDto>> GetOrganizationById(Guid id)
     {
-        _mediator = mediator;
+        var query = new GetOrganizationByIdQuery(id);
+        var response = await mediator.Send(query);
+        return response is null ? NotFound(new
+        {
+            message = "Organization not found",
+            is_successful = false,
+            status_code = 404
+        }) : Ok(response);
     }
 
-    /// <summary>
-    /// Creates an Organization
-    /// </summary>
-    /// <param name="body"></param>
-    /// <returns></returns>
-    [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<OrganizationDto>> CreateOrganization([FromBody] CreateOrganizationDto body)
     {
         var command = new CreateOrganizationCommand(body);
-        var response = await _mediator.Send(command);
+        var response = await mediator.Send(command);
         return CreatedAtAction(nameof(CreateOrganization), response);
     }
 
-    // [Authorize]
+    [Authorize]
     [HttpPost("invite")]
     [ProducesResponseType(typeof(CreateOrganizationDto), StatusCodes.Status201Created)]
 
     public async Task<ActionResult<CreateOrganizationDto>> CreateOrganizationInvite([FromBody] CreateOrganizationInviteDto body)
     {
-        var inviterIdString = "ed15ceef-7da1-4956-9f3e-a447b3a309fa";
+        var inviterIdString = HttpContext.User.FindFirst(ClaimTypes.Sid)!.Value;
         var inviterId = Guid.Parse(inviterIdString);
         body.UserId = inviterId;
-        body.OrganizationId = "d790bca0-3e74-4921-9da5-1430e2988564";
-
+    
         var command = new CreateOrganizationInviteCommand(body);
-        var response = await _mediator.Send(command);
+        var response = await mediator.Send(command);
         
         if (response == null)
         {
