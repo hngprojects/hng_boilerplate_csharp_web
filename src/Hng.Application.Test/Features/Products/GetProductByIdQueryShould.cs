@@ -37,7 +37,7 @@ namespace Hng.Application.Test.Features.Products
             // Arrange
             var productId = Guid.NewGuid();
             var product = new Product { Id = productId, Name = "Test Product" };
-            var productDto = new ProductDto { id = productId, name = "Test Product" };
+            var productDto = new ProductDto { Id = productId, Name = "Test Product" };
 
             _mockRepository.Setup(repo => repo.GetAsync(productId))
                 .ReturnsAsync(product);
@@ -50,8 +50,8 @@ namespace Hng.Application.Test.Features.Products
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(productId, result.id);
-            Assert.Equal("Test Product", result.name);
+            Assert.Equal(productId, result.Id);
+            Assert.Equal("Test Product", result.Name);
         }
 
 
