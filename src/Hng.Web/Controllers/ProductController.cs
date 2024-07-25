@@ -1,6 +1,5 @@
 ﻿using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
-using Hng.Application.Features.Products.Responses;
 using Hng.Application.Features.UserManagement.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
