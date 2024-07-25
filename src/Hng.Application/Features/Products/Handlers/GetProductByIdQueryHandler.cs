@@ -1,10 +1,12 @@
 using System;
-using Hng.Application.Features.Products.Queries;
-using Hng.Application.Features.Products.Dtos;
-using Hng.Infrastructure.Repository.Interface;
-using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 using AutoMapper;
+using MediatR;
+using Hng.Application.Features.Products.Dtos;
+using Hng.Application.Features.Products.Queries;
 using Hng.Domain.Entities;
+using Hng.Infrastructure.Repository.Interface;
 
 namespace Hng.Application.Features.Products.Handlers
 {
@@ -21,6 +23,11 @@ namespace Hng.Application.Features.Products.Handlers
 
         public async Task<ProductDto> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
+            if (request.Id == Guid.Empty)
+            {
+                throw new ArgumentException("Invalid product ID", nameof(request.Id));
+            }
+
             var product = await _productRepository.GetByIdAsync(request.Id);
             if (product == null)
             {
