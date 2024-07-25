@@ -229,12 +229,12 @@ public class SeederService
 
     private Category CreateCategory()
     {
-        var cat = new Faker<Category>()
+        var category = new Faker<Category>()
         .RuleFor(o => o.Id, Guid.NewGuid())
         .RuleFor(o => o.Name, f => f.Commerce.Categories(1).First())
         .RuleFor(o => o.Slug, f => f.Name.Suffix())
         .RuleFor(o => o.Description, f => f.Company.CatchPhrase()).Generate();
 
-        return cat;
+        return category;
     }
 }
