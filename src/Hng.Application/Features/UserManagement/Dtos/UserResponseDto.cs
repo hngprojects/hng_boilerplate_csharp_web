@@ -7,10 +7,10 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("firstname")]
+        [JsonPropertyName("first_name")]
         public string FirstName { get; set; }
 
-        [JsonPropertyName("lastname")]
+        [JsonPropertyName("last_name")]
         public string LastName { get; set; }
 
         [JsonPropertyName("email")]
