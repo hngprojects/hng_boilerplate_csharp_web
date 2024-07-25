@@ -9,12 +9,11 @@
 
   <ItemGroup>
     <Compile Remove="Repository\**" />
+    <Compile Remove="SeedData\**" />
     <EmbeddedResource Remove="Repository\**" />
+    <EmbeddedResource Remove="SeedData\**" />
     <None Remove="Repository\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="SeedData\" />
+    <None Remove="SeedData\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>
