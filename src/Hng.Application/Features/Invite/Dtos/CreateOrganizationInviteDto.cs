@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Invite.Dtos
 {
-	internal class CreateInveteDto
-	{
-	}
+    public class CreateOrganizationInviteDto
+    {
+        [JsonPropertyName("invitationLink")]
+        public string InvitationLink { get; set; }
+    }
 }

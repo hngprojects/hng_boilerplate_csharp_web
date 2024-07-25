@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Hng.Domain.Entities
 {
-	public class OrganisationInvite
+	public class OrganizationInvite: EntityBase
 	{
-		public Guid Id { get; set; }
 		public Guid Organization_id { get; set; }
 		public string Name { get; set; }
 		public string Invite_email { get; set; }

@@ -27,9 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Invite\Handlers\" />
     <Folder Include="Features\Invite\Mappers\" />
-    <Folder Include="Features\Invite\Queries\" />
     <Folder Include="Features\UserManagement\Commands\" />
   </ItemGroup>
 
