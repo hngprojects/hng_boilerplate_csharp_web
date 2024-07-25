@@ -1,7 +1,4 @@
-﻿using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Common;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
-
-namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
+﻿namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
 {
     public record InitializeTransactionRequest : PaymentRequestBase
     {
@@ -20,4 +17,3 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
         }
     }
 }
-

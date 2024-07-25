@@ -1,12 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Common;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
 {

@@ -30,17 +30,17 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
 
         public async Task<Result<InitializeTransactionResponse>> Handle(InitializeTransactionCommand request, CancellationToken cancellationToken)
         {
-            var amountInKobo = (int)(request.Amount * 100);
+            var amountInKobo = request.Amount * 100;
+            var reference = GenerateReference();
             var initializeRequest = new InitializeTransactionRequest(amountInKobo.ToString(), request.Email)
             {
                 BusinessAuthorizationToken = _apiKeys.SecretKey,
-                Reference = GenerateReference(),
+                Reference = reference, 
                 Metadata = JsonConvert.SerializeObject(new
                 {
                     product_id = request.ProductId
                 })
             };
-
             try
             {
                 var result = await _paystackClient.InitializeTransaction(initializeRequest);
@@ -52,7 +52,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
                     var transaction = _mapper.Map<Transaction>(request);
                     transaction.Id = Guid.NewGuid();
                     transaction.Amount = result.Value.Data.Amount;
-                    transaction.Reference = result.Value.Data.Reference;
+                    transaction.Reference = reference;
                     transaction.Status = TransactionStatus.Pending;
                     transaction.CreatedAt = DateTime.UtcNow;
                     transaction.ProductId = request.ProductId;

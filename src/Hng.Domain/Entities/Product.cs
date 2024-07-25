@@ -1,4 +1,3 @@
-
 namespace Hng.Domain.Entities;
 public class Product : EntityBase
 {
@@ -8,10 +7,6 @@ public class Product : EntityBase
     public decimal Price { get; set; }
     public Guid UserId { get; set; }
     public User User { get; set; }
-<<<<<<<<< Temporary merge branch 1
-
-    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-=========
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();

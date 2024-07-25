@@ -6,10 +6,6 @@ using Hng.Application;
 using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
 using System.Reflection;
-using System.Reflection;
->>>>>>>>> Temporary merge branch 2
-using System.Reflection;
->>>>>>>>> Temporary merge branch 2
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +23,9 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
+});
+
 var app = builder.Build();
-
-
 
 await app.MigrateAndSeed();
 

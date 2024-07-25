@@ -13,7 +13,5 @@ namespace Hng.Web.Controllers
         {
             _mediator = mediator;
         }
-
-
     }
 }

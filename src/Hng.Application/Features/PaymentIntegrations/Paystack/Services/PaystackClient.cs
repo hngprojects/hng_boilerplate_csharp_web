@@ -20,10 +20,11 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
             PropertyNamingPolicy = new LowerCaseNamingPolicy()
         };
 
-        public static class Endpoints
+        private static class Endpoints
         {
             public static string VerifyTransfer => "transfer/verify/{0}";
             public static string TransactionInitialize => "transaction/initialize";
+            public static string VerifyTransaction => "transaction/verify/{0}";
         }
 
         public PaystackClient(HttpClient client)
@@ -34,10 +35,13 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
         public async Task<Result<VerifyTransferResponse>> VerifyTransfer(VerifyTransactionRequest request)
             => await FetchFromPaystack<VerifyTransferResponse, VerifyTransactionRequest>(request, Endpoints.VerifyTransfer);
 
-        public async Task<Result<InitializeTransactionResponse>> InitializeTransaction(InitializeTransactionRequest request)
-    => await SendToPaystack<InitializeTransactionResponse, InitializeTransactionRequest>(request, Endpoints.TransactionInitialize);
+        public async Task<Result<VerifyTransactionResponse>> VerifyTransaction(VerifyTransactionRequest request)
+            => await FetchFromPaystack<VerifyTransactionResponse, VerifyTransactionRequest>(request, Endpoints.VerifyTransaction);
 
-        private async Task<Result<TResponse>> SendToPaystack<TResponse, TRequest>(TRequest request, string endpoint) where TRequest : PaymentRequestBase
+        public async Task<Result<InitializeTransactionResponse>> InitializeTransaction(InitializeTransactionRequest request)
+            => await SendToPaystack<InitializeTransactionResponse, InitializeTransactionRequest>(request, Endpoints.TransactionInitialize);
+
+        private async Task<Result<U>> SendToPaystack<U, T>(T request, string endpoint) where T : PaymentRequestBase
         {
             ArgumentNullException.ThrowIfNull(request.BusinessAuthorizationToken);
             var authorizedClient = SetAuthToken(_client, request.BusinessAuthorizationToken);
@@ -48,18 +52,20 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
                 var httpResponse = await authorizedClient.PostAsync(endpoint, body);
 
                 if (!httpResponse.IsSuccessStatusCode)
-                    return Result.Failure<TResponse>(await httpResponse.Content.ReadAsStringAsync());
+                    return Result.Failure<U>(await httpResponse.Content.ReadAsStringAsync());
 
-                var response = JsonConvert.DeserializeObject<TResponse>(await httpResponse.Content.ReadAsStringAsync());
+                var response =
+                    JsonConvert.DeserializeObject<U>(await httpResponse.Content.ReadAsStringAsync());
                 return Result.Success(response);
             }
             catch (Exception ex)
             {
-                return Result.Failure<TResponse>(ex.Message);
+                return Result.Failure<U>(ex.Message);
             }
         }
 
-        private async Task<Result<U>> FetchFromPaystack<U, T>(T requestParam, string endpoint) where T : PaymentQueryBase<string>
+        private async Task<Result<U>> FetchFromPaystack<U, T>(T requestParam, string endpoint)
+            where T : PaymentQueryBase<string>
         {
             var authorizedClient = SetAuthToken(_client, requestParam.BusinessAuthorizationToken);
             try
@@ -82,7 +88,8 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
         private static HttpClient SetAuthToken(HttpClient client, string businessAuthorizationToken)
         {
             client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add(Authorization, $"{Bearer} {businessAuthorizationToken}");
+            client.DefaultRequestHeaders.Add(Authorization,
+                string.Format("{0} {1}", Bearer, businessAuthorizationToken));
             return client;
         }
     }

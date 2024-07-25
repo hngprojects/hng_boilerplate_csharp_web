@@ -18,6 +18,11 @@ namespace Hng.Web.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Initiaze transation from Paystack
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         [HttpPost("initialize")]
         public async Task<IActionResult> InitializeTransaction([FromBody] InitializeTransactionCommand command)
         {
@@ -29,7 +34,6 @@ namespace Hng.Web.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpGet("{reference}")]
         /// <summary>
         /// Used to Verify Transaction from Paystack
         /// </summary>
