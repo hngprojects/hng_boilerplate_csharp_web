@@ -27,8 +27,12 @@ namespace Hng.Web.Controllers
         public async Task<ActionResult> DeleteProductById(Guid id)
         {
             var command = new DeleteProductByIdCommand(id);
-            await _mediator.Send(command);
-            return NoContent();
+            var deletedProduct = await _mediator.Send(command);
+            return deletedProduct is not null ? NoContent() : NotFound(new
+            {
+                status_code = 404,
+                message = "Product not found"
+            });
         }
 
         /// <summary>

@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using Hng.Application.Features.Products.Dtos;
+using MediatR;
 
 namespace Hng.Application.Features.Products.Commands
 {
-    public class DeleteProductByIdCommand : IRequest
+    public class DeleteProductByIdCommand : IRequest<ProductDto>
     {
         public DeleteProductByIdCommand(Guid id)
         {
