@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
-using System.IO;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Text;
 
 namespace Hng.Web.Controllers
