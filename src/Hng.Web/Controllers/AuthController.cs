@@ -24,14 +24,6 @@ namespace Hng.Web.Controllers
         [ProducesResponseType(typeof(SignUpResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SignUpResponse>> UserSignUp([FromBody] UserSignUpDto body)
         {
-            if (!ModelState.IsValid)
-            {
-                return UnprocessableEntity(new SignUpResponse
-                {
-                    Message = "Validation failed",
-                });
-            }
-
             var command = new UserSignUpCommand(body);
             var response = await _mediator.Send(command);
 

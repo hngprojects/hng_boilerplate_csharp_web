@@ -30,19 +30,19 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
         public async Task<SignUpResponse> Handle(UserSignUpCommand request, CancellationToken cancellationToken)
         {
-
-
-            var isUnique = await _userRepository.GetBySpec(u => u.Email == request.SignUpBody.Email);
-            if (isUnique is not null)
-            {
-                return new SignUpResponse
-                {
-                    Message = "Email already exists",
-                };
-            }
-
             try
             {
+                var isUnique = await _userRepository.GetBySpec(u => u.Email == request.SignUpBody.Email);
+                if (isUnique is not null)
+                {
+                    return new SignUpResponse
+                    {
+                        Message = "Email already exists",
+                    };
+                }
+
+
+
                 var createdUser = _mapper.Map<User>(request.SignUpBody);
                 (createdUser.PasswordSalt, createdUser.Password) = _passwordService.GeneratePasswordSaltAndHash(request.SignUpBody.Password);
 

@@ -21,5 +21,9 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [RegularExpression(@"^(?=.*[a-zA-Z])(?=.*\d).{8,}$",
             ErrorMessage = "Password must contain at least one letter and one number")]
         public string Password { get; set; }
+
+        [Required(ErrorMessage = "Phone Number is required")]
+        [Phone(ErrorMessage = "Invalid phone number")]
+        public string PhoneNumber { get; set; }
     }
 }
