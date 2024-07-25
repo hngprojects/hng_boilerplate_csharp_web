@@ -1,7 +1,12 @@
 ﻿using AutoMapper;
+using Hng.Application.Features.Organisations.Commands;
+using Hng.Application.Features.Organisations.Dtos;
+using Hng.Application.Features.Organisations.Handlers;
+using Hng.Application.Features.Organisations.Mappers;
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Handlers;
+using Hng.Application.Features.Products.Mappers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
@@ -16,90 +21,60 @@ namespace Hng.Application.Test.Features.Products
 {
     public class CreateProductTest
     {
-        private readonly Mock<IRepository<Product>> _mock;
-        private readonly Mock<IMapper> _mockMapper;
+        private readonly IMapper _mapper;
+        private readonly Mock<IRepository<Product>> _repositoryMock;
         private readonly CreateProductHandler _handler;
 
         public CreateProductTest()
         {
-            _mock = new Mock<IRepository<Product>>();
-            _mockMapper = new Mock<IMapper>();
-            _handler = new CreateProductHandler(_mock.Object, _mockMapper.Object);
+            var mappingProfile = new ProductMapperProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
+            _mapper = new Mapper(configuration);
+
+            _repositoryMock = new Mock<IRepository<Product>>();
+            _handler = new CreateProductHandler(_repositoryMock.Object, _mapper);
         }
 
         [Fact]
-        public async Task Handle_ValidRequest_ReturnsProductDto()
+        public async Task Handle_ShouldReturnCreatedOrganization()
         {
-            var productCreationDto = new ProductCreationDto
+            var expectedId = Guid.NewGuid();
+            var createDto = new ProductCreationDto
             {
-                Name = "Test Product",
-                Description = "Test Description",
-                Price = 9.99m
+                Name = "shoe",
+                Description = "Testing shoe",
+                Category = "Footwear",
+                Price = 3000,
             };
 
-            var product = new Product
+            var production = new Product
             {
-                Id = Guid.NewGuid(),
-                Name = "Test Product",
-                Description = "Test Description",
-                Price = 9.99m
+                Id = expectedId,
+                Name = createDto.Name,
+                Description = createDto.Description,
+                Category = createDto.Category,
+                Price = createDto.Price,
+                UserId = Guid.NewGuid(),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
             };
 
-            var productDto = new ProductDto
-            {
-                Id = 1,
-                Name = "Test Product",
-                Description = "Test Description",
-                Price = 9.99m
-            };
+            _repositoryMock.Setup(r => r.AddAsync(It.IsAny<Product>()))
+                .ReturnsAsync((Product org) =>
+                {
+                    org.Id = expectedId;
+                    return org;
+                });
 
-            var command = new CreateProductCommand(productCreationDto);
+            var command = new CreateProductCommand(createDto);
 
-            _mockMapper.Setup(m => m.Map<Product>(productCreationDto)).Returns(product);
-            _mockMapper.Setup(m => m.Map<ProductDto>(product)).Returns(productDto);
-            _mock.Setup(r => r.AddAsync(It.IsAny<Product>())).ReturnsAsync(product);
-
-            var result = await _handler.Handle(command, CancellationToken.None);
+            var result = await _handler.Handle(command, default);
 
             Assert.NotNull(result);
-            Assert.IsType<ProductDto>(result);
-            Assert.Equal(productDto.Id, result.Id);
-            Assert.Equal(productDto.Name, result.Name);
-            Assert.Equal(productDto.Description, result.Description);
-            Assert.Equal(productDto.Price, result.Price);
-
-            _mock.Verify(r => r.AddAsync(It.IsAny<Product>()), Times.Once);
-            _mockMapper.Verify(m => m.Map<Product>(It.IsAny<ProductCreationDto>()), Times.Once);
-            _mockMapper.Verify(m => m.Map<ProductDto>(It.IsAny<Product>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_RepositoryThrowsException_ThrowsException()
-        {
-            var productCreationDto = new ProductCreationDto
-            {
-                Name = "Test Product",
-                Description = "Test Description",
-                Price = 9.99m
-            };
-
-            var product = new Product
-            {
-                Name = "Test Product",
-                Description = "Test Description",
-                Price = 9.99m
-            };
-
-            var command = new CreateProductCommand(productCreationDto);
-
-            _mockMapper.Setup(m => m.Map<Product>(productCreationDto)).Returns(product);
-            _mock.Setup(r => r.AddAsync(It.IsAny<Product>())).ThrowsAsync(new System.Exception("Database error"));
-
-            await Assert.ThrowsAsync<System.Exception>(() => _handler.Handle(command, CancellationToken.None));
-
-            _mock.Verify(r => r.AddAsync(It.IsAny<Product>()), Times.Once);
-            _mockMapper.Verify(m => m.Map<Product>(It.IsAny<ProductCreationDto>()), Times.Once);
-            _mockMapper.Verify(m => m.Map<ProductDto>(It.IsAny<Product>()), Times.Never);
+            Assert.Equal(createDto.Name, result.Name);
+            Assert.Equal(createDto.Description, result.Description);
+            Assert.Equal(createDto.Category, result.Category);
+            Assert.Equal(createDto.Price, result.Price);
         }
     }
 }

@@ -20,7 +20,6 @@ namespace Hng.Application.Features.Products.Dtos
         public string Category { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be a positive number")]
-
         [JsonPropertyName("price")]
         public decimal Price { get; set; }
     }
