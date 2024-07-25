@@ -47,5 +47,5 @@ namespace Hng.Web.Controllers
                 _logger.LogError(ex, "An error occurred while fetching product with ID {ProductId}", id);
                 return StatusCode(500, new { error = "An unexpected error occurred" });
             }
-        }   
-}
+        }
+    }
