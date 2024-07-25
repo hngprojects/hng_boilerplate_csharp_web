@@ -16,7 +16,7 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonPropertyName("email")]
         public string Email { get; set; }
 
-        [JsonPropertyName("createdat")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
     }
 }
