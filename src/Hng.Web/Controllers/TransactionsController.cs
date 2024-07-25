@@ -1,4 +1,5 @@
 ﻿using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
+using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
 using Hng.Infrastructure.Utilities.StringKeys;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +24,11 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("initialize")]
+        [ProducesResponseType(typeof(InitializeTransactionResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> InitializeTransaction([FromBody] InitializeTransactionCommand command)
         {
             var result = await _mediator.Send(command);

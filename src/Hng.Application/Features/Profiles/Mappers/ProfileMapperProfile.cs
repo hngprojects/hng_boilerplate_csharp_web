@@ -16,8 +16,8 @@ namespace Hng.Application.Features.Profiles.Mappers
                 .ReverseMap();
 
             CreateMap<Transaction, InitializeTransactionCommand>()
-            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
-            .ReverseMap();
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ReverseMap();
         }
     }
 }
