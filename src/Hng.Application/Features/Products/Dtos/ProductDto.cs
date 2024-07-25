@@ -16,7 +16,6 @@ namespace Hng.Application.Features.Products.Dtos
         [JsonPropertyName("category")]
         public string Category { get; set; }
 
-       
         public decimal Price { get; set; }
 
         [JsonPropertyName("userid")]
