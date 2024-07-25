@@ -27,6 +27,8 @@ namespace Hng.Web.Controllers
             var command = new CreateProductCommand(body);
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(CreateProduct), response);
+           
+        }
 
         /// <summary>
         /// Product Deletion - deletes a product owned by a specific user

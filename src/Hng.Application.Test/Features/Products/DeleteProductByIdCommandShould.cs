@@ -54,7 +54,7 @@ namespace Hng.Application.Test.Features.Products
 
             // Assert
             Assert.NotNull(actual);
-            Assert.Equal(actual.id, productId);
+            Assert.Equal(actual.Id, productId);
         }
 
 
