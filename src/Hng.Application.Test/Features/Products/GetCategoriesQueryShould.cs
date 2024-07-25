@@ -1,60 +1,66 @@
-﻿using AutoMapper;
+﻿using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
-using Hng.Application.Features.Products.Handlers;
+using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.Products.Queries;
-using Hng.Domain.Entities;
-using Hng.Infrastructure.Repository.Interface;
-using Moq;
-using Xunit;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
-namespace Hng.Application.Test.Features.Products
+namespace Hng.Web.Controllers
 {
-    public class GetCategoriesQueryShould
+    [Authorize]
+    [ApiController]
+    [Route("api/v1/products")]
+    public class ProductController : ControllerBase
     {
-        private readonly Mock<IRepository<Category>> _mockRepository;
-        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public GetCategoriesQueryShould()
+        public ProductController(IMediator mediator)
         {
-            _mockRepository = new Mock<IRepository<Category>>();
-
-            // Set up AutoMapper with your profiles
-            var config = new MapperConfiguration(cfg =>
-            {
-                // Add your AutoMapper profiles here
-                cfg.CreateMap<Category, CategoryDto>();
-            });
-
-            _mapper = config.CreateMapper();
+            _mediator = mediator;
         }
 
-        [Fact]
-        public async Task ReturnCategoryDto_WhenCategoriesExists()
+        [HttpPost]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
+        public async Task<ActionResult<UserDto>> CreateProduct([FromBody] ProductCreationDto body)
         {
-            // Arrange
-            var expectedCount = 3;
-            var categories = new List<Category>
+            var command = new CreateProductCommand(body);
+            var response = await _mediator.Send(command);
+            return CreatedAtAction(nameof(CreateProduct), response);
+        }
+
+        /// <summary>
+        /// Product Deletion - deletes a product owned by a specific user
+        /// </summary>
+        [HttpDelete("{id}")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> DeleteProductById(Guid id)
+        {
+            var command = new DeleteProductByIdCommand(id);
+            var deletedProduct = await _mediator.Send(command);
+            return deletedProduct is not null ? NoContent() : NotFound(new
             {
-                new Category{ Id = Guid.NewGuid(), Name = "Cloths", Description = "Cloths description here", Slug = "cloths", ParentId ="somerandomid"},
-                new Category{ Id = Guid.NewGuid(), Name = "Electronics", Description = "Cloths description here", Slug = "electrical", ParentId ="somerandomid"},
-                new Category{ Id = Guid.NewGuid(), Name = "Films", Description = "Cloths description here", Slug = "films", ParentId ="somerandomid"}
-            };
+                status_code = 404,
+                message = "Product not found"
+            });
+        }
 
-            var productId = Guid.NewGuid();
-            var product = new Product { Id = productId, Name = "Test Product" };
-            var productDto = new ProductDto { Id = productId, Name = "Test Product" };
-
-            _mockRepository.Setup(repo => repo.GetAllAsync()).ReturnsAsync(categories);
-
-            var handler = new GetCategoriesQueryHandler(_mockRepository.Object, _mapper);
-            var query = new GetCategoriesQuery();
-
-            // Act
-            var result = await handler.Handle(query, CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(result.Count(), expectedCount);
+        /// <summary>
+        /// Product Categories - gets all categories for products 
+        /// </summary>
+        [HttpGet("categories")]
+        [Authorize]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> GeProductCategories()
+        {
+            var categories = await _mediator.Send(new GetCategoriesQuery());
+            return Ok(new
+            {
+                status_code = 200,
+                categories
+            });
         }
     }
 }
