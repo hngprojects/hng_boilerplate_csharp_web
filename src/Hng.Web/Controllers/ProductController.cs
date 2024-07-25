@@ -22,7 +22,7 @@ namespace Hng.Web.Controllers
         /// Product Deletion - deletes a product owned by a specific user
         /// </summary>
         [HttpDelete("{id}")]
-        [AllowAnonymous]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteProductById(Guid id)
         {
