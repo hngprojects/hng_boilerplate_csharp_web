@@ -1,7 +1,6 @@
 ﻿using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
