@@ -36,7 +36,7 @@ namespace Hng.Web.Controllers
         }
 
         /// <summary>
-        /// Product Categories - gets all categories for products
+        /// Product Categories - gets all categories for products 
         /// </summary>
         [HttpGet("categories")]
         [Authorize]
