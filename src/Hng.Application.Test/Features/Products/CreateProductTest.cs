@@ -36,7 +36,7 @@ namespace Hng.Application.Test.Features.Products
         }
 
         [Fact]
-        public async Task Handle_ShouldReturnCreatedOrganization()
+        public async Task Handle_ShouldReturnCreatedProduct()
         {
             var expectedId = Guid.NewGuid();
             var createDto = new ProductCreationDto

@@ -24,6 +24,9 @@ namespace Hng.Application.Features.Products.Handlers
         public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             var product = _mapper.Map<Product>(request.productBody);
+            product.Id = Guid.NewGuid();
+            product.CreatedAt = DateTime.UtcNow;
+            product.UpdatedAt = DateTime.UtcNow;
             await _repository.AddAsync(product);
             return _mapper.Map<ProductDto>(product);
         }

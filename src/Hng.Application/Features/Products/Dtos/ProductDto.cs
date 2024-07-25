@@ -5,7 +5,7 @@ namespace Hng.Application.Features.Products.Dtos
 {
     public class ProductDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [JsonPropertyName("name")]
         public string Name { get; set; }
@@ -16,7 +16,7 @@ namespace Hng.Application.Features.Products.Dtos
         [JsonPropertyName("category")]
         public string Category { get; set; }
 
-        [JsonPropertyName("price")]
+       
         public decimal Price { get; set; }
 
         [JsonPropertyName("userid")]
@@ -26,10 +26,10 @@ namespace Hng.Application.Features.Products.Dtos
         [JsonPropertyName("user")]
         public User User { get; set; }
 
-        [JsonPropertyName("createdAt")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
 
-        [JsonPropertyName("updateAt")]
+        [JsonPropertyName("update_at")]
         public DateTime UpdatedAt { get; set; }
 
         [JsonIgnore]
