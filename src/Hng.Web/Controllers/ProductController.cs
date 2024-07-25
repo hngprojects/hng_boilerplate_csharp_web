@@ -38,7 +38,6 @@ namespace Hng.Web.Controllers
         /// <summary>
         /// Product Categories - gets all categories for products
         /// </summary>
-        /// <returns></returns>
         [HttpGet("categories")]
         [Authorize]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
