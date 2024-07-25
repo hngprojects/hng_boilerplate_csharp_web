@@ -11,4 +11,5 @@ public class Product : EntityBase
     public User User { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }
