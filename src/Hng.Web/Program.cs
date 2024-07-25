@@ -6,8 +6,10 @@ using Hng.Application;
 using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
 using System.Reflection;
-using Hng.Infrastructure.Services;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
+using System.Reflection;
+>>>>>>>>> Temporary merge branch 2
+using System.Reflection;
+>>>>>>>>> Temporary merge branch 2
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,15 +21,12 @@ builder.Services.AddSwaggerDocs();
 builder.Services.AddApplicationConfig(builder.Configuration);
 builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"));
 builder.Services.Configure<JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-builder.Services.AddConfigurationSettings(builder.Configuration);
 
 builder.Services.AddSwaggerGen(c =>
 {
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
-});
-
 var app = builder.Build();
 
 

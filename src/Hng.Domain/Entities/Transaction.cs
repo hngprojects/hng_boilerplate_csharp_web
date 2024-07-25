@@ -12,8 +12,11 @@ namespace Hng.Domain.Entities
         public TransactionStatus Status { get; set; }
         public TransactionIntegrationPartners Partners { get; set; }
         public decimal Amount { get; set; }
+
         public string Reference { get; set; }
+
         public DateTime CreatedAt { get; set; }
+        public DateTime? PaidAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
     }
 }

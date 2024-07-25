@@ -1,5 +1,4 @@
-﻿using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Common;
-using JasperFx.Core;
+﻿using JasperFx.Core;
 
 namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
 {
