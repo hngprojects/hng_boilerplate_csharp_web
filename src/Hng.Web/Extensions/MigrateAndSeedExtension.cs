@@ -11,7 +11,7 @@ namespace Hng.Web.Extensions
             var scope = app.Services.CreateScope();
             var seeder = scope.ServiceProvider.GetRequiredService<SeederService>();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-           // context.Database.Migrate();
+            context.Database.Migrate();
             await seeder.SeedUsers();
             await seeder.SeedProfile();
             await seeder.SeedProducts();
