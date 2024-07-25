@@ -37,7 +37,7 @@ namespace Hng.Application.Test.Features.Product
                 Category = "New Category"
             };
 
-            var initialUpdatedAt = DateTime.UtcNow.AddDays(-1); 
+            var initialUpdatedAt = DateTime.UtcNow.AddDays(-1);
             var updatedAt = DateTime.UtcNow;
             var existingProduct = new Domain.Entities.Product
             {
