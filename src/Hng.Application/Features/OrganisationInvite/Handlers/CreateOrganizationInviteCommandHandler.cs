@@ -19,7 +19,6 @@ public class CreateOrganizationInviteCommandHandler(IOrganizationInviteService s
         var organizationInvite = await service.CreateInvite(request.InviteDto.UserId, orgId, request.InviteDto.Email);
 
         var dto = mapper.Map<OrganizationInviteDto>(organizationInvite);
-        
         return dto;
     }
 }

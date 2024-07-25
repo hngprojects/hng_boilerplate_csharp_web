@@ -49,10 +49,9 @@ public class OrganizationController(IMediator mediator) : ControllerBase
         var inviterIdString = HttpContext.User.FindFirst(ClaimTypes.Sid)!.Value;
         var inviterId = Guid.Parse(inviterIdString);
         body.UserId = inviterId;
-    
         var command = new CreateOrganizationInviteCommand(body);
         var response = await mediator.Send(command);
-        
+
         if (response == null)
         {
             return UnprocessableEntity();
