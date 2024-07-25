@@ -25,13 +25,13 @@ namespace Hng.Application.Features.Products.Handlers
         {
             if (request.Id == Guid.Empty)
             {
-                throw new ArgumentException("Invalid product ID", nameof(request.Id));
+                return null;
             }
 
-            var product = await _productRepository.GetByIdAsync(request.Id);
+            var product = await _productRepository.GetAsync(request.Id);
             if (product == null)
             {
-                throw new KeyNotFoundException($"Product with ID {request.Id} not found.");
+                return null;
             }
 
             return _mapper.Map<ProductDto>(product);

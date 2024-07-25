@@ -15,12 +15,20 @@ namespace Hng.Application.Test.Features.Products
     public class GetProductByIdQueryShould
     {
         private readonly Mock<IRepository<Product>> _mockRepository;
-        private readonly Mock<IMapper> _mockMapper;
+        private readonly IMapper _mapper;
 
         public GetProductByIdQueryShould()
         {
             _mockRepository = new Mock<IRepository<Product>>();
-            _mockMapper = new Mock<IMapper>();
+
+            // Set up AutoMapper with your profiles
+            var config = new MapperConfiguration(cfg =>
+            {
+                // Add your AutoMapper profiles here
+                cfg.CreateMap<Product, ProductDto>();
+            });
+
+            _mapper = config.CreateMapper();
         }
 
         [Fact]
@@ -29,14 +37,12 @@ namespace Hng.Application.Test.Features.Products
             // Arrange
             var productId = Guid.NewGuid();
             var product = new Product { Id = productId, Name = "Test Product" };
-            var productDto = new ProductDto { Id = productId, Name = "Test Product" };
+            var productDto = new ProductDto { id = productId, name = "Test Product" };
 
-            _mockRepository.Setup(repo => repo.GetByIdAsync(productId))
+            _mockRepository.Setup(repo => repo.GetAsync(productId))
                 .ReturnsAsync(product);
-            _mockMapper.Setup(mapper => mapper.Map<ProductDto>(product))
-                .Returns(productDto);
 
-            var handler = new GetProductByIdQueryHandler(_mockRepository.Object, _mockMapper.Object);
+            var handler = new GetProductByIdQueryHandler(_mockRepository.Object, _mapper);
             var query = new GetProductByIdQuery(productId);
 
             // Act
@@ -44,34 +50,43 @@ namespace Hng.Application.Test.Features.Products
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(productId, result.Id);
-            Assert.Equal("Test Product", result.Name);
+            Assert.Equal(productId, result.id);
+            Assert.Equal("Test Product", result.name);
         }
 
+
         [Fact]
-        public async Task ThrowArgumentException_WhenProductIdIsEmpty()
+        public async Task ReturnNull_WhenProductIdIsEmpty()
         {
             // Arrange
-            var handler = new GetProductByIdQueryHandler(_mockRepository.Object, _mockMapper.Object);
+            var handler = new GetProductByIdQueryHandler(_mockRepository.Object, _mapper);
             var query = new GetProductByIdQuery(Guid.Empty);
 
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(() => handler.Handle(query, CancellationToken.None));
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            Assert.Null(result);
         }
 
+
         [Fact]
-        public async Task ThrowKeyNotFoundException_WhenProductNotFound()
+        public async Task ReturnNull_WhenProductNotFound()
         {
             // Arrange
             var productId = Guid.NewGuid();
-            _mockRepository.Setup(repo => repo.GetByIdAsync(productId))
+            _mockRepository.Setup(repo => repo.GetAsync(productId))
                 .ReturnsAsync((Product)null);
 
-            var handler = new GetProductByIdQueryHandler(_mockRepository.Object, _mockMapper.Object);
+            var handler = new GetProductByIdQueryHandler(_mockRepository.Object, _mapper);
             var query = new GetProductByIdQuery(productId);
 
-            // Act & Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(() => handler.Handle(query, CancellationToken.None));
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            Assert.Null(result);
         }
+
     }
 }

@@ -58,12 +58,6 @@ namespace Hng.Infrastructure.Repository
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<T> GetByIdAsync(Guid id)
-        {
-            return await _context.Set<T>().FindAsync(id);
-        }
-
-
         public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties)
         {
             var entities = _context.Set<T>().AsNoTracking();

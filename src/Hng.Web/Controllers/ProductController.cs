@@ -3,20 +3,19 @@ using Hng.Application.Features.Products.Queries;
 using Hng.Application.Features.Products.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hng.Web.Controllers
 {
+    [Authorize]
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/products")]
     public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<ProductController> _logger;
-
-        public ProductController(IMediator mediator, ILogger<ProductController> logger)
+        public ProductController(IMediator mediator)
         {
             _mediator = mediator;
-            _logger = logger;
         }
 
         [HttpGet("{id}")]
@@ -26,27 +25,15 @@ namespace Hng.Web.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ProductDto>> GetProductById(Guid id)
         {
-            try
+            if (id == Guid.Empty)
             {
-                if (id == Guid.Empty)
-                {
-                    return BadRequest(new { error = "Invalid product ID" });
-                }
+                return BadRequest(new { error = "Invalid product ID" });
+            }
 
-                var query = new GetProductByIdQuery { Id = id };
-                var product = await _mediator.Send(query);
+            var query = new GetProductByIdQuery(id);
+            var product = await _mediator.Send(query);
 
-                return Ok(new { product });
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound(new { error = "Product not found" });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while fetching product with ID {ProductId}", id);
-                return StatusCode(500, new { error = "An unexpected error occurred" });
-            }
+            return Ok(new { product });
         }
     }
 }
