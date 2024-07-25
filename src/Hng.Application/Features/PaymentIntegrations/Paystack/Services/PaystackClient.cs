@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Common;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
 using Newtonsoft.Json;
