@@ -40,7 +40,7 @@ public class OrganizationController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(CreateOrganization), response);
     }
 
-    [Authorize]
+
     [HttpPost("invite")]
     [ProducesResponseType(typeof(CreateOrganizationDto), StatusCodes.Status201Created)]
 

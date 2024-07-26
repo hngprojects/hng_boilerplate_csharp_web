@@ -6,16 +6,21 @@ using Hng.Infrastructure.Services.Interfaces;
 
 namespace Hng.Infrastructure.Services;
 
-public class OrganizationInviteService(IRepository<Organization> Organizationrepository, IOrganizationInviteRepository repository) : IOrganizationInviteService
+public class OrganizationInviteService(IRepository<Organization> Organizationrepository, IRepository<OrganizationInvite> repository) : IOrganizationInviteService
 {
     private readonly IRepository<Organization> organizationrepository = Organizationrepository;
-    private readonly IOrganizationInviteRepository repository = repository;
+    private readonly IRepository<OrganizationInvite> repository = repository;
 
     public async Task<OrganizationInvite> CreateInvite(Guid userId, Guid orgId, string email)
     {
-        if (await DoesInviteExist(email, orgId)) return null;
-
         Organization org = await organizationrepository.GetAsync(orgId);
+
+        if (org == null)
+        {
+            return null;
+        }
+
+        if (await DoesInviteExist(email, orgId)) return null;
 
         if (org.OwnerId != userId) return null;
 

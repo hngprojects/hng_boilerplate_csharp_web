@@ -13,7 +13,6 @@ namespace Hng.Infrastructure
         public static IServiceCollection AddInfrastructureConfig(this IServiceCollection services, string connectionString)
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped<IOrganizationInviteRepository, OrganizationInviteRepository>();
             services.AddScoped<DbContext, ApplicationDbContext>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPasswordService, PasswordService>();
