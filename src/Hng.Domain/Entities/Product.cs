@@ -1,4 +1,3 @@
-
 namespace Hng.Domain.Entities;
 public class Product : EntityBase
 {
