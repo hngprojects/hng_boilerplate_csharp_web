@@ -22,18 +22,19 @@ namespace Hng.Application.Features.Products.Handlers
         {
             var product = await _productRepository.GetAsync(request.Id);
 
-            if (product == null)
+            if (product != null)
             {
-                throw new Exception("Product not found");
+                _mapper.Map(request.UpdateProductDto, product);
+                product.UpdatedAt = DateTime.UtcNow;
+
+                await _productRepository.UpdateAsync(product);
+                await _productRepository.SaveChanges();
+
+                return _mapper.Map<ProductDto>(product);
             }
 
-            _mapper.Map(request.UpdateProductDto, product);
-            product.UpdatedAt = DateTime.UtcNow;
-
-            await _productRepository.UpdateAsync(product);
-            await _productRepository.SaveChanges();
-
-            return _mapper.Map<ProductDto>(product);
+             return null;
+           
         }
     }
 }

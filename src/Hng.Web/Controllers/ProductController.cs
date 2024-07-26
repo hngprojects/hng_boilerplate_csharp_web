@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
-{
+{    
     [ApiController]
     [Route("api/v1/products")]
     public class ProductController : ControllerBase
@@ -80,6 +80,7 @@ namespace Hng.Web.Controllers
         /// <param name="updateProductDto"></param>
         /// <returns></returns>
         [HttpPut("{id:guid}")]
+        [Authorize]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductDto updateProductDto)
@@ -106,7 +107,7 @@ namespace Hng.Web.Controllers
                 return NotFound(new
                 {
                     status_code = 404,
-                    message = new[] { ex.Message },
+                    message = "Product not found",
                     error = "Not Found"
                 });
             }
