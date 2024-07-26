@@ -1,4 +1,4 @@
-﻿using Hng.Application.Features.Products.Commands;
+using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Validators;
 using MediatR;
@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/v1/products")]
     public class ProductController : ControllerBase

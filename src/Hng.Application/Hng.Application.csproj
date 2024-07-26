@@ -34,6 +34,7 @@
   <ItemGroup>
   <Folder Include="Features\UserManagement\Commands\" />
     <Folder Include="Features\Products\Queries\" />
+    <Folder Include="Features\UserManagement\Commands\" />
   </ItemGroup>
 
 

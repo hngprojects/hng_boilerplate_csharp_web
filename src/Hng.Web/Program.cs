@@ -6,6 +6,8 @@ using Hng.Application;
 using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
 using System.Reflection;
+using Hng.Infrastructure.Services.Interfaces;
+
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Repository;
 

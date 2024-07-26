@@ -11,4 +11,5 @@ namespace Hng.Application.Features.Products.Mappers
             CreateMap<UpdateProductDto, Product>();
         }
     }
+
 }
