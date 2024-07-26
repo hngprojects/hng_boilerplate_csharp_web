@@ -42,7 +42,7 @@ namespace Hng.Application.Test.Features.Products
 
             var productId = Guid.NewGuid();
             var product = new Product { Id = productId, Name = "Test Product" };
-            var productDto = new ProductDto { id = productId, name = "Test Product" };
+            var productDto = new ProductDto { Id = productId, Name = "Test Product" };
 
             _mockRepository.Setup(repo => repo.GetAllAsync()).ReturnsAsync(categories);
 

@@ -1,9 +1,17 @@
+using System;
+using System.Text.Json.Serialization;
+
 namespace Hng.Application.Features.Products.Dtos
 {
     public class ProductDto
     {
-        public Guid id { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
+        [JsonPropertyName("id")]
+        public Guid Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
     }
 }
