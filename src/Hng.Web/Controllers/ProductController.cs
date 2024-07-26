@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
-{    
+{
     [ApiController]
     [Route("api/v1/products")]
     public class ProductController : ControllerBase
@@ -95,21 +95,16 @@ namespace Hng.Web.Controllers
                     error = "Bad Request"
                 });
             }
-            try
-            {
-                var command = new UpdateProductCommand(id, updateProductDto);
-                var result = await _mediator.Send(command);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new
+            var command = new UpdateProductCommand(id, updateProductDto);
+            var result = await _mediator.Send(command);
+            return result != null
+                ? Ok(result)
+                : NotFound(new
                 {
                     status_code = 404,
                     message = "Product not found",
                     error = "Not Found"
                 });
-            }
         }
     }
 }
