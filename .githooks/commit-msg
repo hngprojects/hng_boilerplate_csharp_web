@@ -1,13 +1,39 @@
 #!/bin/bash
 
-REGEX="^((Merge[ a-z-]* branch.*)|(Revert*)|((build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.*\))?!?: .*))"
+# Regex to validate the type pattern
+REGEX="^((Merge[ a-z-]* branch.*)|(Revert.*)|((build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.*\))?!?: .*))"
 
-FILE=$(cat $1)
+# Check if a file argument was provided
+if [ -z "$1" ]; then
+    echo >&2 "ERROR: No commit message file provided."
+    exit 1
+fi
+
+# Read the commit message from the file passed as an argument
+FILE=$(cat "$1")
+
 echo "Commit Message: ${FILE}"
 
-if ! [[ $FILE =~ $REGEX ]]; then
-    echo >&2 "ERROR: Commit aborted for not following the Conventional Commit standard.​"
+if [[ ! $FILE =~ $REGEX ]]; then
+    echo >&2 "ERROR: Commit aborted for not following the Conventional Commit standard."
+
+    # Check if the message is missing a valid type
+    if ! [[ $FILE =~ ^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.*\))?!?: ]]; then
+        echo >&2 "Hint: Commit message must start with one of the following types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test."
+    fi
+
+    # Check if the message is missing the scope (optional) and subject
+    if [[ ! $FILE =~ ^((build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.*\))?!?: ) ]]; then
+        echo >&2 "Hint: Commit message must follow the pattern 'type(scope): subject'. The scope is optional."
+    fi
+
+    # Check if the message is missing the colon and space after type (and scope)
+    if [[ $FILE =~ ^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.*\))?[^:]*$ ]]; then
+        echo >&2 "Hint: Commit message must include a colon and space after the type (and scope if present)."
+    fi
+
     exit 1
 else
-    echo >&2 "Valid commit message."
+    echo "Valid commit message."
 fi
+
