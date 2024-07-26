@@ -1,10 +1,13 @@
 using Hng.Domain.Entities;
+using System;
 using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.Products.Dtos
 {
     public class ProductDto
     {
+        [JsonPropertyName("id")]
+      
         public Guid Id { get; set; }
 
         [JsonPropertyName("name")]
@@ -34,5 +37,6 @@ namespace Hng.Application.Features.Products.Dtos
         [JsonIgnore]
         [JsonPropertyName("transactions")]
         public ICollection<Transaction> Transactions { get; set; }
+
     }
 }

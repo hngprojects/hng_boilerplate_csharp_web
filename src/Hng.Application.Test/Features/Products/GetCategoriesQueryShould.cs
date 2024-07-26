@@ -1,4 +1,4 @@
-﻿using Hng.Application.Features.Products.Commands;
+using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.Products.Queries;
@@ -61,6 +61,26 @@ namespace Hng.Web.Controllers
                 status_code = 200,
                 categories
             });
+                new Category{ Id = Guid.NewGuid(), Name = "Cloths", Description = "Cloths description here", Slug = "cloths", ParentId ="somerandomid"},
+                new Category{ Id = Guid.NewGuid(), Name = "Electronics", Description = "Cloths description here", Slug = "electrical", ParentId ="somerandomid"},
+                new Category{ Id = Guid.NewGuid(), Name = "Films", Description = "Cloths description here", Slug = "films", ParentId ="somerandomid"}
+            };
+
+            var productId = Guid.NewGuid();
+            var product = new Product { Id = productId, Name = "Test Product" };
+            var productDto = new ProductDto { Id = productId, Name = "Test Product" };
+
+            _mockRepository.Setup(repo => repo.GetAllAsync()).ReturnsAsync(categories);
+
+            var handler = new GetCategoriesQueryHandler(_mockRepository.Object, _mapper);
+            var query = new GetCategoriesQuery();
+
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(result.Count(), expectedCount);
         }
     }
 }

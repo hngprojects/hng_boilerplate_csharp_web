@@ -6,6 +6,8 @@ using Hng.Application;
 using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
 using System.Reflection;
+using Hng.Infrastructure.Services.Interfaces;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -27,10 +27,10 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Queries
 
             var verifyRequest = new VerifyTransactionRequest(request.Reference) { BusinessAuthorizationToken = _apiKey.SecretKey };
 
-            var verifyResponse = await _paystackClient.VerifyTransaction(verifyRequest);
+            var verifyResponse = await _paystackClient.VerifyTransfer(verifyRequest);
 
-            if (verifyResponse.IsSuccess && verifyResponse.Value.status
-                    && verifyResponse.Value.data.status == PaystackResponseStatus.success.ToString())
+            if (verifyResponse.IsSuccess && verifyResponse.Value.Status
+                    && verifyResponse.Value.Data.Status == PaystackResponseStatus.success.ToString())
             {
                 return Result.Success("Success");
             }

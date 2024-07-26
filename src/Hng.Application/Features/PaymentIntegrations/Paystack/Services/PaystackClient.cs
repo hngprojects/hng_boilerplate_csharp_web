@@ -23,7 +23,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
         private static class Endpoints
         {
             public static string VerifyTransfer => "transfer/verify/{0}";
-
+            public static string TransactionInitialize => "transaction/initialize";
             public static string VerifyTransaction => "transaction/verify/{0}";
         }
 
@@ -37,6 +37,9 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Services
 
         public async Task<Result<VerifyTransactionResponse>> VerifyTransaction(VerifyTransactionRequest request)
             => await FetchFromPaystack<VerifyTransactionResponse, VerifyTransactionRequest>(request, Endpoints.VerifyTransaction);
+
+        public async Task<Result<InitializeTransactionResponse>> InitializeTransaction(InitializeTransactionRequest request)
+            => await SendToPaystack<InitializeTransactionResponse, InitializeTransactionRequest>(request, Endpoints.TransactionInitialize);
 
         private async Task<Result<U>> SendToPaystack<U, T>(T request, string endpoint) where T : PaymentRequestBase
         {
