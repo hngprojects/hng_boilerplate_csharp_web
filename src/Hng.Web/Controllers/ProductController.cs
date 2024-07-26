@@ -95,7 +95,6 @@ namespace Hng.Web.Controllers
                     error = "Bad Request"
                 });
             }
-
             try
             {
                 var command = new UpdateProductCommand(id, updateProductDto);

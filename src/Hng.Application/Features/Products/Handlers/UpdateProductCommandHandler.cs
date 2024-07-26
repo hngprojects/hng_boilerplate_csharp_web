@@ -21,20 +21,15 @@ namespace Hng.Application.Features.Products.Handlers
         public async Task<ProductDto> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetAsync(request.Id);
-
             if (product != null)
             {
                 _mapper.Map(request.UpdateProductDto, product);
                 product.UpdatedAt = DateTime.UtcNow;
-
                 await _productRepository.UpdateAsync(product);
                 await _productRepository.SaveChanges();
-
                 return _mapper.Map<ProductDto>(product);
             }
-
-             return null;
-           
+            return null;
         }
     }
 }
