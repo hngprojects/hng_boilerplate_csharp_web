@@ -3,16 +3,17 @@ using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Handlers;
 using Hng.Application.Features.Products.Mappers;
+using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
 using Xunit;
 
-namespace Hng.Application.Test.Features.Product
+namespace Hng.Application.Test.Features.Products
 {
     public class UpdateProductShould
     {
         private readonly IMapper _mapper;
-        private readonly Mock<IProductRepository> _repositoryMock;
+        private readonly Mock<IRepository<Product>> _mockRepository;
         private readonly UpdateProductCommandHandler _handler;
 
         public UpdateProductShould()
@@ -21,8 +22,8 @@ namespace Hng.Application.Test.Features.Product
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
             _mapper = new Mapper(configuration);
 
-            _repositoryMock = new Mock<IProductRepository>();
-            _handler = new UpdateProductCommandHandler(_repositoryMock.Object, _mapper);
+            _mockRepository = new Mock<IRepository<Product>>();
+            _handler = new UpdateProductCommandHandler(_mockRepository.Object, _mapper);
         }
 
         [Fact]
@@ -72,10 +73,10 @@ namespace Hng.Application.Test.Features.Product
                 UpdatedAt = DateTime.UtcNow
             };
 
-            _repositoryMock.Setup(r => r.GetByIdAsync(productId))
+            _mockRepository.Setup(r => r.GetAsync(productId))
                 .ReturnsAsync(existingProduct);
 
-            _repositoryMock.Setup(r => r.Update(It.IsAny<Domain.Entities.Product>()))
+            _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<Domain.Entities.Product>()))
                 .Callback<Domain.Entities.Product>(product =>
                 {
                     product.Id = productId;
@@ -86,7 +87,7 @@ namespace Hng.Application.Test.Features.Product
                     product.UpdatedAt = updatedAt;
                 });
 
-            _repositoryMock.Setup(r => r.SaveChanges())
+            _mockRepository.Setup(r => r.SaveChanges())
                 .Returns(Task.CompletedTask);
 
             var command = new UpdateProductCommand(productId, updateDto);
