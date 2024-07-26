@@ -38,43 +38,43 @@ namespace Hng.Web.Controllers
             var query = new GetProductByIdQuery(id);
             var product = await _mediator.Send(query);
 
-            return Ok(new 
-            {
-              status_code = 200,
-              product
-            });
-
-        /// <summary>
-        /// Product Deletion - deletes a product owned by a specific user
-        /// </summary>
-        [HttpDelete("{id}")]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> DeleteProductById(Guid id)
-        {
-            var command = new DeleteProductByIdCommand(id);
-            var deletedProduct = await _mediator.Send(command);
-            return deletedProduct is not null ? NoContent() : NotFound(new
-            {
-                status_code = 404,
-                message = "Product not found"
-            });
-        }
-
-        /// <summary>
-        /// Product Categories - gets all categories for products 
-        /// </summary>
-        [HttpGet("categories")]
-        [Authorize]
-        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GeProductCategories()
-        {
-            var categories = await _mediator.Send(new GetCategoriesQuery());
             return Ok(new
             {
                 status_code = 200,
-                categories
+                product
             });
+
+            /// <summary>
+            /// Product Deletion - deletes a product owned by a specific user
+            /// </summary>
+            [HttpDelete("{id}")]
+            [Authorize]
+            [ProducesResponseType(StatusCodes.Status204NoContent)]
+            public async Task<ActionResult> DeleteProductById(Guid id)
+            {
+                var command = new DeleteProductByIdCommand(id);
+                var deletedProduct = await _mediator.Send(command);
+                return deletedProduct is not null ? NoContent() : NotFound(new
+                {
+                    status_code = 404,
+                    message = "Product not found"
+                });
+            }
+
+            /// <summary>
+            /// Product Categories - gets all categories for products 
+            /// </summary>
+            [HttpGet("categories")]
+            [Authorize]
+            [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+            public async Task<ActionResult<IEnumerable<CategoryDto>>> GeProductCategories()
+            {
+                var categories = await _mediator.Send(new GetCategoriesQuery());
+                return Ok(new
+                {
+                    status_code = 200,
+                    categories
+                });
+            }
         }
     }
-}
