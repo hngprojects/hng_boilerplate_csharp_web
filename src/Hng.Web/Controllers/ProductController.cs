@@ -3,9 +3,7 @@ using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.UserManagement.Dtos;
 using System;
 using Hng.Application.Features.Products.Queries;
-using Hng.Application.Features.Products.Dtos;
 using MediatR;
-using Hng.Application.Features.Products.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +15,7 @@ namespace Hng.Web.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
+
         public ProductController(IMediator mediator)
         {
             _mediator = mediator;
@@ -45,14 +44,13 @@ namespace Hng.Web.Controllers
 
             var query = new GetProductByIdQuery(id);
             var product = await _mediator.Send(query);
-
             return Ok(new
             {
                 status_code = 200,
                 product
             });
         }
-        
+
         /// <summary>
         /// Product Deletion - deletes a product owned by a specific user
         /// </summary>

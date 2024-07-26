@@ -1,69 +1,41 @@
-using Hng.Application.Features.Products.Commands;
+using AutoMapper;
 using Hng.Application.Features.Products.Dtos;
-using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Application.Features.Products.Handlers;
 using Hng.Application.Features.Products.Queries;
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+using Hng.Domain.Entities;
+using Hng.Infrastructure.Repository.Interface;
+using Moq;
+using Xunit;
 
-namespace Hng.Web.Controllers
+namespace Hng.Application.Test.Features.Products
 {
-    [Authorize]
-    [ApiController]
-    [Route("api/v1/products")]
-    public class ProductController : ControllerBase
+    public class GetCategoriesQueryShould
     {
-        private readonly IMediator _mediator;
+        private readonly Mock<IRepository<Category>> _mockRepository;
+        private readonly IMapper _mapper;
 
-        public ProductController(IMediator mediator)
+        public GetCategoriesQueryShould()
         {
-            _mediator = mediator;
-        }
-
-        [HttpPost]
-        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
-        public async Task<ActionResult<UserDto>> CreateProduct([FromBody] ProductCreationDto body)
-        {
-            var command = new CreateProductCommand(body);
-            var response = await _mediator.Send(command);
-            return CreatedAtAction(nameof(CreateProduct), response);
-        }
-
-        /// <summary>
-        /// Product Deletion - deletes a product owned by a specific user
-        /// </summary>
-        [HttpDelete("{id}")]
-        [Authorize]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> DeleteProductById(Guid id)
-        {
-            var command = new DeleteProductByIdCommand(id);
-            var deletedProduct = await _mediator.Send(command);
-            return deletedProduct is not null ? NoContent() : NotFound(new
+            _mockRepository = new Mock<IRepository<Category>>();
+            // Set up AutoMapper with your profiles
+            var config = new MapperConfiguration(cfg =>
             {
-                status_code = 404,
-                message = "Product not found"
+                // Add your AutoMapper profiles here
+                cfg.CreateMap<Category, CategoryDto>();
             });
+            _mapper = config.CreateMapper();
         }
 
-        /// <summary>
-        /// Product Categories - gets all categories for products 
-        /// </summary>
-        [HttpGet("categories")]
-        [Authorize]
-        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GeProductCategories()
+        [Fact]
+        public async Task ReturnCategoryDto_WhenCategoriesExists()
         {
-            var categories = await _mediator.Send(new GetCategoriesQuery());
-            return Ok(new
+            // Arrange
+            var expectedCount = 3;
+            var categories = new List<Category>
             {
-                status_code = 200,
-                categories
-            });
-                new Category{ Id = Guid.NewGuid(), Name = "Cloths", Description = "Cloths description here", Slug = "cloths", ParentId ="somerandomid"},
-                new Category{ Id = Guid.NewGuid(), Name = "Electronics", Description = "Cloths description here", Slug = "electrical", ParentId ="somerandomid"},
-                new Category{ Id = Guid.NewGuid(), Name = "Films", Description = "Cloths description here", Slug = "films", ParentId ="somerandomid"}
+                new Category { Id = Guid.NewGuid(), Name = "Cloths", Description = "Cloths description here", Slug = "cloths", ParentId = "somerandomid" },
+                new Category { Id = Guid.NewGuid(), Name = "Electronics", Description = "Cloths description here", Slug = "electrical", ParentId = "somerandomid" },
+                new Category { Id = Guid.NewGuid(), Name = "Films", Description = "Cloths description here", Slug = "films", ParentId = "somerandomid" }
             };
 
             var productId = Guid.NewGuid();
@@ -80,7 +52,7 @@ namespace Hng.Web.Controllers
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(result.Count(), expectedCount);
+            Assert.Equal(expectedCount, result.Count());
         }
     }
 }
