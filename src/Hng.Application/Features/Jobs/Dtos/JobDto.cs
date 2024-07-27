@@ -7,25 +7,25 @@ public class JobDto
 {
     [JsonPropertyName("id")]
     public Guid Id { get; set; }
-    
+
     [JsonPropertyName("title")]
     public string Title { get; set; }
-    
+
     [JsonPropertyName("description")]
     public string Description { get; set; }
-    
+
     [JsonPropertyName("location")]
     public string Location { get; set; }
-    
+
     [JsonPropertyName("salary")]
     public double Salary { get; set; }
-    
+
     [JsonPropertyName("level")]
     public ExperienceLevel Level { get; set; }
-    
+
     [JsonPropertyName("company")]
     public string Company { get; set; }
-    
+
     [JsonPropertyName("date-posted")]
     public DateTime DatePosted { get; set; }
 }

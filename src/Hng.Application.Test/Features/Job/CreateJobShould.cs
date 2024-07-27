@@ -39,18 +39,18 @@ public class CreateJobShouldTest
             Level = (ExperienceLevel)1,
             Company = "Meta"
         };
-        
+
         _repositoryMock.Setup(j => j.AddAsync(It.IsAny<Domain.Entities.Job>()))
             .ReturnsAsync((Domain.Entities.Job job) =>
             {
                 job.Id = expectedId;
                 return job;
             });
-        
+
         var command = new CreateJobCommand(createDto);
 
         var result = await _handler.Handle(command, default);
-        
+
         Assert.NotNull(result);
         Assert.Equal(expectedId, result.Id);
         Assert.Equal(createDto.Title, result.Title);
