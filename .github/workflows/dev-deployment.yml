@@ -7,6 +7,7 @@ on:
 
 jobs:
   deploy_to_dev:
+    if: github.event.repository.fork == false
     runs-on: ubuntu-latest
 
     environment:
