@@ -20,8 +20,8 @@ public class JobDto
     [JsonPropertyName("salary")]
     public double Salary { get; set; }
     
-    [JsonPropertyName("type")]
-    public JobType Type { get; set; }
+    [JsonPropertyName("level")]
+    public ExperienceLevel Level { get; set; }
     
     [JsonPropertyName("company")]
     public string Company { get; set; }
