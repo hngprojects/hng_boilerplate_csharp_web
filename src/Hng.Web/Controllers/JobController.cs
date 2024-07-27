@@ -1,10 +1,12 @@
 ﻿using Hng.Application.Features.Jobs.Commands;
 using Hng.Application.Features.Jobs.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/jobs")]
 public class JobController(IMediator mediator) : ControllerBase
