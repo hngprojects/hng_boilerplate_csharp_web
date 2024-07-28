@@ -23,6 +23,11 @@ namespace Hng.Application
             .AddJwtBearer(jwtOptions =>
             {
                 jwtOptions.TokenValidationParameters = TokenService.GetTokenValidationParameters(configurations);
+            })
+            .AddGoogle(googleOptions =>
+            {
+                  googleOptions.ClientId = configurations["Authentication:Google:ClientId"];
+                  googleOptions.ClientSecret = configurations["Authentication:Google:ClientSecret"];
             });
             services.AddAuthorization();
 
