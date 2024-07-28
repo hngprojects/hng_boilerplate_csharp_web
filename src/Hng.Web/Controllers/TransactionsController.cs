@@ -5,8 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Ocsp;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Hng.Web.Controllers
 {
@@ -70,12 +68,12 @@ namespace Hng.Web.Controllers
         public async Task<IActionResult> GetTransferStatsusForRecipients([FromBody] dynamic content)
         {
             var data = JsonConvert.DeserializeObject<TransactionsWebhookCommand>(content.ToString());
-            var command = new TransactionWebhookCommand(data);
-
+            
             if (data.Event == PaystackEventKeys.charge_success)
             {
                 if (data.Data.Metadata.ToString().Contains(nameof(ProductInitialized.ProductId)))
                 {
+                    var command = new TransactionWebhookCommand(data);
                     await _mediator.Send(command);
                 }
             }

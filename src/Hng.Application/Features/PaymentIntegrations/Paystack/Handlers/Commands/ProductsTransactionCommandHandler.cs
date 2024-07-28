@@ -9,11 +9,11 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
 {
     public class ProductsTransactionCommandHandler : IRequestHandler<TransactionWebhookCommand, bool>
     {
-        private readonly IRepository<Transaction> _paymentRepo;
+        private readonly IRepository<Transaction> _transactionrepo;
 
         public ProductsTransactionCommandHandler(IRepository<Transaction> paymentRepo)
         {
-            _paymentRepo = paymentRepo;
+            _transactionrepo = paymentRepo;
         }
 
         public async Task<bool> Handle(TransactionWebhookCommand request, CancellationToken cancellationToken)
@@ -26,16 +26,17 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
                 var productInitialized = 
                     JsonConvert.DeserializeObject<ProductInitialized>(JsonConvert.SerializeObject(request.Command.Data.Metadata));
 
-                var transaction = await _paymentRepo.GetBySpec(r => r.Reference == request.Command.Data.Reference && r.ProductId == productInitialized.ProductId);
+                var transaction = await _transactionrepo.GetBySpec(r => r.Reference == request.Command.Data.Reference && r.ProductId == productInitialized.ProductId);
 
                 if (transaction == null)
                     return false;
 
                 transaction.Status = Domain.Enums.TransactionStatus.Completed;
-                transaction.PaidAt = Convert.ToDateTime(request.Command.Data?.PaidAt);
+                transaction.PaidAt = Convert.ToDateTime(request.Command.Data?.PaidAt).ToUniversalTime();
                 transaction.ModifiedAt = DateTime.UtcNow;
 
-                await _paymentRepo.SaveChanges();
+                await _transactionrepo.UpdateAsync(transaction);
+                await _transactionrepo.SaveChanges();
 
                 return true;
             }
