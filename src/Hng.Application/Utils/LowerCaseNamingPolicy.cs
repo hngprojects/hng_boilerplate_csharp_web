@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
+namespace Hng.Application.Utils
 {
     public class LowerCaseNamingPolicy : JsonNamingPolicy
     {
