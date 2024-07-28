@@ -23,6 +23,7 @@ namespace Hng.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
         public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductCreationDto body)
         {
@@ -37,6 +38,7 @@ namespace Hng.Web.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
