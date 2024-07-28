@@ -24,5 +24,6 @@ public class User : EntityBase
     public Profile Profile { get; set; }
     public ICollection<Organization> Organizations { get; set; } = new List<Organization>();
     public ICollection<Product> Products { get; set; } = new List<Product>();
-    public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public ICollection<Transaction> Transactions { get; set; } = [];
+    public ICollection<Subscription> Subscriptions { get; set; } = [];
 }

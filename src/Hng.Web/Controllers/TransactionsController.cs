@@ -20,12 +20,12 @@ namespace Hng.Web.Controllers
         }
 
         /// <summary>
-        /// Initiaze transation from Paystack
+        /// Initiate product transation from Paystack
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("initialize/product")]
+        [HttpPost("initiate/product")]
         [ProducesResponseType(typeof(InitializeTransactionResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
