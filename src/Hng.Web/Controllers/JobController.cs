@@ -32,7 +32,7 @@ public class JobController(IMediator mediator)
         var query = new GetJobByIdQuery(id);
         var response = await mediator.Send(query);
 
-        return response is null ? NotFound(new FailureResponseDto<string>
+        return response is null ? NotFound(new FailureResponseDto<JobDto>
         {
             Data = null,
             Error = "Job not found",
