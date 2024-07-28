@@ -9,7 +9,7 @@ namespace Hng.Application.Features.Jobs.Handlers;
 
 public class CreateJobCommandHandler : IRequestHandler<CreateJobCommand, JobDto>
 {
-    
+
     private readonly IRepository<Job> _jobRepository;
     private readonly IMapper _mapper;
 

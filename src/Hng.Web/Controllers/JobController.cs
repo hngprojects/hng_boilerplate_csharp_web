@@ -12,7 +12,7 @@ namespace Hng.Web.Controllers;
 public class JobController : ControllerBase
 {
     private readonly IMediator _mediator;
-    
+
     [HttpPost]
     [ProducesResponseType(typeof(JobDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<JobDto>> CreateJob([FromBody] CreateJobDto body)
