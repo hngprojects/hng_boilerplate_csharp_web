@@ -13,9 +13,9 @@ namespace Hng.Application.Features.SuperAdmin.Handlers
         private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
 
-        public GetUsersBySearchQueryHandler(IRepository<User> userService, IMapper mapper)
+        public GetUsersBySearchQueryHandler(IRepository<User> userRepository, IMapper mapper)
         {
-            _userRepository = userService;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
