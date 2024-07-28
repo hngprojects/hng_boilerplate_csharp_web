@@ -44,8 +44,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
 
                 var product = await _productRepo.GetBySpec(p => p.Id == request.ProductId);
 
-                if(product == null)
-                    return Result.Failure<InitializeTransactionResponse>("Product with not found!");
+                if(product == null) return Result.Failure<InitializeTransactionResponse>("Product with not found!");
 
                 var amountInKobo = request.Amount * 100;
                 var reference = GenerateReference();
