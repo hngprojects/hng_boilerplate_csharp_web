@@ -1,10 +1,9 @@
-name: CI Workflow
+name: Dev Deployment
 
 on:
   push:
     branches:
       - dev
-      - Update-cicd-yaml
   pull_request:
     branches:
       - dev
