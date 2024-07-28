@@ -27,7 +27,7 @@ namespace Hng.Application.Features.SuperAdmin.Handlers
             users = users.Where(v => request.usersQueryParameters.Lastname == null || v.LastName.ToLower().Equals(request.usersQueryParameters.Lastname.ToLower())).ToList();
 
             var mappedusers = _mapper.Map<IEnumerable<UserDto>>(users);
-            var userSearchResult = PagedListDto<UserDto>.ToPagedList(mappedusers, request.usersQueryParameters.PageNumber, request.usersQueryParameters.PageSize);
+            var userSearchResult = PagedListDto<UserDto>.ToPagedList(mappedusers, request.usersQueryParameters.Offset, request.usersQueryParameters.Limit);
 
             return userSearchResult;
         }

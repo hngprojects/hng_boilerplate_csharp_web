@@ -4,9 +4,9 @@ namespace Hng.Application.Shared.Dtos
 {
     public class BaseQueryParameters
     {
-        [JsonPropertyName("page_size")]
-        public int PageSize { get; set; } = 10;
-        [JsonPropertyName("page_number")]
-        public int PageNumber { get; set; } = 1;
+        [JsonPropertyName("limit")]
+        public int Limit { get; set; } = 10;
+        [JsonPropertyName("offset")]
+        public int Offset { get; set; } = 1;
     }
 }

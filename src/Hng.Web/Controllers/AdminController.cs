@@ -21,7 +21,7 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("users")]
-        [AllowAnonymous]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> GetUsersBySearch([FromQuery] UsersQueryParameters parameters)
         {
