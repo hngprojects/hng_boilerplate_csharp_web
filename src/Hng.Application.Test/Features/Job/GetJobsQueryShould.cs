@@ -54,7 +54,7 @@ public class GetJobsQueryShould
                 DatePosted = DateTime.Now.AddDays(-2)
             }
         };
-        
+
         _jobRepositoryMock.Setup(repo => repo.GetAllAsync())
             .ReturnsAsync(jobs);
 

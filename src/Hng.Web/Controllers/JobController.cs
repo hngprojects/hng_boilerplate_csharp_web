@@ -44,7 +44,7 @@ public class JobController : ControllerBase
             Message = "The requested job does not exist."
         }) : Ok(response);
     }
-    
+
     [HttpGet("")]
     [ProducesResponseType(typeof(JobDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<JobDto>>> GetJobs()
