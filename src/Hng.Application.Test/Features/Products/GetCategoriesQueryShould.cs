@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Handlers;
 using Hng.Application.Features.Products.Queries;
@@ -17,14 +17,12 @@ namespace Hng.Application.Test.Features.Products
         public GetCategoriesQueryShould()
         {
             _mockRepository = new Mock<IRepository<Category>>();
-
             // Set up AutoMapper with your profiles
             var config = new MapperConfiguration(cfg =>
             {
                 // Add your AutoMapper profiles here
                 cfg.CreateMap<Category, CategoryDto>();
             });
-
             _mapper = config.CreateMapper();
         }
 
@@ -35,9 +33,9 @@ namespace Hng.Application.Test.Features.Products
             var expectedCount = 3;
             var categories = new List<Category>
             {
-                new Category{ Id = Guid.NewGuid(), Name = "Cloths", Description = "Cloths description here", Slug = "cloths", ParentId ="somerandomid"},
-                new Category{ Id = Guid.NewGuid(), Name = "Electronics", Description = "Cloths description here", Slug = "electrical", ParentId ="somerandomid"},
-                new Category{ Id = Guid.NewGuid(), Name = "Films", Description = "Cloths description here", Slug = "films", ParentId ="somerandomid"}
+                new Category { Id = Guid.NewGuid(), Name = "Cloths", Description = "Cloths description here", Slug = "cloths", ParentId = "somerandomid" },
+                new Category { Id = Guid.NewGuid(), Name = "Electronics", Description = "Cloths description here", Slug = "electrical", ParentId = "somerandomid" },
+                new Category { Id = Guid.NewGuid(), Name = "Films", Description = "Cloths description here", Slug = "films", ParentId = "somerandomid" }
             };
 
             var productId = Guid.NewGuid();
@@ -54,7 +52,7 @@ namespace Hng.Application.Test.Features.Products
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(result.Count(), expectedCount);
+            Assert.Equal(expectedCount, result.Count());
         }
     }
 }
