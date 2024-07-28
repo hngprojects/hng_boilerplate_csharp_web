@@ -39,7 +39,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
             {
                 var user = await _userRepo.GetBySpec(u => u.Email == request.Email);
 
-                if (user == null) 
+                if (user == null)
                     return Result.Failure<InitializeTransactionResponse>("User does not exist!");
 
                 var product = await _productRepo.GetBySpec(p => p.Id == request.ProductId);
@@ -61,7 +61,6 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
                 if (result.IsSuccess && result.Value.Status && result.Value.Data != null)
                 {
                     var transaction = BuildTransaction(request, reference, user.Id);
-                    
                     await _transactionRepo.AddAsync(transaction);
                     await _transactionRepo.SaveChanges();
 

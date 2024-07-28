@@ -23,8 +23,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
 
             try
             {
-                var productInitialized = 
-                    JsonConvert.DeserializeObject<ProductInitialized>(JsonConvert.SerializeObject(request.Command.Data.Metadata));
+                var productInitialized = JsonConvert.DeserializeObject<ProductInitialized>(JsonConvert.SerializeObject(request.Command.Data.Metadata));
 
                 var transaction = await _transactionrepo.GetBySpec(r => r.Reference == request.Command.Data.Reference && r.ProductId == productInitialized.ProductId);
 
@@ -43,7 +42,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
             catch (Exception)
             {
                 throw;
-            } 
+            }
         }
     }
 }
