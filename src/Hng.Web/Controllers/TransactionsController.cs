@@ -5,6 +5,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Hng.Web.Controllers
 {
@@ -24,7 +26,7 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        [Authorize]
+       // [Authorize]
         [HttpPost("initiate/product")]
         [ProducesResponseType(typeof(InitializeTransactionResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -68,10 +70,15 @@ namespace Hng.Web.Controllers
         public async Task<IActionResult> GetTransferStatsusForRecipients([FromBody] dynamic content)
         {
             var data = JsonConvert.DeserializeObject<TransactionsWebhookCommand>(content.ToString());
+            var command = new TransactionWebhookCommand(data);
 
             if (data.Event == PaystackEventKeys.charge_success)
-                await _mediator.Publish(data);
-
+            {
+                if (data.Data.Metadata.ToString().Contains(nameof(ProductInitialized.ProductId)))
+                {
+                    await _mediator.Send(command);
+                }
+            }
             return Ok(new { Status = true, Message = "success" });
         }
     }

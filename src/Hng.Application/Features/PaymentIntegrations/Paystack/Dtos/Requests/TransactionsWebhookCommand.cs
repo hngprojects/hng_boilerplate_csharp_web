@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
 {
-    public record TransactionsWebhookCommand : IRequest<bool>
+    public record TransactionsWebhookCommand
     {
         public string Event { get; set; }
 
@@ -39,5 +39,15 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
         public string CountryCode { get; set; }
         public string Brand { get; set; }
         public string AccountName { get; set; }
+    }
+
+    public record TransactionWebhookCommand : IRequest<bool>
+    {
+        public TransactionWebhookCommand(TransactionsWebhookCommand command)
+        {
+            Command = command;
+        }
+
+        public TransactionsWebhookCommand Command { get; set; }
     }
 }

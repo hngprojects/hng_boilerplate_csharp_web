@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Commands
 {
-    public class ProductsTransactionCommandHandler : IRequestHandler<TransactionsWebhookCommand, bool>
+    public class ProductsTransactionCommandHandler : IRequestHandler<TransactionWebhookCommand, bool>
     {
         private readonly IRepository<Transaction> _paymentRepo;
 
@@ -16,26 +16,23 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
             _paymentRepo = paymentRepo;
         }
 
-        public async Task<bool> Handle(TransactionsWebhookCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(TransactionWebhookCommand request, CancellationToken cancellationToken)
         {
-            if (!request.Event.Equals(PaystackEventKeys.charge_success, StringComparison.OrdinalIgnoreCase))
+            if (!request.Command.Event.Equals(PaystackEventKeys.charge_success, StringComparison.OrdinalIgnoreCase))
                 return false;
 
             try
             {
-                if (!request.Data.Metadata.ToString().Contains(nameof(ProductInitialized.ProductId)))
-                    return false;
-
                 var productInitialized = 
-                    JsonConvert.DeserializeObject<ProductInitialized>(JsonConvert.SerializeObject(request.Data.Metadata));
+                    JsonConvert.DeserializeObject<ProductInitialized>(JsonConvert.SerializeObject(request.Command.Data.Metadata));
 
-                var transaction = await _paymentRepo.GetBySpec(r => r.Reference == request.Data.Reference && r.ProductId == productInitialized.ProductId);
+                var transaction = await _paymentRepo.GetBySpec(r => r.Reference == request.Command.Data.Reference && r.ProductId == productInitialized.ProductId);
 
                 if (transaction == null)
                     return false;
 
                 transaction.Status = Domain.Enums.TransactionStatus.Completed;
-                transaction.PaidAt = Convert.ToDateTime(request.Data?.PaidAt);
+                transaction.PaidAt = Convert.ToDateTime(request.Command.Data?.PaidAt);
                 transaction.ModifiedAt = DateTime.UtcNow;
 
                 await _paymentRepo.SaveChanges();

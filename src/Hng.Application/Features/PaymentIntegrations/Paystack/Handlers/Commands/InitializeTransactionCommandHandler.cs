@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
@@ -91,7 +90,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
                 ProductId = request.ProductId,
                 Status = TransactionStatus.Pending,
                 UserId = userId,
-                Type = TransactionType.payment
+                Type = TransactionType.product
             };
     }
 }
