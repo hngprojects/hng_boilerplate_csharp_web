@@ -23,7 +23,7 @@ public class JobController(IMediator mediator)
         var response = await mediator.Send(command);
         return CreatedAtAction(nameof(CreateJob), response);
     }
-    
+
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(JobDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
@@ -31,7 +31,7 @@ public class JobController(IMediator mediator)
     {
         var query = new GetJobByIdQuery(id);
         var response = await mediator.Send(query);
-        
+
         return response is null ? NotFound(new FailureResponseDto<string>
         {
             Data = null,
