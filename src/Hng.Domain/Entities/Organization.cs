@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Hng.Domain.Entities;
 
 public class Organization : EntityBase
@@ -29,4 +27,6 @@ public class Organization : EntityBase
     public Guid OwnerId { get; set; }
 
     public ICollection<User> Users { get; set; } = new List<User>();
+
+    public ICollection<Subscription> Subscriptions { get; set; } = [];
 }
