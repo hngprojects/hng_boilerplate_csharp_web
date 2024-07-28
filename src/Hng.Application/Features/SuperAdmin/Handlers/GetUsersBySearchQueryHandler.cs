@@ -5,8 +5,6 @@ using Hng.Application.Shared.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using MySql.EntityFrameworkCore.Extensions;
 
 namespace Hng.Application.Features.SuperAdmin.Handlers
 {
@@ -23,7 +21,10 @@ namespace Hng.Application.Features.SuperAdmin.Handlers
 
         public async Task<PagedListDto<UserDto>> Handle(GetUsersBySearchQuery request, CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllBySpec(v => EF.Functions.Like(v.FirstName, request.usersQueryParameters.Firstname), v => EF.Functions.Like(v.LastName, request.usersQueryParameters.Lastname), v => EF.Functions.Like(v.Email, request.usersQueryParameters.Email));
+            var users = await _userRepository.GetAllAsync();
+            users = users.Where(v => request.usersQueryParameters.Email == null || v.Email.ToLower().Equals(request.usersQueryParameters.Email.ToLower())).ToList();
+            users = users.Where(v => request.usersQueryParameters.Firstname == null || v.FirstName.ToLower().Equals(request.usersQueryParameters.Firstname.ToLower())).ToList();
+            users = users.Where(v => request.usersQueryParameters.Lastname == null || v.LastName.ToLower().Equals(request.usersQueryParameters.Lastname.ToLower())).ToList();
 
             var mappedusers = _mapper.Map<IEnumerable<UserDto>>(users);
             var userSearchResult = PagedListDto<UserDto>.ToPagedList(mappedusers, request.usersQueryParameters.PageNumber, request.usersQueryParameters.PageSize);

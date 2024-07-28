@@ -1,5 +1,4 @@
-﻿using Hng.Application.Features.Products.Dtos;
-using Hng.Application.Features.SuperAdmin.Dto;
+﻿using Hng.Application.Features.SuperAdmin.Dto;
 using Hng.Application.Features.SuperAdmin.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,8 +22,8 @@ namespace Hng.Web.Controllers
         /// <returns></returns>
         [HttpGet("users")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetUsersBySearch([FromQuery] UsersQueryParameters parameters)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetUsersBySearch([FromQuery] UsersQueryParameters parameters)
         {
             var users = await _mediator.Send(new GetUsersBySearchQuery(parameters));
             return Ok(new
