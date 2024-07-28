@@ -13,6 +13,11 @@ public class JobController : ControllerBase
 {
     private readonly IMediator _mediator;
 
+    public JobController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     [HttpPost]
     [ProducesResponseType(typeof(JobDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<JobDto>> CreateJob([FromBody] CreateJobDto body)
