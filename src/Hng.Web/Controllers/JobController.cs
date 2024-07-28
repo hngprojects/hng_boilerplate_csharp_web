@@ -39,4 +39,12 @@ public class JobController(IMediator mediator)
             Message = "The requested job does not exist."
         }) : Ok(response);
     }
+    
+    [HttpGet("")]
+    [ProducesResponseType(typeof(JobDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<JobDto>>> GetJobs()
+    {
+        var jobs = await _mediator.Send(new GetJobsQuery());
+        return Ok(jobs);
+    }
 }
