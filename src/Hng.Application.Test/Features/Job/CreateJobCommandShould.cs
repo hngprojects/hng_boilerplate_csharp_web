@@ -10,13 +10,13 @@ using Xunit;
 
 namespace Hng.Application.Test.Features.Job;
 
-public class CreateJobShouldTest
+public class CreateJobCommandShould
 {
     private readonly IMapper _mapper;
     private readonly Mock<IRepository<Domain.Entities.Job>> _repositoryMock;
     private readonly CreateJobCommandHandler _handler;
 
-    public CreateJobShouldTest()
+    public CreateJobCommandShould()
     {
         var mappingProfile = new JobMapperProfile();
         var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
