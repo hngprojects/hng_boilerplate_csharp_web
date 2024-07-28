@@ -14,58 +14,59 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
 {
     public class InitializeTransactionCommandHandler : IRequestHandler<InitializeTransactionCommand, Result<InitializeTransactionResponse>>
     {
-        private readonly IRepository<Transaction> _paymentRepo;
-        private readonly IMapper _mapper;
+        private readonly IRepository<Transaction> _transactionRepo;
+        private readonly IRepository<User> _userRepo;
+        private readonly IRepository<Product> _productRepo;
         private readonly IPaystackClient _paystackClient;
         private readonly PaystackApiKeys _apiKeys;
 
-        public InitializeTransactionCommandHandler(IPaystackClient paystackClient, PaystackApiKeys apiKeys, IRepository<Transaction> paymentRepo, IMapper mapper)
+        public InitializeTransactionCommandHandler(
+            IPaystackClient paystackClient,
+            PaystackApiKeys apiKeys,
+            IRepository<Transaction> transactionRepo,
+            IRepository<User> userRepo,
+            IRepository<Product> productRepo)
         {
-            _paymentRepo = paymentRepo;
+            _transactionRepo = transactionRepo;
             _paystackClient = paystackClient;
             _apiKeys = apiKeys;
-            _mapper = mapper;
-
+            _userRepo = userRepo;
+            _productRepo = productRepo;
         }
 
         public async Task<Result<InitializeTransactionResponse>> Handle(InitializeTransactionCommand request, CancellationToken cancellationToken)
         {
-            var amountInKobo = request.Amount * 100;
-            var reference = GenerateReference();
-            var initializeRequest = new InitializeTransactionRequest(amountInKobo.ToString(), request.Email)
-            {
-                BusinessAuthorizationToken = _apiKeys.SecretKey,
-                Reference = reference,
-                Metadata = JsonConvert.SerializeObject(new
-                {
-                    product_id = request.ProductId
-                })
-            };
             try
             {
+                var user = await _userRepo.GetBySpec(u => u.Email == request.Email);
+
+                if (user == null) 
+                    return Result.Failure<InitializeTransactionResponse>("User does not exist!");
+
+                var product = await _productRepo.GetBySpec(p => p.Id == request.ProductId);
+
+                if(product == null)
+                    return Result.Failure<InitializeTransactionResponse>("Product with not found!");
+
+                var amountInKobo = request.Amount * 100;
+                var reference = GenerateReference();
+                var initializeRequest = new InitializeTransactionRequest(amountInKobo.ToString(), request.Email)
+                {
+                    BusinessAuthorizationToken = _apiKeys.SecretKey,
+                    Reference = reference,
+                    Metadata = JsonConvert.SerializeObject(new ProductInitialized(request.ProductId))
+                };
+
                 var result = await _paystackClient.InitializeTransaction(initializeRequest);
 
-                if (result.IsSuccess && result.Value.Data != null)
+                if (result.IsSuccess && result.Value.Status && result.Value.Data != null)
                 {
-                    result.Value.Data.Amount = amountInKobo / 100m;
+                    var transaction = BuildTransaction(request, reference, user.Id);
+                    
+                    await _transactionRepo.AddAsync(transaction);
+                    await _transactionRepo.SaveChanges();
 
-                    var transaction = _mapper.Map<Transaction>(request);
-                    transaction.Id = Guid.NewGuid();
-                    transaction.Amount = result.Value.Data.Amount;
-                    transaction.Reference = reference;
-                    transaction.Status = TransactionStatus.Pending;
-                    transaction.CreatedAt = DateTime.UtcNow;
-                    transaction.ProductId = request.ProductId;
-
-                    await _paymentRepo.AddAsync(transaction);
-                    await _paymentRepo.SaveChanges();
-
-                    return Result.Success(new InitializeTransactionResponse
-                    {
-                        Status = result.Value.Status,
-                        Message = "Transaction initialized",
-                        Data = result.Value.Data
-                    });
+                    return Result.Success(result.Value);
                 }
                 else
                 {
@@ -80,5 +81,17 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
 
         private static string GenerateReference() => $"hng{DateTime.Now.Ticks}";
 
+        private static Transaction BuildTransaction(InitializeTransactionCommand request, string reference, Guid userId)
+            => new Transaction()
+            {
+                Amount = request.Amount,
+                Reference = reference,
+                CreatedAt = DateTime.UtcNow,
+                Partners = TransactionIntegrationPartners.Paystack,
+                ProductId = request.ProductId,
+                Status = TransactionStatus.Pending,
+                UserId = userId,
+                Type = TransactionType.payment
+            };
     }
 }

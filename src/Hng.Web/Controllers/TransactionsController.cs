@@ -25,7 +25,7 @@ namespace Hng.Web.Controllers
         /// <param name="command"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("initialize")]
+        [HttpPost("initialize/product")]
         [ProducesResponseType(typeof(InitializeTransactionResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -67,10 +67,10 @@ namespace Hng.Web.Controllers
         [HttpPost("callback")]
         public async Task<IActionResult> GetTransferStatsusForRecipients([FromBody] dynamic content)
         {
-            var data = JsonConvert.DeserializeObject<TransactionSuccessfulCommand>(content.ToString());
+            var data = JsonConvert.DeserializeObject<TransactionsWebhookCommand>(content.ToString());
 
             if (data.Event == PaystackEventKeys.charge_success)
-                await _mediator.Send(data);
+                await _mediator.Publish(data);
 
             return Ok(new { Status = true, Message = "success" });
         }

@@ -1,10 +1,9 @@
-﻿using CSharpFunctionalExtensions;
-using MediatR;
+﻿using MediatR;
 using Newtonsoft.Json;
 
 namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
 {
-    public record TransactionSuccessfulCommand : IRequest<Result<string>>
+    public record TransactionsWebhookCommand : IRequest<bool>
     {
         public string Event { get; set; }
 

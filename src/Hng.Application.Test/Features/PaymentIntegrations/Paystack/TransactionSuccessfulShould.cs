@@ -12,18 +12,18 @@ namespace Hng.Application.Test.Features.PaymentIntegrations.Paystack
     public class TransactionSuccessfulShould
     {
         private readonly Mock<IRepository<Transaction>> _repositoryMock;
-        private readonly TransactionSuccessfulCommandHandler _handler;
+        private readonly ProductsTransactionCommandHandler _handler;
 
         public TransactionSuccessfulShould()
         {
             _repositoryMock = new Mock<IRepository<Transaction>>();
-            _handler = new TransactionSuccessfulCommandHandler(_repositoryMock.Object);
+            _handler = new ProductsTransactionCommandHandler(_repositoryMock.Object);
         }
 
         [Fact]
         public async Task Handle_ShouldReturnSuccessOnSuccessEvent()
         {
-            var request = new TransactionSuccessfulCommand() { Event = PaystackEventKeys.charge_success };
+            var request = new TransactionsWebhookCommand() { Event = PaystackEventKeys.charge_success };
             var response = new Transaction() { Status = Domain.Enums.TransactionStatus.Completed };
 
             _repositoryMock.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<Transaction, bool>>>(), It.IsAny<Expression<Func<Transaction, object>>[]>()))
@@ -39,7 +39,7 @@ namespace Hng.Application.Test.Features.PaymentIntegrations.Paystack
         [Fact]
         public async Task Handle_ShouldReturnFailureOnWrongReferenceEvent()
         {
-            var request = new TransactionSuccessfulCommand() { Event = PaystackEventKeys.charge_success };
+            var request = new TransactionsWebhookCommand() { Event = PaystackEventKeys.charge_success };
             var result = await _handler.Handle(request, default);
 
             Assert.True(result.IsFailure);

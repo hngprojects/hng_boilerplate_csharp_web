@@ -7,6 +7,6 @@ namespace Hng.Domain.Enums
     public enum TransactionType
     {
         payment,
-        Refund
+        subscription
     }
 }
