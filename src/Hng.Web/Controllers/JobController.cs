@@ -9,15 +9,16 @@ namespace Hng.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/v1/jobs")]
-public class JobController(IMediator mediator) : ControllerBase
+public class JobController : ControllerBase
 {
-
+    private readonly IMediator _mediator;
+    
     [HttpPost]
     [ProducesResponseType(typeof(JobDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<JobDto>> CreateJob([FromBody] CreateJobDto body)
     {
         var command = new CreateJobCommand(body);
-        var response = await mediator.Send(command);
+        var response = await _mediator.Send(command);
         return CreatedAtAction(nameof(CreateJob), response);
     }
 }
