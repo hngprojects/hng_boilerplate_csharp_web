@@ -2,7 +2,6 @@
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
 using MediatR;
 
-
 namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
 {
     public record InitializeTransactionCommand : IRequest<Result<InitializeTransactionResponse>>
@@ -12,3 +11,5 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
         public Guid ProductId { get; set; }
     }
 }
+
+public record ProductInitialized(Guid ProductId, string Type = nameof(ProductInitialized));
