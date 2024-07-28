@@ -15,8 +15,8 @@ public class CreateJobCommandHandler : IRequestHandler<CreateJobCommand, JobDto>
 
     public CreateJobCommandHandler(IRepository<Job> jobRepository, IMapper mapper)
     {
-        _jobRepository = jobRepository ?? throw new ArgumentNullException(nameof(jobRepository));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _jobRepository = jobRepository;
+        _mapper = mapper;
     }
     public async Task<JobDto> Handle(CreateJobCommand request, CancellationToken cancellationToken)
     {
