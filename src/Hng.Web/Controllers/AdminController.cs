@@ -1,5 +1,6 @@
 ﻿using Hng.Application.Features.SuperAdmin.Dto;
 using Hng.Application.Features.SuperAdmin.Queries;
+using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +27,7 @@ namespace Hng.Web.Controllers
         public async Task<ActionResult> GetUsersBySearch([FromQuery] UsersQueryParameters parameters)
         {
             var users = await _mediator.Send(new GetUsersBySearchQuery(parameters));
-            return Ok(new
-            {
-                status_code = 200,
-                users.MetaData,
-                users
-            });
+            return Ok(new PaginatedResponseDto<PagedListDto<UserDto>> { Data = users, Metadata = users.MetaData });
         }
     }
 }
