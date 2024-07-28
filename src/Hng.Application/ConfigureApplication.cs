@@ -26,8 +26,8 @@ namespace Hng.Application
             })
             .AddGoogle(googleOptions =>
             {
-                  googleOptions.ClientId = configurations["Authentication:Google:ClientId"];
-                  googleOptions.ClientSecret = configurations["Authentication:Google:ClientSecret"];
+                googleOptions.ClientId = configurations["Authentication:Google:ClientId"];
+                googleOptions.ClientSecret = configurations["Authentication:Google:ClientSecret"];
             });
             services.AddAuthorization();
 
