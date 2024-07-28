@@ -17,5 +17,6 @@ namespace Hng.Infrastructure.Context
         public DbSet<Product> Products { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
     }
 }
