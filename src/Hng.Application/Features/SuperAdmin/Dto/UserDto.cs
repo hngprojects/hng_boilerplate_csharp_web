@@ -13,7 +13,7 @@ namespace Hng.Application.Features.SuperAdmin.Dto
         public string AvatarUrl { get; set; }
         [JsonPropertyName("email")]
         public string Email { get; set; }
-        [JsonPropertyName("crerated_on")]
+        [JsonPropertyName("created_on")]
         public DateTime CreatedAt { get; set; }
     }
 }
