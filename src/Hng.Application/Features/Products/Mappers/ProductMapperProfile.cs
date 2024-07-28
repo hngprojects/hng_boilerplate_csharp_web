@@ -10,6 +10,8 @@ namespace Hng.Application.Features.Products.Mappers
         {
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<ProductCreationDto, Product>();
+            CreateMap<UpdateProductDto, Product>();
+
         }
     }
 
