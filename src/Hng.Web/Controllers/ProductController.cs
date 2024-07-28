@@ -85,16 +85,6 @@ namespace Hng.Web.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductDto updateProductDto)
         {
-            var validationResult = new UpdateProductDtoValidator().Validate(updateProductDto);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(new
-                {
-                    status_code = 400,
-                    message = validationResult.Errors.Select(e => e.ErrorMessage).ToArray(),
-                    error = "Bad Request"
-                });
-            }
             var command = new UpdateProductCommand(id, updateProductDto);
             var result = await _mediator.Send(command);
             return result != null
