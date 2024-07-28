@@ -13,6 +13,7 @@ namespace Hng.Application
         public static IServiceCollection AddApplicationConfig(this IServiceCollection services, IConfiguration configurations)
         {
             services.AddMediatR(cf => cf.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddAuthentication(options =>
@@ -29,6 +30,7 @@ namespace Hng.Application
                 googleOptions.ClientId = configurations["Authentication:Google:ClientId"];
                 googleOptions.ClientSecret = configurations["Authentication:Google:ClientSecret"];
             });
+
             services.AddAuthorization();
 
             services.AddHttpClient<IPaystackClient, PaystackClient>(c =>
