@@ -24,7 +24,7 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-       // [Authorize]
+        [Authorize]
         [HttpPost("initiate/product")]
         [ProducesResponseType(typeof(InitializeTransactionResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
