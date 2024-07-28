@@ -2,6 +2,7 @@ using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Queries;
 using Hng.Application.Features.Products.Validators;
+using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,20 @@ namespace Hng.Web.Controllers
         public ProductController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
+        public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductCreationDto body)
+        {
+            var command = new CreateProductCommand(body);
+            var response = await _mediator.Send(command);
+
+            var successResponse = new SuccessResponseDto<ProductDto>();
+            successResponse.Data = response;
+            successResponse.Message = "Product Successfully";
+            return Ok(successResponse);
         }
 
         [HttpGet("{id}")]
