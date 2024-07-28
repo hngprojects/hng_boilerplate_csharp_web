@@ -6,6 +6,7 @@ using Hng.Application.Features.Products.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Hng.Application.Shared.Dtos;
 
 namespace Hng.Web.Controllers
 {
@@ -23,11 +24,15 @@ namespace Hng.Web.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
-        public async Task<ActionResult<UserDto>> CreateProduct([FromBody] ProductCreationDto body)
+        public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductCreationDto body)
         {
             var command = new CreateProductCommand(body);
             var response = await _mediator.Send(command);
-            return CreatedAtAction(nameof(CreateProduct), response);
+
+            var successResponse = new SuccessResponseDto<ProductDto>();
+            successResponse.Data = response;
+            successResponse.Message = "Product Successfully";
+            return Ok(successResponse);
         }
 
         [HttpGet("{id}")]
@@ -39,15 +44,20 @@ namespace Hng.Web.Controllers
         {
             if (id == Guid.Empty)
             {
-                return BadRequest(new { error = "Invalid product ID" });
+                var fail = new FailureResponseDto<ProductDto>
+                {
+                    Data = null,
+                    Message = "Invalid product ID"
+                };
+                return BadRequest(fail);
             }
 
             var query = new GetProductByIdQuery(id);
             var product = await _mediator.Send(query);
-            return Ok(new
+            return Ok(new SuccessResponseDto<ProductDto>()
             {
-                status_code = 200,
-                product
+                Data = product,
+                Message = "Successful"
             });
         }
 

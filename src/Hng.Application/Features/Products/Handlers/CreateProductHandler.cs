@@ -29,6 +29,7 @@ namespace Hng.Application.Features.Products.Handlers
             product.CreatedAt = DateTime.UtcNow;
             product.UpdatedAt = DateTime.UtcNow;
             await _repository.AddAsync(product);
+            await _repository.SaveChanges();
             return _mapper.Map<ProductDto>(product);
         }
     }
