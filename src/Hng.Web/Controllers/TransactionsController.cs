@@ -67,8 +67,7 @@ namespace Hng.Web.Controllers
         [HttpPost("callback")]
         public async Task<IActionResult> GetTransferStatsusForRecipients([FromBody] dynamic content)
         {
-            var data = JsonConvert.DeserializeObject<TransactionsWebhookCommand>(content.ToString());
-            
+            var data = JsonConvert.DeserializeObject<TransactionsWebhookCommand>(content.ToString());   
             if (data.Event == PaystackEventKeys.charge_success)
             {
                 if (data.Data.Metadata.ToString().Contains(nameof(ProductInitialized.ProductId)))
