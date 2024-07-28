@@ -7,16 +7,24 @@ using MediatR;
 
 namespace Hng.Application.Features.Jobs.Handlers;
 
-public class CreateJobCommandHandler(IRepository<Job> jobRepository, IMapper mapper)
-    : IRequestHandler<CreateJobCommand, JobDto>
+public class CreateJobCommandHandler : IRequestHandler<CreateJobCommand, JobDto>
 {
+    
+    private readonly IRepository<Job> _jobRepository;
+    private readonly IMapper _mapper;
+
+    public CreateJobCommandHandler(IRepository<Job> jobRepository, IMapper mapper)
+    {
+        _jobRepository = jobRepository ?? throw new ArgumentNullException(nameof(jobRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    }
     public async Task<JobDto> Handle(CreateJobCommand request, CancellationToken cancellationToken)
     {
-        var job = mapper.Map<Job>(request.JobBody);
+        var job = _mapper.Map<Job>(request.JobBody);
         job.DatePosted = DateTime.UtcNow;
 
-        await jobRepository.AddAsync(job);
-        await jobRepository.SaveChanges();
-        return mapper.Map<JobDto>(job);
+        await _jobRepository.AddAsync(job);
+        await _jobRepository.SaveChanges();
+        return _mapper.Map<JobDto>(job);
     }
 }
