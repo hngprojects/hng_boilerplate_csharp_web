@@ -16,19 +16,18 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
     public void Dispose()
     {
         timer.Dispose();
-        Task.WhenAny(Task.Delay(-1, CancellationToken.None));
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("Email service running");
+        logger.LogDebug("Email service running");
         timer = new Timer(ProcessQueue, null, TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(1));
         return Task.CompletedTask;
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("Email service is stopping");
+        logger.LogDebug("Email service is stopping");
         timer.Change(Timeout.Infinite, 0);
         await timer.DisposeAsync();
     }
@@ -40,23 +39,25 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
 
         IRepository<Message> repository = scope.ServiceProvider.GetRequiredService<IRepository<Message>>();
 
-        logger.LogInformation("Getting message backlog");
+        logger.LogDebug("Getting message backlog");
 
         IEnumerable<Message> pendingMessages = await repository.GetAllBySpec(e => e.Status == Domain.Enums.MessageStatus.Pending);
 
-        logger.LogInformation("Processing message backlog");
+        logger.LogDebug("Processing message backlog");
 
         foreach (var message in pendingMessages)
         {
             try
             {
-                logger.LogInformation("Sending message {0} \n{1}", message.ToString(), message.Status);
+                logger.LogDebug("Sending message to {0} with contact \n{1}", message.RecipientName, message.RecipientContact);
                 Message sentMessage = await ProcessMessage(message);
+                sentMessage.Status = Domain.Enums.MessageStatus.Sent;
+                await repository.UpdateAsync(sentMessage);
             }
 
             catch (Exception ex)
             {
-                logger.LogInformation("Message failed to send with error {0}", ex);
+                logger.LogError("Message failed to send with error {0}", ex);
 
                 message.RetryCount += 1;
 
@@ -74,8 +75,6 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
     {
         using IServiceScope service = serviceProvider.CreateScope();
         IEmailService emailService = service.ServiceProvider.GetRequiredService<IEmailService>();
-        if (message.Type == Domain.Enums.MessageType.Email) return await emailService.SendEmailMessage(message);
-        return message;
-        // return await _smsService.SendSMSMessage(message);
+        return await emailService.SendEmailMessage(message);
     }
 }

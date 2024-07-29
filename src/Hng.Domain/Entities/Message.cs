@@ -11,7 +11,13 @@ public class Message : EntityBase
     public MessageType Type { get; set; }
 
     [Required]
-    public string Recipient { get; set; }
+    public string RecipientName { get; set; }
+
+    [Required]
+    public string RecipientContact { get; set; }
+
+    [Required]
+    public string Subject { get; set; }
 
     [Required]
     public string Content { get; set; }
@@ -20,23 +26,10 @@ public class Message : EntityBase
     public MessageStatus Status { get; set; } = MessageStatus.Pending;
 
     [Required]
-    public int RetryCount { get; set; }
+    public int RetryCount { get; set; } = 0;
 
+    [Required]
     public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public DateTimeOffset? LastAttemptedAt { get; set; } = null;
-
-    public override string ToString()
-    {
-        FieldInfo[] fields = GetType().GetFields();
-
-        StringBuilder stringBuilder = new();
-
-        foreach (var field in fields)
-        {
-            System.Console.WriteLine("tostring()");
-            stringBuilder.AppendLine(field.Name + "     : " + field.GetValue(field));
-        }
-        return stringBuilder.ToString();
-    }
+    public DateTimeOffset? LastAttemptedAt { get; set; } = null; 
 }

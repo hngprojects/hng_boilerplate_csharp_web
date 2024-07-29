@@ -3,6 +3,7 @@ using Hng.Infrastructure.Repository;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services;
 using Hng.Infrastructure.Services.Interfaces;
+using Hng.Infrastructure.Services.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

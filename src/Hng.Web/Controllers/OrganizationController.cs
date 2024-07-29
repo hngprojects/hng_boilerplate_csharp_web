@@ -13,10 +13,9 @@ namespace Hng.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/v1/organizations")]
-public class OrganizationController(IMediator mediator, IMessageQueueService messageQueueService) : ControllerBase
+public class OrganizationController(IMediator mediator) : ControllerBase
 {
-    private readonly IMessageQueueService messageQueueService = messageQueueService;
-
+ 
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<OrganizationDto>> GetOrganizationById(Guid id)
@@ -32,20 +31,11 @@ public class OrganizationController(IMediator mediator, IMessageQueueService mes
     }
 
     [HttpPost]
-    [AllowAnonymous]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<OrganizationDto>> CreateOrganization([FromBody] CreateOrganizationDto body)
     {
-        await messageQueueService.TryQueueEmail(new Message()
-        {
-            Type = Domain.Enums.MessageType.Email,
-            Recipient = "user@example.com",
-            Content = "This is a test email to demonstrate some stuff",
-
-        });
-        return Ok();
-        // var command = new CreateOrganizationCommand(body);
-        // var response = await mediator.Send(command);
-        // return CreatedAtAction(nameof(CreateOrganization), response);
+        var command = new CreateOrganizationCommand(body);
+        var response = await mediator.Send(command);
+        return CreatedAtAction(nameof(CreateOrganization), response);
     }
 }
