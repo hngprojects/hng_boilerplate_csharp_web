@@ -52,4 +52,13 @@ public class JobController : ControllerBase
         var jobs = await _mediator.Send(new GetJobsQuery());
         return Ok(jobs);
     }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteJob(Guid id)
+    {
+        await _mediator.Send(new DeleteJobCommand(id));
+        return NoContent();
+    }
 }
