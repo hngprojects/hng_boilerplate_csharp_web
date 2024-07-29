@@ -77,12 +77,17 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("Jobs");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("Hng.Domain.Entities.Notification", b =>
+=======
+            modelBuilder.Entity("Hng.Domain.Entities.NewsLetterSubscriber", b =>
+>>>>>>> dev
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+<<<<<<< HEAD
                     b.Property<bool>("ActivityWorkspaceEmail")
                         .HasColumnType("boolean");
 
@@ -115,6 +120,25 @@ namespace Hng.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
+=======
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateTime?>("LeftOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("NewsLetterSubscribers");
+>>>>>>> dev
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>

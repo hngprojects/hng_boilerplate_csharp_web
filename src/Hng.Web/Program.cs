@@ -38,7 +38,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseGlobalErrorHandler(app.Environment);
-
+app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -50,4 +50,14 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
 
         public TransactionsWebhookCommand Command { get; set; }
     }
+
+    public record SubTransactionWebhookCommand : IRequest<bool>
+    {
+        public SubTransactionWebhookCommand(TransactionsWebhookCommand command)
+        {
+            Command = command;
+        }
+
+        public TransactionsWebhookCommand Command { get; set; }
+    }
 }

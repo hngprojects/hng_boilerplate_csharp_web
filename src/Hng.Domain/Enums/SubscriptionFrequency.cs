@@ -7,7 +7,8 @@ namespace Hng.Domain.Enums
     public enum SubscriptionFrequency
     {
         Monthly,
-        Quaterly,
-        Yearly
+        Quarterly,
+        HalfYearly,
+        Annually
     }
 }
