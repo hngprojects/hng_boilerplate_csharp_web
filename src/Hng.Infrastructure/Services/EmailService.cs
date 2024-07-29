@@ -35,10 +35,10 @@ internal class EmailService(SmtpCredentials smtpCredentials, ILogger<EmailServic
 
             return message;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             logger.LogError($"Failed sending email for {message.RecipientName} with error {ex}");
-            return null;
+            throw ex;
         }
 
     }

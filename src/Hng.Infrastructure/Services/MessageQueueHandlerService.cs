@@ -65,6 +65,7 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
                 {
                     message.Status = Domain.Enums.MessageStatus.Failed;
                 }
+                await repository.UpdateAsync(message);
             }
         }
         await repository.SaveChanges();
