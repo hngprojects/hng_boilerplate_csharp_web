@@ -51,7 +51,7 @@ namespace Hng.Application
                     });
             });
             services.AddSingleton(configurations.GetSection("SmtpCredentials").Get<SmtpCredentials>());
-            
+
             return services;
         }
     }

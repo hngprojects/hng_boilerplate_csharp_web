@@ -15,7 +15,7 @@ namespace Hng.Web.Controllers;
 [Route("api/v1/organizations")]
 public class OrganizationController(IMediator mediator) : ControllerBase
 {
- 
+
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<OrganizationDto>> GetOrganizationById(Guid id)

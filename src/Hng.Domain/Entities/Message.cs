@@ -31,5 +31,5 @@ public class Message : EntityBase
     [Required]
     public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public DateTimeOffset? LastAttemptedAt { get; set; } = null; 
+    public DateTimeOffset? LastAttemptedAt { get; set; } = null;
 }
