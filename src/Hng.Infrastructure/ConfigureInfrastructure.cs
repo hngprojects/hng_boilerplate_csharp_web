@@ -18,7 +18,9 @@ namespace Hng.Infrastructure
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<SeederService>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-
+            services.AddScoped<IMessageQueueService, MessageQueueService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddHostedService<MessageQueueHandlerService>();
             return services;
         }
     }

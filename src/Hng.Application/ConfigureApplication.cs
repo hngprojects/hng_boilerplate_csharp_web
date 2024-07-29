@@ -1,6 +1,7 @@
 using System.Reflection;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
 using Hng.Infrastructure.Services;
+using Hng.Infrastructure.Utilities;
 using Hng.Infrastructure.Utilities.StringKeys;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +34,8 @@ namespace Hng.Application
 
             services.AddSingleton(configurations.GetSection("PaystackApiKeys").Get<PaystackApiKeys>());
 
+            services.AddSingleton(configurations.GetSection("SmtpCredentials").Get<SmtpCredentials>());
+            
             return services;
         }
     }
