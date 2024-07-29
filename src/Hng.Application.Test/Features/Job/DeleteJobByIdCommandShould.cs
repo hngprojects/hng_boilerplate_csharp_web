@@ -7,15 +7,15 @@ using Xunit;
 
 namespace Hng.Application.Test.Features.Job
 {
-    public class DeleteJobCommandShould
+    public class DeleteJobByIdCommandShould
     {
         private readonly Mock<IRepository<Domain.Entities.Job>> _mockJobRepository;
-        private readonly DeleteJobCommandHandler _handler;
+        private readonly DeleteJobByIdCommandHandler _handler;
 
-        public DeleteJobCommandShould()
+        public DeleteJobByIdCommandShould()
         {
             _mockJobRepository = new Mock<IRepository<Domain.Entities.Job>>();
-            _handler = new DeleteJobCommandHandler(_mockJobRepository.Object);
+            _handler = new DeleteJobByIdCommandHandler(_mockJobRepository.Object);
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace Hng.Application.Test.Features.Job
             _mockJobRepository.Setup(repo => repo.SaveChanges())
                 .Returns(Task.CompletedTask);
 
-            var command = new DeleteJobCommand(jobId);
+            var command = new DeleteJobByIdCommand(jobId);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
@@ -61,7 +61,7 @@ namespace Hng.Application.Test.Features.Job
             _mockJobRepository.Setup(repo => repo.SaveChanges())
                 .Returns(Task.CompletedTask);
 
-            var command = new DeleteJobCommand(jobId);
+            var command = new DeleteJobByIdCommand(jobId);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
@@ -88,7 +88,7 @@ namespace Hng.Application.Test.Features.Job
             _mockJobRepository.Setup(repo => repo.SaveChanges())
                 .Returns(Task.CompletedTask);
 
-            var command = new DeleteJobCommand(jobId);
+            var command = new DeleteJobByIdCommand(jobId);
 
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => _handler.Handle(command, CancellationToken.None));

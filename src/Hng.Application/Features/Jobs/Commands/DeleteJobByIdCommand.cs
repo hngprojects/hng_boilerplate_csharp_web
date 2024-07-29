@@ -2,11 +2,11 @@
 
 namespace Hng.Application.Features.Jobs.Commands;
 
-public class DeleteJobCommand : IRequest<bool>
+public class DeleteJobByIdCommand : IRequest<bool>
 {
     public Guid JobId { get; }
 
-    public DeleteJobCommand(Guid jobId)
+    public DeleteJobByIdCommand(Guid jobId)
     {
         JobId = jobId;
     }

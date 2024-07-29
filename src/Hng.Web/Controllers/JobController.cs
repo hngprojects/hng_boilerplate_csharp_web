@@ -56,9 +56,9 @@ public class JobController : ControllerBase
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> DeleteJob(Guid id)
+    public async Task<ActionResult> DeleteJobById(Guid id)
     {
-        await _mediator.Send(new DeleteJobCommand(id));
+        await _mediator.Send(new DeleteJobByIdCommand(id));
         return NoContent();
     }
 }
