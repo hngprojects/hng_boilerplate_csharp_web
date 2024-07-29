@@ -40,6 +40,26 @@ namespace Hng.Web.Controllers
         }
 
         /// <summary>
+        /// Initiate subscription transation from Paystack
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("initiate/subscription")]
+        [ProducesResponseType(typeof(InitiateSubscriptionTransactionResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> InitializeSubscriptionTransaction([FromBody] InitiateSubscriptionTransactionCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+        }
+
+        /// <summary>
         /// Used to Verify Transaction from Paystack
         /// </summary>
         /// <param name="reference"></param>
@@ -73,6 +93,11 @@ namespace Hng.Web.Controllers
                 if (data.Data.Metadata.ToString().Contains(nameof(ProductInitialized.ProductId)))
                 {
                     var command = new TransactionWebhookCommand(data);
+                    await _mediator.Send(command);
+                }
+                else if (data.Data.Metadata.ToString().Contains(nameof(SubscriptionInitialized.SubId)))
+                {
+                    var command = new SubTransactionWebhookCommand(data);
                     await _mediator.Send(command);
                 }
             }
