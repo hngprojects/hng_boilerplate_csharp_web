@@ -1,5 +1,6 @@
 ﻿using Hng.Application.Features.Subscriptions.Dtos.Requests;
 using Hng.Application.Features.Subscriptions.Dtos.Responses;
+using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,38 @@ namespace Hng.Web.Controllers
                 return Ok(result.Value);
 
             return BadRequest(result.Error);
+        }
+
+        /// <summary>
+        /// Get subscription by user ID.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("{userId}")]
+        [ProducesResponseType(typeof(SuccessResponseDto<GetSubscriptionByUserIdResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<GetSubscriptionByUserIdResponse>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetSubscriptionByUserId(Guid userId)
+        {
+            var response = await _mediator.Send(new GetSubscriptionByUserIdQuery(userId));
+            return response.Status
+                ? Ok(new SuccessResponseDto<GetSubscriptionByUserIdResponse> { Data = response })
+                : BadRequest(new FailureResponseDto<GetSubscriptionByUserIdResponse> { Error = response.Error });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="organizationId"></param>
+        /// <returns></returns>
+        [HttpGet("{OrganizationId}")]
+        [ProducesResponseType(typeof(SuccessResponseDto<GetSubscriptionByOrganizationIdResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<GetSubscriptionByOrganizationIdResponse>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetSubscriptionByOrganizationId([FromQuery] Guid organizationId)
+        {
+            var response = await _mediator.Send(new GetSubscriptionByOrganizationIdQuery(organizationId));
+            return response.Status
+                ? Ok(new SuccessResponseDto<GetSubscriptionByOrganizationIdResponse> { Data = response })
+                : BadRequest(new FailureResponseDto<GetSubscriptionByOrganizationIdResponse> { Error = response.Error });
         }
     }
 }
