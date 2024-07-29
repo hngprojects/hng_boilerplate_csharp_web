@@ -67,6 +67,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
 
         public static void UpdateSubscription(Subscription subscription, Guid transactionId)
         {
+            subscription.UpdatedAt = DateTime.UtcNow;
             subscription.TransactionId = transactionId;
             subscription.StartDate = DateTime.UtcNow;
             subscription.IsActive = true;
