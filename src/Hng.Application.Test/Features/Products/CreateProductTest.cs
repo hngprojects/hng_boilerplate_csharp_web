@@ -62,7 +62,7 @@ namespace Hng.Application.Test.Features.Products
                     return org;
                 });
 
-            var command = new CreateProductCommand(production.UserId.ToString(),createDto);
+            var command = new CreateProductCommand(production.UserId.ToString(), createDto);
 
             var result = await _handler.Handle(command, default);
 
