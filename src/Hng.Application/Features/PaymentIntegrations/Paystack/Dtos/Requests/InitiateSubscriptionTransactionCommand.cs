@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
-using Hng.Domain.Enums;
 using MediatR;
 
 namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests

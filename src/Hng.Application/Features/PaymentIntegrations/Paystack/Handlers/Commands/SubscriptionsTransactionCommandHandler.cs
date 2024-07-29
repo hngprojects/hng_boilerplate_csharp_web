@@ -30,7 +30,7 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
             {
                 var subInitialized = JsonConvert.DeserializeObject<SubscriptionInitialized>(JsonConvert.SerializeObject(request.Command.Data.Metadata));
 
-                var transaction = await _transactionRepo.GetBySpec(r => r.Reference == request.Command.Data.Reference && r.ProductId == subInitialized.SubId);
+                var transaction = await _transactionRepo.GetBySpec(r => r.Reference == request.Command.Data.Reference && r.SubscriptionId == subInitialized.SubId);
 
                 if (transaction == null)
                     return false;
@@ -80,16 +80,16 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
             switch (frequency)
             {
                 case SubscriptionFrequency.Monthly:
-                    expiryDate.AddMonths(1);
+                    expiryDate = startDate.AddMonths(1);
                     break;
                 case SubscriptionFrequency.Quarterly:
-                    expiryDate.AddMonths(3);
+                    expiryDate = startDate.AddMonths(3);
                     break;
                 case SubscriptionFrequency.HalfYearly:
-                    expiryDate.AddMonths(6);
+                    expiryDate = startDate.AddMonths(6);
                     break;
                 case SubscriptionFrequency.Annually:
-                    expiryDate.AddYears(1);
+                    expiryDate = startDate.AddYears(1);
                     break;
                 default:
                     break;
