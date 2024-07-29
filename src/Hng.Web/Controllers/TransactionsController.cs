@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace Hng.Web.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/transactions")]
     public class TransactionsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -30,6 +30,26 @@ namespace Hng.Web.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> InitializeTransaction([FromBody] InitializeTransactionCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+        }
+
+        /// <summary>
+        /// Initiate subscription transation from Paystack
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("initiate/subscription")]
+        [ProducesResponseType(typeof(InitiateSubscriptionTransactionResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> InitializeSubscriptionTransaction([FromBody] InitiateSubscriptionTransactionCommand command)
         {
             var result = await _mediator.Send(command);
 
@@ -73,6 +93,11 @@ namespace Hng.Web.Controllers
                 if (data.Data.Metadata.ToString().Contains(nameof(ProductInitialized.ProductId)))
                 {
                     var command = new TransactionWebhookCommand(data);
+                    await _mediator.Send(command);
+                }
+                else if (data.Data.Metadata.ToString().Contains(nameof(SubscriptionInitialized.SubId)))
+                {
+                    var command = new SubTransactionWebhookCommand(data);
                     await _mediator.Send(command);
                 }
             }

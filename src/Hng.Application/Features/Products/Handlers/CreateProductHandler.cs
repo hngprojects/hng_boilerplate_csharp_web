@@ -26,6 +26,7 @@ namespace Hng.Application.Features.Products.Handlers
         {
             var product = _mapper.Map<Product>(request.productBody);
             product.Id = Guid.NewGuid();
+            product.UserId = Guid.Parse(request.UserId);
             product.CreatedAt = DateTime.UtcNow;
             product.UpdatedAt = DateTime.UtcNow;
             await _repository.AddAsync(product);

@@ -1,4 +1,6 @@
 ﻿using Hng.Domain.Entities;
+using Hng.Domain.EntitiesConfigurations;
+using Hng.Domain.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hng.Infrastructure.Context
@@ -8,7 +10,7 @@ namespace Hng.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            modelBuilder.ApplyConfiguration<NewsLetterSubscriber>(new NewsLetterSubscriberConfig());
         }
 
         public DbSet<User> Users { get; set; }
@@ -20,5 +22,6 @@ namespace Hng.Infrastructure.Context
         public DbSet<Job> Jobs { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<NewsLetterSubscriber> NewsLetterSubscribers { get; set; }
     }
 }
