@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Hng.Application.Features.Jobs.Handlers;
 
-public class GetJobByIdRequestHandler(IRepository<Job> jobRepository, IMapper mapper) : IRequestHandler<GetJobByIdQuery, JobDto>
+public class GetJobByIdQueryHandler(IRepository<Job> jobRepository, IMapper mapper) : IRequestHandler<GetJobByIdQuery, JobDto>
 {
     public async Task<JobDto> Handle(GetJobByIdQuery request, CancellationToken cancellationToken)
     {
