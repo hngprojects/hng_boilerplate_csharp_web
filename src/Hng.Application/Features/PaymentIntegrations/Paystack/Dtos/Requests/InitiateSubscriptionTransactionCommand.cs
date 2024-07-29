@@ -9,8 +9,8 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests
     {
         public string Email { get; set; }
         public decimal Amount { get; set; }
-        public SubscriptionPlan Plan { get; set; }
-        public SubscriptionFrequency Frequency { get; set; }
+        public string Plan { get; set; }
+        public string Frequency { get; set; }
     }
 
     public record SubscriptionInitialized(Guid SubId, string Type = nameof(SubscriptionInitialized));
