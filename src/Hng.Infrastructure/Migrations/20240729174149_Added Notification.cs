@@ -6,27 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hng.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Notification : Migration
+    public partial class AddedNotification : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<Guid>(
-                name: "UserId",
-                table: "Transactions",
-                type: "uuid",
-                nullable: true,
-                oldClrType: typeof(Guid),
-                oldType: "uuid");
-
-            migrationBuilder.AlterColumn<Guid>(
-                name: "ProductId",
-                table: "Transactions",
-                type: "uuid",
-                nullable: true,
-                oldClrType: typeof(Guid),
-                oldType: "uuid");
-
             migrationBuilder.CreateTable(
                 name: "Notifications",
                 columns: table => new
@@ -64,26 +48,6 @@ namespace Hng.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Notifications");
-
-            migrationBuilder.AlterColumn<Guid>(
-                name: "UserId",
-                table: "Transactions",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
-                oldClrType: typeof(Guid),
-                oldType: "uuid",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<Guid>(
-                name: "ProductId",
-                table: "Transactions",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
-                oldClrType: typeof(Guid),
-                oldType: "uuid",
-                oldNullable: true);
         }
     }
 }
