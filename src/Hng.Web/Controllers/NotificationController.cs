@@ -39,7 +39,7 @@ namespace Hng.Web.Controllers
                         Message = "User not found"
                     });
                 }
-                   return Ok(new SuccessResponseDto<NotificationDto>
+                return Ok(new SuccessResponseDto<NotificationDto>
                 {
                     Data = result,
                     Message = "Notification settings created successfully."
