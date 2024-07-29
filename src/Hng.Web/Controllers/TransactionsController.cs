@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace Hng.Web.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/transactions")]
     public class TransactionsController : ControllerBase
     {
         private readonly IMediator _mediator;
