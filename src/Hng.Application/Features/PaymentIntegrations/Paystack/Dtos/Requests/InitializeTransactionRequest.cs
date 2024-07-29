@@ -7,7 +7,7 @@
         public string Reference { get; set; }
         public string CallbackUrl { get; set; }
         public string Metadata { get; set; }
-        
+
         public InitializeTransactionRequest(string amount, string email, string refernce)
         {
             Amount = amount;
