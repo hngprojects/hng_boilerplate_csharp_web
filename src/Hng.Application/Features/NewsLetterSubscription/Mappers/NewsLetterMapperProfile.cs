@@ -4,13 +4,13 @@ using Profile = AutoMapper.Profile;
 
 namespace Hng.Application.Features.NewsLetterSubscription.Mappers
 {
-    public class NewsLetterMapperProfile:Profile
+    public class NewsLetterMapperProfile : Profile
     {
         public NewsLetterMapperProfile()
         {
             CreateMap<NewsLetterSubscriber, NewsLetterSubscriptionDto>()
                 .ReverseMap();
         }
-        
+
     }
 }

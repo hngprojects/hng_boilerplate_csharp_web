@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Hng.Application.Features.NewsLetterSubscription.Commands
 {
-    public class AddSubscriberCommand:IRequest<NewsLetterSubscriptionDto>
+    public class AddSubscriberCommand : IRequest<NewsLetterSubscriptionDto>
     {
         public AddSubscriberCommand(NewsLetterSubscriptionDto newsLetterSubscriptionDto)
         {

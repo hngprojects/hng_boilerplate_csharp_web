@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Queries;
@@ -25,7 +26,8 @@ namespace Hng.Web.Controllers
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
         public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductCreationDto body)
         {
-            var command = new CreateProductCommand(body);
+            var loggedInUserId = HttpContext.User.FindFirst(ClaimTypes.Sid).Value;
+            var command = new CreateProductCommand(loggedInUserId, body);
             var response = await _mediator.Send(command);
 
             var successResponse = new SuccessResponseDto<ProductDto>();

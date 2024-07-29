@@ -10,11 +10,13 @@ namespace Hng.Application.Features.Products.Commands
 {
     public class CreateProductCommand : IRequest<ProductDto>
     {
-        public CreateProductCommand(ProductCreationDto productCreation)
+        public CreateProductCommand(string userId, ProductCreationDto productCreation)
         {
+            UserId = userId;
             productBody = productCreation;
         }
 
+        public string UserId { get; }
         public ProductCreationDto productBody { get; }
     }
 }
