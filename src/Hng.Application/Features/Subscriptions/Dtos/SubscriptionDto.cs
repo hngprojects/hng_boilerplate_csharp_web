@@ -12,19 +12,19 @@ namespace Hng.Application.Features.Subscriptions.Dtos
 	{
 		[JsonPropertyName("id")]
 		public Guid Id { get; set; }
-		[JsonPropertyName("userId")]
+		[JsonPropertyName("user_id")]
 		public Guid? UserId { get; set; }
-		[JsonPropertyName("organizationId")]
+		[JsonPropertyName("organization_id")]
 		public Guid? OrganizationId { get; set; }
 		[JsonPropertyName("plan")]
 		public SubscriptionPlan Plan { get; set; }
 		[JsonPropertyName("frequency")]
 		public SubscriptionFrequency Frequency { get; set; }
-		[JsonPropertyName("isActive")]
+		[JsonPropertyName("is_active")]
 		public bool IsActive { get; set; }
 		[JsonPropertyName("amount")]
 		public decimal Amount { get; set; }
-		[JsonPropertyName("startDate")]
+		[JsonPropertyName("start_date")]
 		public DateTime? StartDate { get; set; }
 	}
 }
