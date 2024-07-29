@@ -2,6 +2,7 @@
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
+using Hng.Application.Utils;
 using Hng.Domain.Entities;
 using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
@@ -44,14 +45,17 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
 
                 var product = await _productRepo.GetBySpec(p => p.Id == request.ProductId);
 
-                if (product == null) return Result.Failure<InitializeTransactionResponse>("Product with not found!");
+                if (product == null) 
+                    return Result.Failure<InitializeTransactionResponse>("Product with not found!");
+
+                if (request.Amount <= 0)
+                    return Result.Failure<InitializeTransactionResponse>("Amount must be greater than Zero!");
 
                 var amountInKobo = request.Amount * 100;
-                var reference = GenerateReference();
-                var initializeRequest = new InitializeTransactionRequest(amountInKobo.ToString(), request.Email)
+                var reference = GenerateTransactionReference.GenerateReference();
+                var initializeRequest = new InitializeTransactionRequest(amountInKobo.ToString(), request.Email, reference)
                 {
                     BusinessAuthorizationToken = _apiKeys.SecretKey,
-                    Reference = reference,
                     Metadata = JsonConvert.SerializeObject(new ProductInitialized(request.ProductId))
                 };
 
@@ -75,8 +79,6 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
                 return Result.Failure<InitializeTransactionResponse>($"An unexpected error occurred: {ex.Message}");
             }
         }
-
-        private static string GenerateReference() => $"hng{DateTime.Now.Ticks}";
 
         private static Transaction BuildTransaction(InitializeTransactionCommand request, string reference, Guid userId)
             => new Transaction()

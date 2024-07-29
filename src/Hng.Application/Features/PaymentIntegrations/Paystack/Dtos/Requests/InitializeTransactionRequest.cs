@@ -7,13 +7,12 @@
         public string Reference { get; set; }
         public string CallbackUrl { get; set; }
         public string Metadata { get; set; }
-        public Guid UserId { get; set; }
-        public Guid ProductId { get; set; }
-
-        public InitializeTransactionRequest(string amount, string email)
+        
+        public InitializeTransactionRequest(string amount, string email, string refernce)
         {
             Amount = amount;
             Email = email;
+            Reference = refernce;
         }
     }
 }
