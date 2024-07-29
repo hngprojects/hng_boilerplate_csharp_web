@@ -13,6 +13,7 @@ namespace Hng.Application
         public static IServiceCollection AddApplicationConfig(this IServiceCollection services, IConfiguration configurations)
         {
             services.AddMediatR(cf => cf.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddAuthentication(options =>
@@ -24,6 +25,12 @@ namespace Hng.Application
             {
                 jwtOptions.TokenValidationParameters = TokenService.GetTokenValidationParameters(configurations);
             });
+            //.AddGoogle(googleOptions =>
+            //{
+            //    googleOptions.ClientId = configurations["Authentication:Google:ClientId"];
+            //    googleOptions.ClientSecret = configurations["Authentication:Google:ClientSecret"];
+            //});
+
             services.AddAuthorization();
 
             services.AddHttpClient<IPaystackClient, PaystackClient>(c =>
@@ -32,7 +39,16 @@ namespace Hng.Application
             });
 
             services.AddSingleton(configurations.GetSection("PaystackApiKeys").Get<PaystackApiKeys>());
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
             return services;
         }
     }

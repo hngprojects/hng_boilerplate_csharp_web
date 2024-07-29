@@ -1,24 +1,40 @@
-using System;
-using Hng.Application.Features.Products.Queries;
-using Hng.Application.Features.Products.Dtos;
-using MediatR;
+using System.Security.Claims;
 using Hng.Application.Features.Products.Commands;
+using Hng.Application.Features.Products.Dtos;
+using Hng.Application.Features.Products.Queries;
+using Hng.Application.Features.Products.Validators;
+using Hng.Application.Shared.Dtos;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/v1/products")]
     public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
+
         public ProductController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
+        [HttpPost]
+        [Authorize]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
+        public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductCreationDto body)
+        {
+            var loggedInUserId = HttpContext.User.FindFirst(ClaimTypes.Sid).Value;
+            var command = new CreateProductCommand(loggedInUserId, body);
+            var response = await _mediator.Send(command);
+
+            var successResponse = new SuccessResponseDto<ProductDto>();
+            successResponse.Data = response;
+            successResponse.Message = "Product Successfully";
+            return Ok(successResponse);
+        }
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -72,6 +88,30 @@ namespace Hng.Web.Controllers
                 status_code = 200,
                 categories
             });
+        }
+
+        /// <summary>
+        /// Edit user products with update timestamp
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateProductDto"></param>
+        /// <returns></returns>
+        [HttpPut("{id:guid}")]
+        [Authorize]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductDto updateProductDto)
+        {
+            var command = new UpdateProductCommand(id, updateProductDto);
+            var result = await _mediator.Send(command);
+            return result != null
+                ? Ok(result)
+                : NotFound(new
+                {
+                    status_code = 404,
+                    message = "Product not found",
+                    error = "Not Found"
+                });
         }
     }
 }

@@ -17,7 +17,6 @@ builder.Services.AddSwaggerDocs();
 builder.Services.AddApplicationConfig(builder.Configuration);
 builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"));
 builder.Services.Configure<JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
 builder.Services.AddSwaggerGen(c =>
 {
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -39,7 +38,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseGlobalErrorHandler(app.Environment);
-
+app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
