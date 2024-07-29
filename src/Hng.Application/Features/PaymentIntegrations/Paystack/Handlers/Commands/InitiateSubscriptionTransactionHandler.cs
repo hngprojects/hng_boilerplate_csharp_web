@@ -99,14 +99,19 @@ namespace Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Command
             };
 
         private static Subscription BuildSubscription(InitiateSubscriptionTransactionCommand request, Guid userId)
-            => new Subscription()
+        {
+            Enum.TryParse(request.Frequency, out SubscriptionFrequency frequency);
+            Enum.TryParse(request.Plan, out SubscriptionPlan plan);
+
+            return new Subscription()
             {
                 Amount = request.Amount,
                 CreatedAt = DateTime.UtcNow,
-                Frequency = request.Frequency,
+                Frequency = frequency,
                 IsActive = false,
-                Plan = request.Plan,
+                Plan = plan,
                 UserId = userId
             };
+        }
     }
 }
