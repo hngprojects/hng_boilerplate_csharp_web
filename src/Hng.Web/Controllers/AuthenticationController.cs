@@ -54,5 +54,27 @@ namespace Hng.Web.Controllers
 
             return CreatedAtAction(nameof(UserSignUp), response);
         }
+
+        [HttpPost("google-login")]
+        [ProducesResponseType(typeof(UserLoginResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<UserLoginResponseDto>> GoogleLogin([FromBody] GoogleLoginRequestDto googleLoginRequest)
+        {
+            var command = new GoogleLoginCommand(googleLoginRequest.IdToken);
+            var response = await _mediator.Send(command);
+
+            if (response == null || response.Data == null)
+            {
+                return Unauthorized(new
+                {
+                    message = "Invalid credentials",
+                    error = "Google login failed.",
+                    status_code = StatusCodes.Status401Unauthorized
+                });
+            }
+
+            return Ok(response);
+        }
+
     }
 }
