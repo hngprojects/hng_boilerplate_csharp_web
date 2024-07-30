@@ -55,7 +55,7 @@ namespace Hng.Web.Controllers
             return CreatedAtAction(nameof(UserSignUp), response);
         }
 
-        [HttpPost("google-login")]
+        [HttpPost("google")]
         [ProducesResponseType(typeof(UserLoginResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserLoginResponseDto>> GoogleLogin([FromBody] GoogleLoginRequestDto googleLoginRequest)
