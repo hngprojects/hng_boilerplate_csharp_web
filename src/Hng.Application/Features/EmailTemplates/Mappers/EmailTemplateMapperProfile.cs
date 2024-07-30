@@ -8,5 +8,7 @@ public class EmailTemplateMapperProfile : AutoMapper.Profile
     public EmailTemplateMapperProfile()
     {
         CreateMap<EmailTemplate, EmailTemplateDTO>().ReverseMap();
+
+        CreateMap<CreateEmailTemplateDTO, EmailTemplate>().ReverseMap();
     }
 }

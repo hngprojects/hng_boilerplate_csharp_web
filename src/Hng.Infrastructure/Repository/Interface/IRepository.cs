@@ -11,6 +11,7 @@ namespace Hng.Infrastructure.Repository.Interface
         Task<IEnumerable<T>> GetAllBySpec(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
         Task<T> AddAsync(T entity);
         Task AddRangeAsync(IEnumerable<T> entities);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
         Task<T> DeleteAsync(T entity);
         Task DeleteRangeAsync(IEnumerable<T> entities);
         Task UpdateAsync(T entity);

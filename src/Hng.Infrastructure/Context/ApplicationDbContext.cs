@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Hng.Domain.Entities;
 using Hng.Domain.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;

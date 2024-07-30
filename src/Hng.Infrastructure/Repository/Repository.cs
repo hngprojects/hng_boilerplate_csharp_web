@@ -26,6 +26,11 @@ namespace Hng.Infrastructure.Repository
             await _context.Set<T>().AddRangeAsync(entities);
         }
 
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            return _context.Set<T>().AnyAsync(predicate, cancellationToken: cancellationToken);
+        }
+
         public async Task<int> CountAsync()
         {
             return await _context.Set<T>().CountAsync();
