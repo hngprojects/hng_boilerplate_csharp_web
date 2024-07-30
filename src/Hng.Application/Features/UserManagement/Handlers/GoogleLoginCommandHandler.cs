@@ -4,15 +4,8 @@ using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
-using Hng.Infrastructure.Services;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hng.Application.Features.UserManagement.Handlers
 {
