@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Hng.Application.Features.UserManagement.Handlers
 {
-    public class LoginUserCommandHandler : IRequestHandler<CreateUserLoginCommand, UserLoginResponseDto>
+    public class LoginUserCommandHandler : IRequestHandler<CreateUserLoginCommand, UserLoginResponseDto<object>>
     {
         private readonly IRepository<User> _userRepo;
         private readonly IMapper _mapper;
@@ -23,12 +23,12 @@ namespace Hng.Application.Features.UserManagement.Handlers
             _tokenService = tokenService;
         }
 
-        public async Task<UserLoginResponseDto> Handle(CreateUserLoginCommand request, CancellationToken cancellationToken)
+        public async Task<UserLoginResponseDto<object>> Handle(CreateUserLoginCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepo.GetBySpec(u => u.Email == request.LoginRequestBody.Email);
             if (user == null || !_passwordService.IsPasswordEqual(request.LoginRequestBody.Password, user.PasswordSalt, user.Password))
             {
-                return new UserLoginResponseDto
+                return new UserLoginResponseDto<object>
                 {
                     Data = null,
                     AccessToken = null,
@@ -41,9 +41,9 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
             var userDto = _mapper.Map<UserDto>(user);
 
-            return new UserLoginResponseDto
+            return new UserLoginResponseDto<object>
             {
-                Data = userDto,
+                Data = new { user = userDto, access_token = token },
                 AccessToken = token,
                 Message = "Login successful"
             };

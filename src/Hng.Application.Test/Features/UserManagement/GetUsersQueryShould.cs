@@ -60,8 +60,8 @@ namespace Hng.Application.Test.Features.UserManagement
 
                 Assert.Equal(expected.Id, result.Id);
                 Assert.Equal(expected.Email, result.Email);
-                Assert.Contains(expected.FirstName, result.Name);
-                Assert.Contains(expected.LastName, result.Name);
+                Assert.Contains(expected.FirstName, result.FullName);
+                Assert.Contains(expected.LastName, result.FullName);
             }
         }
     }
