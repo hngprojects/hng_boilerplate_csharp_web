@@ -9,8 +9,8 @@ namespace Hng.Application.Features.Subscriptions.Dtos.Responses
     public class SubscriptionDto
     {
         public Guid Id { get; set; }
-        //public Guid UserId { get; set; }
-        //public Guid OrganizationId { get; set; }
+        public Guid UserId { get; set; }
+        public Guid OrganizationId { get; set; }
         public Guid TransactionId { get; set; }
         public string Plan { get; set; }
         public string Frequency { get; set; }

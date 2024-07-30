@@ -1,14 +1,11 @@
-﻿using Hng.Application.Features.Subscriptions.Dtos.Responses;
+﻿using Hng.Application.Features.Organisations.Dtos;
+using Hng.Application.Features.Subscriptions.Dtos.Responses;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Hng.Application.Features.Subscriptions.Dtos.Requests
 {
-    public class GetSubscriptionByOrganizationIdQuery : IRequest<GetSubscriptionByOrganizationIdResponse>
+    public class GetSubscriptionByOrganizationIdQuery : IRequest<SubscriptionDto>
     {
         public Guid OrganizationId { get; set; }
 

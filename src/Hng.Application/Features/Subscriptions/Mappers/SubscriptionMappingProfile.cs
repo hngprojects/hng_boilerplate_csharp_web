@@ -1,9 +1,6 @@
-﻿using Hng.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Hng.Application.Features.Organisations.Dtos;
+using Hng.Application.Features.Subscriptions.Dtos.Responses;
+using Hng.Domain.Entities;
 
 namespace Hng.Application.Features.Subscriptions.Mappers
 {
@@ -11,8 +8,8 @@ namespace Hng.Application.Features.Subscriptions.Mappers
     {
         public SubscriptionMappingProfile()
         {
-            CreateMap<Subscription, GetSubscriptionByUserIdResponse>().ReverseMap();
-            CreateMap<Subscription, GetSubscriptionByOrganizationIdResponse>();
+            CreateMap<Subscription, SubscriptionDto>();
+            CreateMap<Organization, SubscriptionDto>();
         }
     }
 }
