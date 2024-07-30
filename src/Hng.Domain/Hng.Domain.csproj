@@ -22,4 +22,8 @@
     <PackageReference Include="Paystack.Net" Version="1.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Blog\" />
+  </ItemGroup>
+
 </Project>
