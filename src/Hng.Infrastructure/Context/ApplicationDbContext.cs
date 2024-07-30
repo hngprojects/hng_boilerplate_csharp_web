@@ -23,5 +23,6 @@ namespace Hng.Infrastructure.Context
         public DbSet<Message> Messages { get; set; }
         public DbSet<NewsLetterSubscriber> NewsLetterSubscribers { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
     }
 }
