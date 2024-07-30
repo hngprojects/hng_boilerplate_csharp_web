@@ -1,13 +1,15 @@
+using Hng.Application.Features.EmailTemplates.Commands;
 using Hng.Application.Features.EmailTemplates.DTOs;
 using Hng.Application.Features.EmailTemplates.Queries;
 using Hng.Application.Shared.Dtos;
+using Hng.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers;
 
-// [Authorize]
+[Authorize]
 [Route("/api/v1/[controller]")]
 public class EmailTemplateController(ISender sender) : ControllerBase
 {
