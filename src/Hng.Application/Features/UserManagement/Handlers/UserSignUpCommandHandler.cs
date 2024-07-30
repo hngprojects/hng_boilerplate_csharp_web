@@ -41,8 +41,6 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     };
                 }
 
-
-
                 var createdUser = _mapper.Map<User>(request.SignUpBody);
                 createdUser.Id = Guid.NewGuid();
                 (createdUser.PasswordSalt, createdUser.Password) = _passwordService.GeneratePasswordSaltAndHash(request.SignUpBody.Password);

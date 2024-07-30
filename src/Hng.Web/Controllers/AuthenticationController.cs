@@ -1,6 +1,8 @@
-﻿using Hng.Application.Features.UserManagement.Commands;
+﻿using CSharpFunctionalExtensions;
+using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
@@ -16,6 +18,11 @@ namespace Hng.Web.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Logs in User
+        /// </summary>
+        /// <param name="loginRequest"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         [ProducesResponseType(typeof(UserLoginResponseDto<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -37,6 +44,11 @@ namespace Hng.Web.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Creates User
+        /// </summary>
+        /// <param name="body"></param>
+        /// <returns></returns>
         [HttpPost("register")]
         [ProducesResponseType(typeof(SignUpResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(SignUpResponse), StatusCodes.Status400BadRequest)]
@@ -55,6 +67,11 @@ namespace Hng.Web.Controllers
             return CreatedAtAction(nameof(UserSignUp), response);
         }
 
+        /// <summary>
+        /// sign in via google
+        /// </summary>
+        /// <param name="googleLoginRequest"></param>
+        /// <returns></returns>
         [HttpPost("google")]
         [ProducesResponseType(typeof(UserLoginResponseDto<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -76,5 +93,23 @@ namespace Hng.Web.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Update Password Endpoint
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPut("update/password")]
+        [ProducesResponseType(typeof(Result<ChangePasswordResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
+        {
+            var response = await _mediator.Send(command);
+
+            if (response.IsFailure)
+                return BadRequest(response.Error);
+
+            return Ok(response.Value);
+        }
     }
 }
