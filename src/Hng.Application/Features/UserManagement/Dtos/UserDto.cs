@@ -7,8 +7,8 @@ namespace Hng.Application.Features.UserManagement.Dtos
 {
     public class UserDto
     {
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+        [JsonPropertyName("fullname")]
+        public string FullName { get; set; }
 
         [JsonPropertyName("id")]
         public Guid Id { get; set; }
@@ -18,6 +18,8 @@ namespace Hng.Application.Features.UserManagement.Dtos
 
         [JsonPropertyName("profile")]
         public ProfileDto Profile { get; set; }
+        [JsonPropertyName("avatar_url")]
+        public string AvatarUrl { get; set; }
 
         [JsonIgnore]
         [JsonPropertyName("organisation")]
