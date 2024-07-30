@@ -49,7 +49,9 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
         {
             try
             {
-                logger.LogDebug("Sending message to {0} with contact \n{1}", message.RecipientName, message.RecipientContact);
+                logger.LogDebug("Sending message to {recipientName} with contact \n{recipientContact}",
+                    message.RecipientName.Replace(Environment.NewLine, ""),
+                    message.RecipientContact.Replace(Environment.NewLine, ""));
                 Message sentMessage = await ProcessMessage(message);
                 sentMessage.Status = Domain.Enums.MessageStatus.Sent;
                 await repository.UpdateAsync(sentMessage);
@@ -57,7 +59,7 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
 
             catch (Exception ex)
             {
-                logger.LogError("Message failed to send with error {0}", ex);
+                logger.LogError("Message failed to send with error {exception}", ex);
 
                 message.RetryCount += 1;
 

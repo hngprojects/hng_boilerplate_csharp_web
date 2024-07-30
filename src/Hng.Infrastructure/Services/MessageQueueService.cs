@@ -12,11 +12,11 @@ public class MessageQueueService(ILogger<MessageQueueService> logger, IRepositor
 
     public async Task<Message> TryQueueEmailAsync(Message message)
     {
-        logger.LogDebug("Validating email message before adding to the queue : {0}", message);
+        logger.LogDebug("Validating email message before adding to the queue : {message}", message);
 
         if (!MailAddress.TryCreate(message.RecipientContact, out MailAddress mailAddress)) return null;
 
-        logger.LogDebug("Now queuing email with recipient address : {0}", mailAddress);
+        logger.LogDebug("Now queuing email with recipient address : {mailAddress}", mailAddress);
 
         await repository.AddAsync(message);
 
