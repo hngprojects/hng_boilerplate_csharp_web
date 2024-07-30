@@ -26,4 +26,5 @@ public class User : EntityBase
     public ICollection<Product> Products { get; set; } = new List<Product>();
     public ICollection<Transaction> Transactions { get; set; } = [];
     public ICollection<Subscription> Subscriptions { get; set; } = [];
+    public ICollection<Blog> Blogs { get; set; } = [];
 }
