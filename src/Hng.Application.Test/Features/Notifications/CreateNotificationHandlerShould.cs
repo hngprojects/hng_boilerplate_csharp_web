@@ -7,6 +7,7 @@ using Hng.Infrastructure.Repository.Interface;
 using Moq;
 using Xunit;
 using System.Linq.Expressions;
+using Hng.Application.Features.Notifications.Dtos;
 
 namespace Hng.Application.Test.Features.Notifications
 {
@@ -33,7 +34,7 @@ namespace Hng.Application.Test.Features.Notifications
         {
             // Arrange
             var userId = Guid.NewGuid();
-            var command = new CreateNotificationCommand
+            var createNotificationDto = new CreateNotificationDto
             {
                 UserId = userId,
                 EmailNotifications = true,
@@ -41,13 +42,15 @@ namespace Hng.Application.Test.Features.Notifications
                 ActivityWorkspaceEmail = true
             };
 
+            var command = new CreateNotificationCommand(createNotificationDto);
+
             var user = new User { Id = userId };
             var newNotification = new Notification
             {
                 UserId = userId,
-                EmailNotifications = command.EmailNotifications,
-                MobilePushNotifications = command.MobilePushNotifications,
-                ActivityWorkspaceEmail = command.ActivityWorkspaceEmail
+                EmailNotifications = createNotificationDto.EmailNotifications,
+                MobilePushNotifications = createNotificationDto.MobilePushNotifications,
+                ActivityWorkspaceEmail = createNotificationDto.ActivityWorkspaceEmail
             };
 
             _mockUserRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
@@ -68,27 +71,28 @@ namespace Hng.Application.Test.Features.Notifications
             // Assert
             Assert.NotNull(result);
             Assert.Equal(userId, result.UserId);
-            Assert.Equal(command.EmailNotifications, result.EmailNotifications);
-            Assert.Equal(command.MobilePushNotifications, result.MobilePushNotifications);
-            Assert.Equal(command.ActivityWorkspaceEmail, result.ActivityWorkspaceEmail);
+            Assert.Equal(createNotificationDto.EmailNotifications, result.EmailNotifications);
+            Assert.Equal(createNotificationDto.MobilePushNotifications, result.MobilePushNotifications);
+            Assert.Equal(createNotificationDto.ActivityWorkspaceEmail, result.ActivityWorkspaceEmail);
 
             _mockNotificationRepository.Verify(r => r.AddAsync(It.IsAny<Notification>()), Times.Once);
             _mockNotificationRepository.Verify(r => r.SaveChanges(), Times.Once);
         }
-
 
         [Fact]
         public async Task Handle_ShouldUpdateExistingNotificationSettings()
         {
             // Arrange
             var userId = Guid.NewGuid();
-            var command = new CreateNotificationCommand
+            var createNotificationDto = new CreateNotificationDto
             {
                 UserId = userId,
                 EmailNotifications = true,
                 MobilePushNotifications = false,
                 ActivityWorkspaceEmail = true
             };
+
+            var command = new CreateNotificationCommand(createNotificationDto);
 
             var user = new User { Id = userId };
             var existingNotification = new Notification
@@ -117,9 +121,9 @@ namespace Hng.Application.Test.Features.Notifications
             // Assert
             Assert.NotNull(result);
             Assert.Equal(userId, result.UserId);
-            Assert.Equal(command.EmailNotifications, result.EmailNotifications);
-            Assert.Equal(command.MobilePushNotifications, result.MobilePushNotifications);
-            Assert.Equal(command.ActivityWorkspaceEmail, result.ActivityWorkspaceEmail);
+            Assert.Equal(createNotificationDto.EmailNotifications, result.EmailNotifications);
+            Assert.Equal(createNotificationDto.MobilePushNotifications, result.MobilePushNotifications);
+            Assert.Equal(createNotificationDto.ActivityWorkspaceEmail, result.ActivityWorkspaceEmail);
 
             _mockNotificationRepository.Verify(r => r.UpdateAsync(It.IsAny<Notification>()), Times.Once);
             _mockNotificationRepository.Verify(r => r.SaveChanges(), Times.Once);
@@ -130,7 +134,7 @@ namespace Hng.Application.Test.Features.Notifications
         {
             // Arrange
             var userId = Guid.NewGuid();
-            var command = new CreateNotificationCommand
+            var createNotificationDto = new CreateNotificationDto
             {
                 UserId = userId,
                 EmailNotifications = true,
@@ -138,7 +142,9 @@ namespace Hng.Application.Test.Features.Notifications
                 ActivityWorkspaceEmail = true
             };
 
-            _mockUserRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>>()))
+            var command = new CreateNotificationCommand(createNotificationDto);
+
+            _mockUserRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
                 .ReturnsAsync((User)null);
 
             // Act

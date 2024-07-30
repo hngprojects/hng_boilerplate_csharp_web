@@ -19,22 +19,23 @@ namespace Hng.Application.Features.Notifications.Handlers
             _userRepository = userRepository;
             _mapper = mapper;
         }
+
         public async Task<NotificationDto> Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetBySpec(u => u.Id == request.UserId);
+            var user = await _userRepository.GetBySpec(u => u.Id == request.NotificationBody.UserId);
             if (user != null)
             {
-                var existingNotification = await _notificationRepository.GetBySpec(n => n.UserId == request.UserId);
+                var existingNotification = await _notificationRepository.GetBySpec(n => n.UserId == request.NotificationBody.UserId);
                 if (existingNotification != null)
                 {
-                    _mapper.Map(request, existingNotification);
+                    _mapper.Map(request.NotificationBody, existingNotification);
                     await _notificationRepository.UpdateAsync(existingNotification);
                     await _notificationRepository.SaveChanges();
                     return _mapper.Map<NotificationDto>(existingNotification);
                 }
                 else
                 {
-                    var notificationSettings = _mapper.Map<Notification>(request);
+                    var notificationSettings = _mapper.Map<Notification>(request.NotificationBody);
                     await _notificationRepository.AddAsync(notificationSettings);
                     await _notificationRepository.SaveChanges();
                     return _mapper.Map<NotificationDto>(notificationSettings);
@@ -43,5 +44,6 @@ namespace Hng.Application.Features.Notifications.Handlers
             return null;
         }
     }
-
 }
+   
+
