@@ -377,3 +377,6 @@ appsettings.*.json
 
 # Rider folder
 .idea
+
+#env files
+.envrc
