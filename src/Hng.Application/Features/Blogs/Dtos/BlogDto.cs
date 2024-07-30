@@ -14,7 +14,7 @@ public class BlogDto
     public string ImageUrl { get; set; }
     [JsonPropertyName("content")]
     public string Content { get; set; }
-    [JsonPropertyName("published-date")]
+    [JsonPropertyName("published_date")]
     public DateTime PublishedDate { get; set; }
     [JsonPropertyName("author")]
     public User Author { get; set; }
