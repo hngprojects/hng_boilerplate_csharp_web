@@ -16,7 +16,7 @@ public class CreateEmailTemplateCommandHandler(IRepository<EmailTemplate> reposi
     {
 
         if (await repository.AnyAsync(e => e.Name.Equals(request.TemplateDTO.Name), cancellationToken)) return null;
-        
+
         EmailTemplate template = mapper.Map<EmailTemplate>(request.TemplateDTO);
 
         template = await repository.AddAsync(template);

@@ -3,5 +3,5 @@ using MediatR;
 
 namespace Hng.Application.Features.EmailTemplates.Commands;
 
-public record CreateEmailTemplateCommand(CreateEmailTemplateDTO TemplateDTO):IRequest<EmailTemplateDTO>;
+public record CreateEmailTemplateCommand(CreateEmailTemplateDTO TemplateDTO) : IRequest<EmailTemplateDTO>;
 
