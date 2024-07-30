@@ -52,5 +52,14 @@ public class BlogController : ControllerBase
         var blogs = await _mediator.Send(new GetBlogsQuery());
         return Ok(blogs);
     }
+    
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteBlogById(Guid id)
+    {
+        await _mediator.Send(new DeleteBlogByIdCommand(id));
+        return NoContent();
+    }
 
 }
