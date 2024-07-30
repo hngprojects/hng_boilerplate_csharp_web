@@ -44,4 +44,13 @@ public class BlogController : ControllerBase
             Message = "The requested job does not exist."
         }) : Ok(response);
     }
+    
+    [HttpGet("")]
+    [ProducesResponseType(typeof(BlogDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<BlogDto>>> GetBlogs()
+    {
+        var blogs = await _mediator.Send(new GetBlogsQuery());
+        return Ok(blogs);
+    }
+
 }
