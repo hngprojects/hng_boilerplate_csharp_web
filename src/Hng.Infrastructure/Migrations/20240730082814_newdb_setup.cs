@@ -6,23 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hng.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class newdb_setup : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "BlogCategories",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BlogCategories", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
@@ -111,33 +99,6 @@ namespace Hng.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Blogs",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: true),
-                    ImageUrl = table.Column<string>(type: "text", nullable: true),
-                    Content = table.Column<string>(type: "text", nullable: true),
-                    PublishedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AuthorId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Blogs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Blogs_BlogCategories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "BlogCategories",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Blogs_Users_AuthorId",
-                        column: x => x.AuthorId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -281,16 +242,6 @@ namespace Hng.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Blogs_AuthorId",
-                table: "Blogs",
-                column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Blogs_CategoryId",
-                table: "Blogs",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_NewsLetterSubscribers_Email",
                 table: "NewsLetterSubscribers",
                 column: "Email",
@@ -354,6 +305,10 @@ namespace Hng.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_Subscriptions_Organizations_OrganizationId",
+                table: "Subscriptions");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Products_Users_UserId",
                 table: "Products");
 
@@ -366,15 +321,8 @@ namespace Hng.Infrastructure.Migrations
                 table: "Transactions");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Subscriptions_Organizations_OrganizationId",
-                table: "Subscriptions");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Subscriptions_Transactions_TransactionId",
                 table: "Subscriptions");
-
-            migrationBuilder.DropTable(
-                name: "Blogs");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -392,13 +340,10 @@ namespace Hng.Infrastructure.Migrations
                 name: "Profiles");
 
             migrationBuilder.DropTable(
-                name: "BlogCategories");
+                name: "Organizations");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Organizations");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
