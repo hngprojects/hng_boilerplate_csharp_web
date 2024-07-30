@@ -22,5 +22,7 @@ namespace Hng.Infrastructure.Context
         public DbSet<Job> Jobs { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<NewsLetterSubscriber> NewsLetterSubscribers { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<BlogCategory> BlogCategories { get; set; }
     }
 }
