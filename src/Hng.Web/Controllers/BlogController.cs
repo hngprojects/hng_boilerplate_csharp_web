@@ -28,7 +28,7 @@ public class BlogController : ControllerBase
         var response = await _mediator.Send(command);
         return CreatedAtAction(nameof(CreateBlog), response);
     }
-    
+
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(BlogDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
