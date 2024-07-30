@@ -3,6 +3,7 @@ using Hng.Infrastructure.Repository;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services;
 using Hng.Infrastructure.Services.Interfaces;
+using Hng.Infrastructure.Services.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +20,9 @@ namespace Hng.Infrastructure
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<SeederService>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-
+            services.AddScoped<IMessageQueueService, MessageQueueService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddHostedService<MessageQueueHandlerService>();
             return services;
         }
     }
