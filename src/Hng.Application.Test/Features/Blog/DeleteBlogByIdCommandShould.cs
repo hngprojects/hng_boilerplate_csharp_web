@@ -39,7 +39,7 @@ namespace Hng.Application.Test.Features.Blog
             // Assert
             _blogRepositoryMock.Verify(repo => repo.GetBySpec(It.IsAny<Expression<Func<Domain.Entities.Blog, bool>>>()), Times.Once);
             _blogRepositoryMock.Verify(repo => repo.DeleteAsync(It.Is<Domain.Entities.Blog>(j => j.Id == blogId)), Times.Once);
-            _blogRepositoryMock.Verify(repo => repo.SaveChanges(), Times.Once);;
+            _blogRepositoryMock.Verify(repo => repo.SaveChanges(), Times.Once); ;
         }
 
     }

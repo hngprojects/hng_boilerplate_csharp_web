@@ -44,7 +44,7 @@ public class BlogController : ControllerBase
             Message = "The requested job does not exist."
         }) : Ok(response);
     }
-    
+
     [HttpGet("")]
     [ProducesResponseType(typeof(BlogDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<BlogDto>>> GetBlogs()
@@ -52,7 +52,7 @@ public class BlogController : ControllerBase
         var blogs = await _mediator.Send(new GetBlogsQuery());
         return Ok(blogs);
     }
-    
+
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]

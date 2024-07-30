@@ -25,7 +25,7 @@ namespace Hng.Application.Test.Features.Blog
             {
                 cfg.CreateMap<Domain.Entities.Blog, BlogDto>()
                     .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author));
-                cfg.CreateMap<User, User>(); 
+                cfg.CreateMap<User, User>();
             });
 
             _mapper = mapperConfig.CreateMapper();
