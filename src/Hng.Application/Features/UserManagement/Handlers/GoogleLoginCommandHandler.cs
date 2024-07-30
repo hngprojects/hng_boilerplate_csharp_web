@@ -57,13 +57,13 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 await _userRepo.AddAsync(newUser);
 
                 var access_token = _tokenService.GenerateJwt(newUser);
-                
+
 
                 return new UserLoginResponseDto<object>
                 {
                     Data = new
                     {
-                        user= _mapper.Map<UserDto>(newUser),
+                        user = _mapper.Map<UserDto>(newUser),
                         access_token
                     },
                     AccessToken = access_token,
@@ -80,7 +80,8 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 Message = "Login successful",
                 Data = new
                 {
-                    user,access_token=token
+                    user,
+                    access_token = token
                 }
             };
         }
