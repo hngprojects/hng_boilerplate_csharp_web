@@ -46,12 +46,17 @@ public class BlogController : ControllerBase
     }
 
     [HttpGet("")]
-    [ProducesResponseType(typeof(BlogDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<BlogDto>>> GetBlogs()
+    [ProducesResponseType(typeof(SuccessResponseDto<IEnumerable<BlogDto>>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<SuccessResponseDto<IEnumerable<BlogDto>>>> GetBlogs()
     {
         var blogs = await _mediator.Send(new GetBlogsQuery());
-        return Ok(blogs);
+        var response = new SuccessResponseDto<IEnumerable<BlogDto>>
+        {
+            Data = blogs
+        };
+        return Ok(response);
     }
+
 
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
