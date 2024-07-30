@@ -47,7 +47,7 @@ namespace Hng.Application.Test.Features.UserManagement
 
             // Act
             var result = _handler.Handle(request, CancellationToken.None);
-            
+
             // Assert
             Assert.NotNull(result);
             Assert.True(result.Result.IsSuccess);
