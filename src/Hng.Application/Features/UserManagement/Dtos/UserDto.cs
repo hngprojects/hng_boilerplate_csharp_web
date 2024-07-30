@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Profiles.Dtos;
+using Hng.Domain.Entities;
 
 namespace Hng.Application.Features.UserManagement.Dtos
 {
@@ -28,5 +29,8 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonIgnore]
         [JsonPropertyName("products")]
         public IEnumerable<ProductDto> Products { get; set; }
+        
+        [JsonPropertyName("blogs")]
+        public ICollection<Blog> Blogs { get; set; } = [];
     }
 }
