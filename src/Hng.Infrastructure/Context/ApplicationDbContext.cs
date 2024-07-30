@@ -1,5 +1,4 @@
 ﻿using Hng.Domain.Entities;
-using Hng.Domain.EntitiesConfigurations;
 using Hng.Domain.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +22,5 @@ namespace Hng.Infrastructure.Context
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<NewsLetterSubscriber> NewsLetterSubscribers { get; set; }
         public DbSet<Blog> Blogs { get; set; }
-        public DbSet<BlogCategory> BlogCategories { get; set; }
     }
 }
