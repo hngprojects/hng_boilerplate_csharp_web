@@ -11,13 +11,13 @@ using Xunit;
 
 namespace Hng.Application.Test.Features.Blog
 {
-    public class GetAllBlogsQueryHandlerTests
+    public class GetBlogsQueryShould
     {
         private readonly Mock<IRepository<Domain.Entities.Blog>> _blogRepositoryMock;
         private readonly IMapper _mapper;
         private readonly GetBlogsQueryHandler _handler;
 
-        public GetAllBlogsQueryHandlerTests()
+        public GetBlogsQueryShould()
         {
             _blogRepositoryMock = new Mock<IRepository<Domain.Entities.Blog>>();
 
