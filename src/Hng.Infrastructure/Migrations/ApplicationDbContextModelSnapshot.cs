@@ -22,6 +22,37 @@ namespace Hng.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Hng.Domain.Entities.Blog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("PublishedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Blogs");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -77,31 +108,6 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("Jobs");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Entities.NewsLetterSubscriber", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<DateTime?>("LeftOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("NewsLetterSubscribers");
-                });
-
             modelBuilder.Entity("Hng.Domain.Entities.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -142,6 +148,31 @@ namespace Hng.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.NewsLetterSubscriber", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateTime?>("LeftOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("NewsLetterSubscribers");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
@@ -413,6 +444,15 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("OrganizationUser");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.Blog", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.User", "Author")
+                        .WithMany("Blogs")
+                        .HasForeignKey("AuthorId");
+
+                    b.Navigation("Author");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
                     b.HasOne("Hng.Domain.Entities.User", "User")
@@ -504,6 +544,8 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Blogs");
+
                     b.Navigation("Products");
 
                     b.Navigation("Profile");
