@@ -29,7 +29,7 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonIgnore]
         [JsonPropertyName("products")]
         public IEnumerable<ProductDto> Products { get; set; }
-        
+
         [JsonPropertyName("blogs")]
         public ICollection<Blog> Blogs { get; set; } = [];
     }

@@ -48,7 +48,7 @@ namespace Hng.Application.Test.Features.Blog
             // Assert
             _mockBlogRepository.Verify(repo => repo.AddAsync(It.IsAny<Domain.Entities.Blog>()), Times.Once);
             _mockBlogRepository.Verify(repo => repo.SaveChanges(), Times.Once);
-            
+
             Assert.NotNull(result);
             Assert.Equal("Test Title", result.Title);
             Assert.Equal("Test Content", result.Content);

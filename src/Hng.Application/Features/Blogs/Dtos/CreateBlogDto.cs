@@ -14,5 +14,4 @@ public class CreateBlogDto
     [JsonPropertyName("category")]
     public BlogCategory Category { get; set; }
 }
-    
-    
+

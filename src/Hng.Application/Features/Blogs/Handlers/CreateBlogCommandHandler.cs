@@ -10,7 +10,7 @@ namespace Hng.Application.Features.Blogs.Handlers;
 
 public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, BlogDto>
 {
-    
+
     private readonly IMapper _mapper;
     private readonly IRepository<Blog> _blogRepository;
 
