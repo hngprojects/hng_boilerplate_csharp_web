@@ -46,11 +46,10 @@ namespace Hng.Application.Test.Features.UserManagement
             _passwordServiceMock.Setup(x => x.GeneratePasswordSaltAndHash(It.IsAny<string>())).Returns((default, default));
 
             // Act
-            var result = _handler.Handle(request, CancellationToken.None);
+            var result = await _handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.True(result.Result.IsSuccess);
+            Assert.True(result.IsSuccess);
         }
     }
 }
