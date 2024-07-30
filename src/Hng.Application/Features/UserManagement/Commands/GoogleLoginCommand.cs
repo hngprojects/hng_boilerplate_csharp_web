@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Hng.Application.Features.UserManagement.Commands
 {
-    public class GoogleLoginCommand : IRequest<UserLoginResponseDto>
+    public class GoogleLoginCommand : IRequest<UserLoginResponseDto<object>>
     {
         public string IdToken { get; }
 

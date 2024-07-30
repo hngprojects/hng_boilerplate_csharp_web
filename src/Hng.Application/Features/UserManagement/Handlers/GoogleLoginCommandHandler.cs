@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.UserManagement.Handlers
 {
-    public class GoogleLoginCommandHandler : IRequestHandler<GoogleLoginCommand, UserLoginResponseDto>
+    public class GoogleLoginCommandHandler : IRequestHandler<GoogleLoginCommand, UserLoginResponseDto<object>>
     {
         private readonly IRepository<User> _userRepo;
         private readonly ITokenService _tokenService;
@@ -31,7 +31,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             _googleAuthService = googleAuthService;
         }
 
-        public async Task<UserLoginResponseDto> Handle(GoogleLoginCommand request, CancellationToken cancellationToken)
+        public async Task<UserLoginResponseDto<object>> Handle(GoogleLoginCommand request, CancellationToken cancellationToken)
         {
             GoogleJsonWebSignature.Payload payload;
             try
@@ -40,40 +40,49 @@ namespace Hng.Application.Features.UserManagement.Handlers
             }
             catch (InvalidJwtException ex)
             {
-                return new UserLoginResponseDto
+                return new UserLoginResponseDto<object>
                 {
                     Message = "Invalid Google token.",
                     Data = null
                 };
             }
 
-            var user = await _userRepo.GetBySpec(x => x.Email == payload.Email);
+            var dbUser = await _userRepo.GetBySpec(x => x.Email == payload.Email);
 
-            if (user == null)
+            if (dbUser == null)
             {
                 var newUser = _mapper.Map<User>(payload);
                 newUser.AvatarUrl = payload.Picture;
 
                 await _userRepo.AddAsync(newUser);
 
-                var userToken = _tokenService.GenerateJwt(newUser);
+                var access_token = _tokenService.GenerateJwt(newUser);
 
-                return new UserLoginResponseDto
+
+                return new UserLoginResponseDto<object>
                 {
-                    Data = _mapper.Map<UserDto>(newUser),
-                    AccessToken = userToken,
+                    Data = new
+                    {
+                        user = _mapper.Map<UserDto>(newUser),
+                        access_token
+                    },
+                    AccessToken = access_token,
                     Message = "Registration successful, user logged in."
                 };
             }
 
-            var token = _tokenService.GenerateJwt(user);
-            var userDto = _mapper.Map<UserDto>(user);
+            var token = _tokenService.GenerateJwt(dbUser);
+            var user = _mapper.Map<UserDto>(dbUser);
 
-            return new UserLoginResponseDto
+            return new UserLoginResponseDto<object>
             {
                 AccessToken = token,
                 Message = "Login successful",
-                Data = userDto
+                Data = new
+                {
+                    user,
+                    access_token = token
+                }
             };
         }
     }
