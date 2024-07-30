@@ -1,6 +1,9 @@
 ﻿using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Organisations.Queries;
+using Hng.Domain.Entities;
+using Hng.Infrastructure.Services;
+using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
