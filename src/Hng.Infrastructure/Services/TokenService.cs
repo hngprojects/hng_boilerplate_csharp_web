@@ -5,12 +5,14 @@ using System.Text;
 using Hng.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Hng.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace Hng.Infrastructure.Services
 {
-    public class TokenService(IConfiguration config) : ITokenService
+    public class TokenService(IConfiguration config, IHttpContextAccessor context) : ITokenService
     {
         private readonly IConfiguration _config = config;
+        private readonly IHttpContextAccessor _context = context;
 
         public static TokenValidationParameters GetTokenValidationParameters(IConfiguration _config) => new TokenValidationParameters
         {
@@ -41,6 +43,20 @@ namespace Hng.Infrastructure.Services
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(tokenObject);
+        }
+
+        public string GetCurrentUserEmail()
+        {
+            var identity = _context.HttpContext.User.Identity as ClaimsIdentity;
+
+            // Gets list of claims
+            var claim = identity.Claims;
+
+            // Gets user email from claims. Generally it's a  string.
+            var loggedInUSerEmail = claim
+                .First(x => x.Type == ClaimTypes.Email).Value;
+
+            return loggedInUSerEmail;
         }
 
         private static SymmetricSecurityKey GetSecurityKey(IConfiguration _config)
