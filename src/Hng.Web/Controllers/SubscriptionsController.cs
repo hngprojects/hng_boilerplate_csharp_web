@@ -39,27 +39,27 @@ namespace Hng.Web.Controllers
             return BadRequest(result.Error);
         }
 
-		[HttpPost("{subscriptionId}/activate")]
-		[Authorize]
-		[ProducesResponseType(typeof(SubscriptionDto), StatusCodes.Status200OK)]
-		public async Task<ActionResult> ActivateSubscription(Guid subscriptionId)
-		{
-			var command = new ActivateSubscriptionCommand(subscriptionId);
-			var activateSubcription = await _mediator.Send(command);
-			if (activateSubcription != null)
-			{
-				return Ok(new
-				{
-					data = activateSubcription,
-					message = "Subscription activated successfully"
-				});
+        [HttpPost("{subscriptionId}/activate")]
+        [Authorize]
+        [ProducesResponseType(typeof(SubscriptionDto), StatusCodes.Status200OK)]
+        public async Task<ActionResult> ActivateSubscription(Guid subscriptionId)
+        {
+            var command = new ActivateSubscriptionCommand(subscriptionId);
+            var activateSubcription = await _mediator.Send(command);
+            if (activateSubcription != null)
+            {
+                return Ok(new
+                {
+                    data = activateSubcription,
+                    message = "Subscription activated successfully"
+                });
 
-			}
-			return NotFound(new
-			{
-				error = "Subscription not found. Please check the subscription ID and try again.",
-				message = "Request failed"
-			});
-		}
-	}
+            }
+            return NotFound(new
+            {
+                error = "Subscription not found. Please check the subscription ID and try again.",
+                message = "Request failed"
+            });
+        }
+    }
 }

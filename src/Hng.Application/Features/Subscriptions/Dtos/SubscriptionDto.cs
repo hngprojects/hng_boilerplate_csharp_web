@@ -8,23 +8,23 @@ using Hng.Domain.Enums;
 
 namespace Hng.Application.Features.Subscriptions.Dtos
 {
-	public class SubscriptionDto
-	{
-		[JsonPropertyName("id")]
-		public Guid Id { get; set; }
-		[JsonPropertyName("user_id")]
-		public Guid? UserId { get; set; }
-		[JsonPropertyName("organization_id")]
-		public Guid? OrganizationId { get; set; }
-		[JsonPropertyName("plan")]
-		public SubscriptionPlan Plan { get; set; }
-		[JsonPropertyName("frequency")]
-		public SubscriptionFrequency Frequency { get; set; }
-		[JsonPropertyName("is_active")]
-		public bool IsActive { get; set; }
-		[JsonPropertyName("amount")]
-		public decimal Amount { get; set; }
-		[JsonPropertyName("start_date")]
-		public DateTime? StartDate { get; set; }
-	}
+    public class SubscriptionDto
+    {
+        [JsonPropertyName("id")]
+        public Guid Id { get; set; }
+        [JsonPropertyName("user_id")]
+        public Guid? UserId { get; set; }
+        [JsonPropertyName("organization_id")]
+        public Guid? OrganizationId { get; set; }
+        [JsonPropertyName("plan")]
+        public SubscriptionPlan Plan { get; set; }
+        [JsonPropertyName("frequency")]
+        public SubscriptionFrequency Frequency { get; set; }
+        [JsonPropertyName("is_active")]
+        public bool IsActive { get; set; }
+        [JsonPropertyName("amount")]
+        public decimal Amount { get; set; }
+        [JsonPropertyName("start_date")]
+        public DateTime? StartDate { get; set; }
+    }
 }

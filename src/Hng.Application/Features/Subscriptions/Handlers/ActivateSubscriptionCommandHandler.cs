@@ -15,25 +15,25 @@ public class ActivateSubscriptionCommandHandler : IRequestHandler<ActivateSubscr
 
     public ActivateSubscriptionCommandHandler(IRepository<Subscription> subscriptionRepository, IMapper mapper)
     {
-		_subscriptionRepository = subscriptionRepository;
+        _subscriptionRepository = subscriptionRepository;
         _mapper = mapper;
     }
 
     public async Task<SubscriptionDto> Handle(ActivateSubscriptionCommand request, CancellationToken cancellationToken)
     {
         var data = await _subscriptionRepository.GetBySpec(
-			o => o.Id == request.SubscriptionId);
+            o => o.Id == request.SubscriptionId);
 
-        if(data != null)
+        if (data != null)
         {
-			data.IsActive = true;
-			data.UpdatedAt = DateTime.UtcNow;
+            data.IsActive = true;
+            data.UpdatedAt = DateTime.UtcNow;
 
-			await _subscriptionRepository.AddAsync(data);
-			await _subscriptionRepository.SaveChanges();
+            await _subscriptionRepository.AddAsync(data);
+            await _subscriptionRepository.SaveChanges();
 
-			return _mapper.Map<SubscriptionDto>(data);
-		}
+            return _mapper.Map<SubscriptionDto>(data);
+        }
         return null;
     }
 }
