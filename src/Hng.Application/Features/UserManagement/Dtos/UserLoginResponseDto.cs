@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.UserManagement.Dtos
 {
-    public class UserLoginResponseDto
+    public class UserLoginResponseDto<T>
     {
         [JsonPropertyName("message")]
         public string Message { get; set; }
         [JsonPropertyName("data")]
-        public UserDto Data { get; set; }
+        public T Data { get; set; }
         [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
     }
