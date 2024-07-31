@@ -97,17 +97,17 @@ namespace Hng.Web.Controllers
         }
 
         /// <summary>
-        /// Get paginated subscription
+        /// Get subscriptions (Paginated)
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
 		[HttpGet]
-		[Authorize]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<ActionResult> GetSubscriptions([FromQuery] GetSubscriptionsQueryParameters parameters)
-		{
-			var subscriptions = await _mediator.Send(new GetSubscriptionsQuery(parameters));
-			return Ok(new PaginatedResponseDto<PagedListDto<SubscriptionDto>> { Data = subscriptions, Metadata = subscriptions.MetaData });
-		}
-	}
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetSubscriptions([FromQuery] GetSubscriptionsQueryParameters parameters)
+        {
+            var subscriptions = await _mediator.Send(new GetSubscriptionsQuery(parameters));
+            return Ok(new PaginatedResponseDto<PagedListDto<SubscriptionDto>> { Data = subscriptions, Metadata = subscriptions.MetaData });
+        }
+    }
 }
