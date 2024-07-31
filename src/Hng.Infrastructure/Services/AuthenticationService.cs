@@ -1,34 +1,30 @@
 ﻿using System.Security.Claims;
-using Hng.Domain.Entities;
-using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace Hng.Infrastructure.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService(IHttpContextAccessor httpContextAccessor) : IAuthenticationService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IRepository<User> _userRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-    public AuthenticationService(IHttpContextAccessor httpContextAccessor, IRepository<User> userRepository)
+    public Task<Guid> GetCurrentUserAsync()
     {
-        _httpContextAccessor = httpContextAccessor;
-        _userRepository = userRepository;
+        if (_httpContextAccessor.HttpContext.User.Identity is not ClaimsIdentity identity)
+            throw new InvalidOperationException("User identity is not available.");
+
+        var claim = identity.Claims;
+
+        var loggedInUserId = claim.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value;
+
+        if (string.IsNullOrEmpty(loggedInUserId))
+            throw new InvalidOperationException("User ID is not available in the claims.");
+
+        if (!Guid.TryParse(loggedInUserId, out var userId))
+            throw new InvalidOperationException("Invalid user ID format.");
+
+        return Task.FromResult(userId);
     }
 
-    public async Task<User> GetCurrentUserAsync()
-    {
-        var identity = _httpContextAccessor.HttpContext?.User.Identity as ClaimsIdentity;
 
-        var userId = identity?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null)
-        {
-            return null;
-        }
-
-        var userIdGuid = Guid.Parse(userId);
-        var user = await _userRepository.GetBySpec(u => u.Id == userIdGuid);
-        return user;
-    }
 }
