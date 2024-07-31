@@ -23,16 +23,16 @@ public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, BlogD
 
     public async Task<BlogDto> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
     {
-            var userId = await _authenticationService.GetCurrentUserAsync();
-            var blog = _mapper.Map<Blog>(request.BlogBody);
-            blog.PublishedDate = DateTime.UtcNow;
+        var userId = await _authenticationService.GetCurrentUserAsync();
+        var blog = _mapper.Map<Blog>(request.BlogBody);
+        blog.PublishedDate = DateTime.UtcNow;
 
-            blog.AuthorId = userId;
+        blog.AuthorId = userId;
 
-            await _blogRepository.AddAsync(blog);
-            await _blogRepository.SaveChanges();
+        await _blogRepository.AddAsync(blog);
+        await _blogRepository.SaveChanges();
 
-            return _mapper.Map<BlogDto>(blog);
+        return _mapper.Map<BlogDto>(blog);
     }
 
 }
