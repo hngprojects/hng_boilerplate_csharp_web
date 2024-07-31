@@ -3,8 +3,10 @@ using Hng.Application.Features.Blogs.Commands;
 using Hng.Application.Features.Blogs.Dtos;
 using Hng.Application.Features.Blogs.Handlers;
 using Hng.Application.Features.Blogs.Mappers;
+using Hng.Domain.Entities;
 using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Services.Interfaces;
 using Moq;
 using Xunit;
 
@@ -14,11 +16,13 @@ namespace Hng.Application.Test.Features.Blog
     {
         private readonly Mock<IRepository<Domain.Entities.Blog>> _mockBlogRepository;
         private readonly IMapper _mapper;
+        private readonly Mock<IAuthenticationService> _mockAuthenticationService;
         private readonly CreateBlogCommandHandler _handler;
 
         public CreateBlogCommandShould()
         {
             _mockBlogRepository = new Mock<IRepository<Domain.Entities.Blog>>();
+            _mockAuthenticationService = new Mock<IAuthenticationService>();
 
             var configuration = new MapperConfiguration(cfg =>
             {
@@ -26,7 +30,7 @@ namespace Hng.Application.Test.Features.Blog
             });
             _mapper = configuration.CreateMapper();
 
-            _handler = new CreateBlogCommandHandler(_mapper, _mockBlogRepository.Object);
+            _handler = new CreateBlogCommandHandler(_mapper, _mockBlogRepository.Object, _mockAuthenticationService.Object);
         }
 
         [Fact]
@@ -41,6 +45,10 @@ namespace Hng.Application.Test.Features.Blog
             };
 
             var createBlogCommand = new CreateBlogCommand(createBlogDto);
+
+            var user = new User { Id = Guid.NewGuid(), FirstName = "testuser" };
+            _mockAuthenticationService.Setup(service => service.GetCurrentUserAsync())
+                                      .ReturnsAsync(user);
 
             // Act
             var result = await _handler.Handle(createBlogCommand, CancellationToken.None);
