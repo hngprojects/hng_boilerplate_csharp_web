@@ -28,7 +28,7 @@ namespace Hng.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("AuthorId")
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Category")
@@ -74,6 +74,25 @@ namespace Hng.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("BlogId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.EmailTemplate", b =>
@@ -515,9 +534,18 @@ namespace Hng.Infrastructure.Migrations
                 {
                     b.HasOne("Hng.Domain.Entities.User", "Author")
                         .WithMany("Blogs")
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.Comment", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.Blog", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("BlogId");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Notification", b =>
@@ -608,6 +636,11 @@ namespace Hng.Infrastructure.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.Blog", b =>
+                {
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
