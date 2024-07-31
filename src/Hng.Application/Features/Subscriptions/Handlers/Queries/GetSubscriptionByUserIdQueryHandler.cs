@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Hng.Application.Features.Subscriptions.Dtos.Requests;
 using Hng.Application.Features.Subscriptions.Dtos.Responses;
-using Hng.Application.Shared.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
