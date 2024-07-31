@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Hng.Application.Features.UserManagement.Commands;
+using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.UserManagement.Handlers;
+using Hng.Application.Shared.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
@@ -10,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -42,48 +44,61 @@ namespace Hng.Application.Test.Features.UserManagement
         }
 
         [Fact]
-        public async Task Handle_ShouldReturnSuccessResponse_WhenFacebookTokenIsValid()
+        public async Task Handle_ShouldLoginExistingUser_WhenFacebookTokenIsValid()
         {
             // Arrange
+            var facebookToken = "valid_token";
             var facebookUser = new FacebookUser
             {
-                Id = "facebook-id",
-                Name = "John Doe",
-                Email = "john.doe@example.com"
+                Email = "existinguser@example.com",
+                Picture = new FacebookPicture
+                {
+                    Data = new FacebookPictureData { Url = "http://example.com/avatar.jpg" }
+                }
             };
 
-            var user = new User
+            var existingUser = new User
             {
-                Id = Guid.NewGuid(),
                 Email = facebookUser.Email,
-                FirstName = facebookUser.Name
+                FirstName = "Existing",
+                AvatarUrl = facebookUser.Picture.Data.Url
             };
 
-            var token = "jwt-token";
-            var request = new FacebookLoginCommand("valid-token");
+            var userDto = new UserDto
+            {
+                Email = facebookUser.Email,
+                FullName = existingUser.FirstName
+            };
 
-            _facebookAuthServiceMock
-                .Setup(service => service.ValidateAsync(request.FacebookToken))
-                .ReturnsAsync(facebookUser);
+            // Mock Facebook token validation
+            _facebookAuthServiceMock.Setup(service => service.ValidateAsync(It.IsAny<string>()))
+                                    .ReturnsAsync(facebookUser);
 
-            _userRepoMock
-                .Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
-                .ReturnsAsync(user);
+            _userRepoMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+                         .ReturnsAsync(existingUser);
 
-            _tokenServiceMock
-                .Setup(service => service.GenerateJwt(user))
-                .Returns(token);
+            _mapperMock.Setup(m => m.Map<UserDto>(It.IsAny<User>()))
+                       .Returns(userDto);
+
+            _tokenServiceMock.Setup(ts => ts.GenerateJwt(It.IsAny<User>()))
+                             .Returns("fake_jwt_token");
 
             // Act
-            var result = await _handler.Handle(request, CancellationToken.None);
+            var result = await _handler.Handle(new FacebookLoginCommand(facebookToken), CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("Login successful.", result.Message);
-            Assert.Equal(user.Id, result.Data.Data.Id);
-            Assert.Equal(user.FirstName, result.Data.Data.FullName);
-            Assert.Equal(token, result.Data.AccessToken);
+            Assert.Equal("Login successful", result.Message);
+            Assert.NotNull(result.AccessToken);
+            var data = result.Data as dynamic;
+            Assert.NotNull(data);
+            Assert.NotNull(data.user);
+            Assert.Equal(existingUser.Email, data.user.Email);
+            Assert.Equal(existingUser.FirstName, data.user.FullName);
+            Assert.Equal("fake_jwt_token", result.AccessToken);
+            _userRepoMock.Verify(repo => repo.AddAsync(It.IsAny<User>()), Times.Never);
         }
+
 
 
         [Fact]
@@ -94,11 +109,17 @@ namespace Hng.Application.Test.Features.UserManagement
             {
                 Id = "facebook-id",
                 Name = "John Doe",
-                Email = "john.doe@example.com"
+                Email = "john.doe@example.com",
+                Picture = new FacebookPicture
+                {
+                    Data = new FacebookPictureData
+                    {
+                        Url = "https://example.com/picture.jpg"
+                    }
+                }
             };
 
             var request = new FacebookLoginCommand("valid-token");
-
 
             _facebookAuthServiceMock
                 .Setup(service => service.ValidateAsync(request.FacebookToken))
@@ -127,7 +148,8 @@ namespace Hng.Application.Test.Features.UserManagement
                 .Returns(new User
                 {
                     FirstName = facebookUser.Name,
-                    Email = facebookUser.Email
+                    Email = facebookUser.Email,
+                    AvatarUrl = facebookUser.Picture.Data.Url
                 });
 
             // Act
@@ -136,26 +158,26 @@ namespace Hng.Application.Test.Features.UserManagement
             // Assert
             _userRepoMock.Verify(repo => repo.AddAsync(It.Is<User>(u => u.Email == facebookUser.Email && u.FirstName == facebookUser.Name)), Times.Once);
             _userRepoMock.Verify(repo => repo.SaveChanges(), Times.Once);
-            Assert.Equal("Login successful.", result.Message);
+            Assert.Equal("Registration successful, user logged in.", result.Message);
         }
 
-
-
-
-
         [Fact]
-        public async Task Handle_ShouldThrowException_WhenFacebookTokenIsInvalid()
+        public async Task Handle_ShouldReturnErrorResponse_WhenFacebookTokenIsInvalid()
         {
             // Arrange
-            var request = new FacebookLoginCommand("valid-token");
-
+            var request = new FacebookLoginCommand("invalid-token");
 
             _facebookAuthServiceMock
                 .Setup(service => service.ValidateAsync(request.FacebookToken))
                 .ReturnsAsync((FacebookUser)null);
 
-            // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+            // Act
+            var result = await _handler.Handle(request, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Invalid Facebook token.", result.Message);
+            Assert.Null(result.Data);
         }
 
         [Fact]
@@ -164,12 +186,10 @@ namespace Hng.Application.Test.Features.UserManagement
             // Arrange
             var request = new FacebookLoginCommand("valid-token");
 
-
             _facebookAuthServiceMock
                 .Setup(service => service.ValidateAsync(request.FacebookToken))
                 .ThrowsAsync(new Exception("Service error"));
 
-            // Capture logged messages
             var loggedMessages = new List<string>();
             _loggerMock
                 .Setup(x => x.Log(
@@ -185,12 +205,12 @@ namespace Hng.Application.Test.Features.UserManagement
                 }));
 
             // Act
-            var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+            var result = await _handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.Equal("Login failed.", exception.Message);
+            Assert.Equal("Login failed.", result.Message);
+            Assert.Null(result.Data);
 
-            // Verify that Log method was called with LogLevel.Error
             _loggerMock.Verify(
                 x => x.Log(
                     LogLevel.Error,
@@ -200,11 +220,7 @@ namespace Hng.Application.Test.Features.UserManagement
                     (Func<It.IsAnyType, Exception, string>)It.IsAny<object>()),
                 Times.Once);
 
-            // Check if the error message contains specific text
             Assert.Contains(loggedMessages, msg => msg.Contains("Facebook login failed:"));
         }
-
-
     }
-
 }
