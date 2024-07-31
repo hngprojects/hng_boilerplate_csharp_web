@@ -5,6 +5,7 @@ using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Mysqlx;
 
 namespace Hng.Web.Controllers;
 
@@ -12,19 +13,19 @@ namespace Hng.Web.Controllers;
 [Route("/api/v1/[controller]")]
 public class EmailTemplateController(ISender sender) : ControllerBase
 {
-    private readonly ISender sender = sender;
+    private readonly ISender _sender = sender;
 
 
     /// <summary>
     /// Create an email template
     /// </summary>
     [HttpPost]
-    [ProducesResponseType(typeof(EmailTemplateDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(SuccessResponseDto<EmailTemplateDTO>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateTemplate([FromBody] CreateEmailTemplateDTO createEmailDTO)
     {
         CreateEmailTemplateCommand createEmailTemplateCommand = new(createEmailDTO);
-        EmailTemplateDTO createdTemplate = await sender.Send(createEmailTemplateCommand);
+        EmailTemplateDTO createdTemplate = await _sender.Send(createEmailTemplateCommand);
 
         if (createdTemplate == null)
         {
@@ -37,19 +38,30 @@ public class EmailTemplateController(ISender sender) : ControllerBase
         };
 
         SuccessResponseDto<EmailTemplateDTO> successResponseDto = new() { Data = createdTemplate };
-        return Ok(successResponseDto);
+        return new ObjectResult(successResponseDto) { StatusCode = StatusCodes.Status201Created };
     }
 
     /// <summary>
     /// gets all the email templates in the system
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<EmailTemplateDTO>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllTemplates()
+    [ProducesResponseType(typeof(SuccessResponseDto<PaginatedResponseDto<PagedListDto<EmailTemplateDTO>>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAllTemplates([FromQuery] GetAllEmailTemplatesQuery query)
     {
-        GetAllEmailTemplatesQuery query = new();
-        IEnumerable<EmailTemplateDTO> templates = await sender.Send(query);
-        SuccessResponseDto<IEnumerable<EmailTemplateDTO>> successResponseDto = new() { Data = templates };
+
+        var templates = await _sender.Send(query);
+        if (templates == null)
+        {
+            return BadRequest(new FailureResponseDto<string>()
+            {
+                Data = string.Empty,
+                Error = "Invalid parameters entered",
+                Message = "The Page numbers entered are not valid"
+            });
+        }
+
+        SuccessResponseDto<PaginatedResponseDto<PagedListDto<EmailTemplateDTO>>> successResponseDto = new() { Data = templates };
         return Ok(successResponseDto);
     }
 }
