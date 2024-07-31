@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/v1/blogs")]
 public class BlogController : ControllerBase
@@ -20,6 +19,7 @@ public class BlogController : ControllerBase
         _mediator = mediator;
     }
 
+    [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(BlogDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<BlogDto>> CreateBlog([FromBody] CreateBlogDto body)
