@@ -1,6 +1,7 @@
 ﻿using Hng.Application.Features.Subscriptions.Commands;
 using Hng.Application.Features.Subscriptions.Dtos.Requests;
 using Hng.Application.Features.Subscriptions.Dtos.Responses;
+using Hng.Application.Features.Subscriptions.Queries;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -94,5 +95,19 @@ namespace Hng.Web.Controllers
                 message = "Request failed"
             });
         }
-    }
+
+        /// <summary>
+        /// Get paginated subscription
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+		[HttpGet]
+		[Authorize]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<ActionResult> GetSubscriptions([FromQuery] GetSubscriptionsQueryParameters parameters)
+		{
+			var subscriptions = await _mediator.Send(new GetSubscriptionsQuery(parameters));
+			return Ok(new PaginatedResponseDto<PagedListDto<SubscriptionDto>> { Data = subscriptions, Metadata = subscriptions.MetaData });
+		}
+	}
 }
