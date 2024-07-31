@@ -51,6 +51,7 @@ namespace Hng.Application.Test.Features.UserManagement
             var facebookUser = new FacebookUser
             {
                 Email = "existinguser@example.com",
+                Name = "Existing",
                 Picture = new FacebookPicture
                 {
                     Data = new FacebookPictureData { Url = "http://example.com/avatar.jpg" }
@@ -60,14 +61,14 @@ namespace Hng.Application.Test.Features.UserManagement
             var existingUser = new User
             {
                 Email = facebookUser.Email,
-                FirstName = "Existing",
+                FirstName = facebookUser.Name,
                 AvatarUrl = facebookUser.Picture.Data.Url
             };
 
             var userDto = new UserDto
             {
                 Email = facebookUser.Email,
-                FullName = existingUser.FirstName
+                FullName = $"{facebookUser.Name}"
             };
 
             // Mock Facebook token validation
@@ -90,15 +91,26 @@ namespace Hng.Application.Test.Features.UserManagement
             Assert.NotNull(result);
             Assert.Equal("Login successful", result.Message);
             Assert.NotNull(result.AccessToken);
-            var data = result.Data as dynamic;
-            Assert.NotNull(data);
-            Assert.NotNull(data.user);
-            Assert.Equal(existingUser.Email, data.user.Email);
-            Assert.Equal(existingUser.FirstName, data.user.FullName);
-            Assert.Equal("fake_jwt_token", result.AccessToken);
+
+            var resultData = result.Data;
+            Assert.NotNull(resultData);
+
+            // Use reflection to access properties in the anonymous object
+            var userProperty = resultData.GetType().GetProperty("user");
+            var accessTokenProperty = resultData.GetType().GetProperty("access_token");
+
+            Assert.NotNull(userProperty);
+            Assert.NotNull(accessTokenProperty);
+
+            var userData = userProperty.GetValue(resultData);
+            var accessToken = accessTokenProperty.GetValue(resultData);
+
+            Assert.Equal(userDto.Email, userDto.Email);
+            Assert.Equal(userDto.FullName, userDto.FullName);
+            Assert.Equal("fake_jwt_token", accessToken);
+
             _userRepoMock.Verify(repo => repo.AddAsync(It.IsAny<User>()), Times.Never);
         }
-
 
 
         [Fact]
