@@ -4,8 +4,6 @@ namespace Hng.Application.Features.Notifications.Dtos
 {
     public class CreateNotificationDto
     {
-        [JsonPropertyName("user_id")]
-        public Guid UserId { get; set; }
         [JsonPropertyName("mobile_push_notifications")]
         public bool MobilePushNotifications { get; set; }
         [JsonPropertyName("activity_workspace_email")]
