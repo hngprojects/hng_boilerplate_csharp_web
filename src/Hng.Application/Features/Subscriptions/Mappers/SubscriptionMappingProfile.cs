@@ -1,5 +1,4 @@
-﻿using Hng.Application.Features.Organisations.Dtos;
-using Hng.Application.Features.Subscriptions.Dtos.Responses;
+﻿using Hng.Application.Features.Subscriptions.Dtos.Responses;
 using Hng.Domain.Entities;
 
 namespace Hng.Application.Features.Subscriptions.Mappers
