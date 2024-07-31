@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -110,6 +111,50 @@ namespace Hng.Web.Controllers
                 return BadRequest(response.Error);
 
             return Ok(response.Value);
+        }
+
+        [HttpPost("facebook")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(SuccessResponseDto<UserLoginResponseDto<UserDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> FacebookLogin([FromBody] FacebookLoginRequestDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new FailureResponseDto<string>
+                {
+                    Error = "Invalid request data.",
+                    Message = "Request failed."
+                });
+            }
+
+            try
+            {
+                var command = new FacebookLoginCommand(request.AccessToken);
+
+                var response = await _mediator.Send(command);
+
+                if (response == null)
+                {
+                    return StatusCode(500, new FailureResponseDto<string>
+                    {
+                        Error = "An unexpected error occurred.",
+                        Message = "Request failed."
+                    });
+                }
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new FailureResponseDto<string>
+                {
+                    Error = ex.Message,
+                    Message = "Login failed."
+                });
+            }
         }
     }
 }
