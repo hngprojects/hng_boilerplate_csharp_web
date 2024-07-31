@@ -36,13 +36,12 @@ namespace Hng.Application.Test.Features.Notifications
             var userId = Guid.NewGuid();
             var createNotificationDto = new CreateNotificationDto
             {
-                UserId = userId,
                 EmailNotifications = true,
                 MobilePushNotifications = false,
                 ActivityWorkspaceEmail = true
             };
 
-            var command = new CreateNotificationCommand(createNotificationDto);
+            var command = new CreateNotificationCommand(createNotificationDto, userId.ToString());
 
             var user = new User { Id = userId };
             var newNotification = new Notification
@@ -75,7 +74,7 @@ namespace Hng.Application.Test.Features.Notifications
             Assert.Equal(createNotificationDto.MobilePushNotifications, result.MobilePushNotifications);
             Assert.Equal(createNotificationDto.ActivityWorkspaceEmail, result.ActivityWorkspaceEmail);
 
-            _mockNotificationRepository.Verify(r => r.AddAsync(It.IsAny<Notification>()), Times.Once);
+            _mockNotificationRepository.Verify(r => r.AddAsync(It.Is<Notification>(n => n.UserId == userId)), Times.Once);
             _mockNotificationRepository.Verify(r => r.SaveChanges(), Times.Once);
         }
 
@@ -86,13 +85,12 @@ namespace Hng.Application.Test.Features.Notifications
             var userId = Guid.NewGuid();
             var createNotificationDto = new CreateNotificationDto
             {
-                UserId = userId,
                 EmailNotifications = true,
                 MobilePushNotifications = false,
                 ActivityWorkspaceEmail = true
             };
 
-            var command = new CreateNotificationCommand(createNotificationDto);
+            var command = new CreateNotificationCommand(createNotificationDto, userId.ToString());
 
             var user = new User { Id = userId };
             var existingNotification = new Notification
@@ -125,7 +123,7 @@ namespace Hng.Application.Test.Features.Notifications
             Assert.Equal(createNotificationDto.MobilePushNotifications, result.MobilePushNotifications);
             Assert.Equal(createNotificationDto.ActivityWorkspaceEmail, result.ActivityWorkspaceEmail);
 
-            _mockNotificationRepository.Verify(r => r.UpdateAsync(It.IsAny<Notification>()), Times.Once);
+            _mockNotificationRepository.Verify(r => r.UpdateAsync(It.Is<Notification>(n => n.UserId == userId)), Times.Once);
             _mockNotificationRepository.Verify(r => r.SaveChanges(), Times.Once);
         }
 
@@ -136,13 +134,12 @@ namespace Hng.Application.Test.Features.Notifications
             var userId = Guid.NewGuid();
             var createNotificationDto = new CreateNotificationDto
             {
-                UserId = userId,
                 EmailNotifications = true,
                 MobilePushNotifications = false,
                 ActivityWorkspaceEmail = true
             };
 
-            var command = new CreateNotificationCommand(createNotificationDto);
+            var command = new CreateNotificationCommand(createNotificationDto, userId.ToString());
 
             _mockUserRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
                 .ReturnsAsync((User)null);
