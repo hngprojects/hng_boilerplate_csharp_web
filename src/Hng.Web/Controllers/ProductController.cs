@@ -113,16 +113,17 @@ namespace Hng.Web.Controllers
                 });
         }
 
-        /// <summary>
-        /// Get all product endpoint
-        /// </summary>
-        /// <returns></returns>
+		/// <summary>
+		/// Get all product endpoint
+		/// </summary>
+		/// <returns></returns>
 		[HttpGet]
-		[ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
-		public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts()
+		[Authorize]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		public async Task<ActionResult> GetSubscriptions([FromQuery] GetProductsQueryParameters parameters)
 		{
-			var products = await _mediator.Send(new GetProductsQuery());
-			return Ok(products);
+			var products = await _mediator.Send(new GetProductsQuery(parameters));
+			return Ok(new PaginatedResponseDto<PagedListDto<ProductDto>> { Data = products, Metadata = products.MetaData });
 		}
 	}
 }
