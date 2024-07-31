@@ -21,6 +21,7 @@ namespace Hng.Infrastructure.Services
             var newHash = GeneratePasswordHash(plainPassword, passwordSalt);
             return newHash == passwordHash;
         }
+
         private static string GeneratePasswordHash(string plainPassword, string salt)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(plainPassword + salt);
