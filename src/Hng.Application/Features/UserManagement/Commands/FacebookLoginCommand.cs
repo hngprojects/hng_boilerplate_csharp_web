@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.UserManagement.Commands
 {
-    public class FacebookLoginCommand : IRequest<SuccessResponseDto<UserLoginResponseDto<UserDto>>>
+    public class FacebookLoginCommand : IRequest<UserLoginResponseDto<object>>
     {
         public string FacebookToken { get; }
 

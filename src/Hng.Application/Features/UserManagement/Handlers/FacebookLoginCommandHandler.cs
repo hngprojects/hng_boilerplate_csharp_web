@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.UserManagement.Handlers
 {
-    public class FacebookLoginCommandHandler : IRequestHandler<FacebookLoginCommand, SuccessResponseDto<UserLoginResponseDto<UserDto>>>
+    public class FacebookLoginCommandHandler : IRequestHandler<FacebookLoginCommand, UserLoginResponseDto<object>>
     {
         private readonly IRepository<User> _userRepo;
         private readonly ITokenService _tokenService;
@@ -37,7 +37,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             _logger = logger;
         }
 
-        public async Task<SuccessResponseDto<UserLoginResponseDto<UserDto>>> Handle(FacebookLoginCommand request, CancellationToken cancellationToken)
+        public async Task<UserLoginResponseDto<object>> Handle(FacebookLoginCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -45,42 +45,61 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
                 if (facebookUser == null)
                 {
-                    throw new Exception("Invalid Facebook token.");
+                    return new UserLoginResponseDto<object>
+                    {
+                        Message = "Invalid Facebook token.",
+                        Data = null
+                    };
                 }
 
                 var user = await _userRepo.GetBySpec(u => u.Email == facebookUser.Email);
                 if (user == null)
                 {
                     user = _mapper.Map<User>(facebookUser);
+                    user.AvatarUrl = facebookUser.Picture.Data.Url;
+
                     await _userRepo.AddAsync(user);
                     await _userRepo.SaveChanges();
+
+                    var access_token = _tokenService.GenerateJwt(user);
+
+                    return new UserLoginResponseDto<object>
+                    {
+                        Data = new
+                        {
+                            user = _mapper.Map<UserDto>(user),
+                            access_token
+                        },
+                        AccessToken = access_token,
+                        Message = "Registration successful, user logged in."
+                    };
                 }
 
                 var token = _tokenService.GenerateJwt(user);
+                var userDto = _mapper.Map<UserDto>(user);
 
-                var response = new SuccessResponseDto<UserLoginResponseDto<UserDto>>
+                return new UserLoginResponseDto<object>
                 {
-                    Data = new UserLoginResponseDto<UserDto>
+                    AccessToken = token,
+                    Message = "Login successful",
+                    Data = new
                     {
-                        Data = new UserDto
-                        {
-                            Id = user.Id,
-                            FullName = user.FirstName,
-                            Email = user.Email,
-                        },
-                        AccessToken = token,
-                    },
-                    Message = "Login successful."
+                        user = userDto,
+                        access_token = token
+                    }
                 };
-
-                return response;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Facebook login failed: {ErrorMessage}", ex.Message);
-                throw new Exception("Login failed.");
+                return new UserLoginResponseDto<object>
+                {
+                    Message = "Login failed.",
+                    Data = null
+                };
             }
         }
+
     }
 
 }
