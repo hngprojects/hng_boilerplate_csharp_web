@@ -113,35 +113,40 @@ namespace Hng.Web.Controllers
             return Ok(response.Value);
         }
 
+        /// <summary>
+        /// Logs in User via Facebook
+        /// </summary>
+        /// <param name="request">The Facebook login request containing the access token.</param>
+        /// <returns>A response with the login result or an error message.</returns>
         [HttpPost("facebook")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(SuccessResponseDto<UserLoginResponseDto<UserDto>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> FacebookLogin([FromBody] FacebookLoginRequestDto request)
+        [ProducesResponseType(typeof(UserLoginResponseDto<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<UserLoginResponseDto<object>>> FacebookLogin([FromBody] FacebookLoginRequestDto request)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new FailureResponseDto<string>
+                return BadRequest(new
                 {
-                    Error = "Invalid request data.",
-                    Message = "Request failed."
+                    message = "Invalid request data",
+                    error = "Invalid data provided.",
+                    status_code = StatusCodes.Status400BadRequest
                 });
             }
 
             try
             {
                 var command = new FacebookLoginCommand(request.AccessToken);
-
                 var response = await _mediator.Send(command);
 
-                if (response == null)
+                if (response == null || response.Data == null)
                 {
-                    return StatusCode(500, new FailureResponseDto<string>
+                    return Unauthorized(new
                     {
-                        Error = "An unexpected error occurred.",
-                        Message = "Request failed."
+                        message = "Invalid Facebook token",
+                        error = "Unable to authenticate with Facebook.",
+                        status_code = StatusCodes.Status401Unauthorized
                     });
                 }
 
@@ -149,12 +154,14 @@ namespace Hng.Web.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new FailureResponseDto<string>
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    Error = ex.Message,
-                    Message = "Login failed."
+                    message = "An unexpected error occurred.",
+                    error = ex.Message,
+                    status_code = StatusCodes.Status500InternalServerError
                 });
             }
         }
+
     }
 }
