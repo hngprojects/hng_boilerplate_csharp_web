@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Hng.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240730204403_EmailTemplates")]
+    partial class EmailTemplates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,46 +200,6 @@ namespace Hng.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("NewsLetterSubscribers");
-                });
-
-            modelBuilder.Entity("Hng.Domain.Entities.Notification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("ActivityWorkspaceEmail")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("ActivityWorkspaceSlack")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("AnnouncementsUpdateEmails")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("AnnouncementsUpdateSlack")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("EmailDigests")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("EmailNotifications")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("MobilePushNotifications")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("SlackNotifications")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
@@ -515,17 +478,6 @@ namespace Hng.Infrastructure.Migrations
                         .HasForeignKey("AuthorId");
 
                     b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("Hng.Domain.Entities.Notification", b =>
-                {
-                    b.HasOne("Hng.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>

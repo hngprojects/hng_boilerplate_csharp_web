@@ -15,7 +15,11 @@ namespace Hng.Application.Features.UserManagement.Handlers
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
 
-        public LoginUserCommandHandler(IRepository<User> userRepo, IMapper mapper, IPasswordService passwordService, ITokenService tokenService)
+        public LoginUserCommandHandler(
+            IRepository<User> userRepo,
+            IMapper mapper,
+            IPasswordService passwordService,
+            ITokenService tokenService)
         {
             _userRepo = userRepo;
             _mapper = mapper;
@@ -33,7 +37,6 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     Data = null,
                     AccessToken = null,
                     Message = "Invalid credentials"
-
                 };
             }
 
@@ -48,6 +51,5 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 Message = "Login successful"
             };
         }
-
     }
 }
