@@ -6,6 +6,7 @@ using Hng.Application;
 using Hng.Infrastructure;
 using Microsoft.AspNetCore.Http.Json;
 using System.Reflection;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,15 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
+});
+
+// Add Prometheus
+builder.Services.AddSingleton<Counter>(sp =>
+{
+    return Metrics.CreateCounter("request_count", "Number of requests received", new CounterConfiguration
+    {
+        LabelNames = new[] { "endpoint" }
+    });
 });
 
 var app = builder.Build();
@@ -42,6 +52,17 @@ app.UseCors("AllowAllOrigins");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Add Prometheus middleware
+app.UseMetricServer("/metrics");
+app.UseHttpMetrics();
+
+app.Use((context, next) =>
+{
+    var counter = context.RequestServices.GetRequiredService<Counter>();
+    counter.WithLabels(context.Request.Path).Inc();
+    return next();
+});
 
 app.MapControllers();
 
