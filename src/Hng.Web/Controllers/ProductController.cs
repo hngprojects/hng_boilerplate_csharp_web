@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Queries;
-using Hng.Application.Features.Products.Validators;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
 {
-    [ApiController]
+	[ApiController]
     [Route("api/v1/products")]
     public class ProductController : ControllerBase
     {
@@ -113,5 +112,17 @@ namespace Hng.Web.Controllers
                     error = "Not Found"
                 });
         }
-    }
+
+        /// <summary>
+        /// Get all product endpoint
+        /// </summary>
+        /// <returns></returns>
+		[HttpGet]
+		[ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
+		public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts()
+		{
+			var products = await _mediator.Send(new GetProductsQuery());
+			return Ok(products);
+		}
+	}
 }
