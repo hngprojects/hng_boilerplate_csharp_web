@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
 {
-	[ApiController]
+    [ApiController]
     [Route("api/v1/products")]
     public class ProductController : ControllerBase
     {
@@ -113,17 +113,17 @@ namespace Hng.Web.Controllers
                 });
         }
 
-		/// <summary>
-		/// Get all product endpoint
-		/// </summary>
-		/// <returns></returns>
-		[HttpGet]
-		[Authorize]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<ActionResult> GetProducts([FromQuery] GetProductsQueryParameters parameters)
-		{
-			var products = await _mediator.Send(new GetProductsQuery(parameters));
-			return Ok(new PaginatedResponseDto<PagedListDto<ProductDto>> { Data = products, Metadata = products.MetaData });
-		}
-	}
+        /// <summary>
+        /// Get all product endpoint
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetProducts([FromQuery] GetProductsQueryParameters parameters)
+        {
+            var products = await _mediator.Send(new GetProductsQuery(parameters));
+            return Ok(new PaginatedResponseDto<PagedListDto<ProductDto>> { Data = products, Metadata = products.MetaData });
+        }
+    }
 }

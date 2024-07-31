@@ -6,13 +6,13 @@ using MediatR;
 
 namespace Hng.Application.Features.Products.Queries
 {
-	public class GetProductsQuery : IRequest<PagedListDto<ProductDto>>
-	{
-		public GetProductsQuery(GetProductsQueryParameters parameters)
-		{
-			productsQueryParameters = parameters;
-		}
+    public class GetProductsQuery : IRequest<PagedListDto<ProductDto>>
+    {
+        public GetProductsQuery(GetProductsQueryParameters parameters)
+        {
+            productsQueryParameters = parameters;
+        }
 
-		public GetProductsQueryParameters productsQueryParameters { get; set; }
-	}
+        public GetProductsQueryParameters productsQueryParameters { get; set; }
+    }
 }
