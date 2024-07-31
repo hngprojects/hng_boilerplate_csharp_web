@@ -1,10 +1,8 @@
 using System.Text.Json.Serialization;
 using Hng.Web.Extensions;
-using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 using Hng.Application;
 using Hng.Infrastructure;
-using Microsoft.AspNetCore.Http.Json;
 using System.Reflection;
 using Prometheus;
 
@@ -12,12 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLog();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocs();
 builder.Services.AddApplicationConfig(builder.Configuration);
 builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"));
-builder.Services.Configure<JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddSwaggerGen(c =>
 {
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
