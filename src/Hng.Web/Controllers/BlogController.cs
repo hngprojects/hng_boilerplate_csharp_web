@@ -58,6 +58,7 @@ public class BlogController : ControllerBase
     }
 
 
+    [Authorize]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
