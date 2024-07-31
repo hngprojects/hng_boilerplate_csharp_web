@@ -3,7 +3,6 @@ using Hng.Application.Features.Blogs.Commands;
 using Hng.Application.Features.Blogs.Dtos;
 using Hng.Application.Features.Blogs.Handlers;
 using Hng.Application.Features.Blogs.Mappers;
-using Hng.Domain.Entities;
 using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
@@ -46,9 +45,9 @@ namespace Hng.Application.Test.Features.Blog
 
             var createBlogCommand = new CreateBlogCommand(createBlogDto);
 
-            var user = new User { Id = Guid.NewGuid(), FirstName = "testuser" };
+            var userId = Guid.NewGuid();
             _mockAuthenticationService.Setup(service => service.GetCurrentUserAsync())
-                                      .ReturnsAsync(user);
+                                      .ReturnsAsync(userId);
 
             // Act
             var result = await _handler.Handle(createBlogCommand, CancellationToken.None);

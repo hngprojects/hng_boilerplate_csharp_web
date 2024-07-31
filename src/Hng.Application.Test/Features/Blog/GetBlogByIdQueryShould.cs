@@ -24,8 +24,7 @@ public class GetBlogByIdQueryShould
 
         var mapperConfig = new MapperConfiguration(cfg =>
         {
-            cfg.CreateMap<Domain.Entities.Blog, BlogDto>()
-                .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author));
+            cfg.CreateMap<Domain.Entities.Blog, BlogDto>();
             cfg.CreateMap<User, User>();
         });
 
@@ -64,9 +63,7 @@ public class GetBlogByIdQueryShould
         result.ImageUrl.Should().Be(blog.ImageUrl);
         result.Content.Should().Be(blog.Content);
         result.PublishedDate.Should().Be(blog.PublishedDate);
-        result.Author.Should().NotBeNull();
-        result.Author.Id.Should().Be(blog.Author.Id);
-        result.Author.FirstName.Should().Be(blog.Author.FirstName);
+        result.AuthorId.Should().Be(blog.Author.Id);
         result.Category.Should().Be(blog.Category);
     }
 
