@@ -36,6 +36,7 @@
   <Folder Include="Features\Jobs\Queries\" />
    <Folder Include="Features\SuperAdmin\Commands\" />
     <Folder Include="Features\Products\Queries\" />
+  <Folder Include="Features\UserManagement\Commands\" />
   </ItemGroup>
 
 
