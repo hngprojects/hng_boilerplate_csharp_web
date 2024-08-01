@@ -1,6 +1,6 @@
 ﻿namespace Hng.Domain.Entities
 {
-    public class Role : EntityBase
+    public class RolePermission:EntityBase
     {
         public string Name { get; set; }
         public string Description { get; set; }
