@@ -43,14 +43,16 @@ var app = builder.Build();
 
 await app.MigrateAndSeed();
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+//{
+    
+//}
+
+app.UseSwagger(c => c.RouteTemplate = "docs/{documentName}/swagger.json");
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger(c => c.RouteTemplate = "docs/{documentName}/swagger.json");
-    app.UseSwaggerUI(c =>
-    {
-        c.RoutePrefix = "docs";
-    });
-}
+    c.RoutePrefix = "docs";
+});
 
 app.UseGlobalErrorHandler(app.Environment);
 app.UseCors("AllowAllOrigins");
