@@ -5,17 +5,16 @@ using Hng.Application.Features.Products.Queries;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
-using System.Linq.Expressions;
 using Xunit;
 
 namespace Hng.Application.Test.Features.Products
 {
-    public class GetProductByNameQueryShould
+    public class GetProductsByNameQueryHandlerShould
     {
         private readonly Mock<IRepository<Product>> _mockRepository;
         private readonly IMapper _mapper;
 
-        public GetProductByNameQueryShould()
+        public GetProductsByNameQueryHandlerShould()
         {
             _mockRepository = new Mock<IRepository<Product>>();
             var config = new MapperConfiguration(cfg =>
@@ -26,60 +25,75 @@ namespace Hng.Application.Test.Features.Products
         }
 
         [Fact]
-        public async Task ReturnProductDto_WhenProductExists()
+        public async Task ReturnAllProducts_WhenNameIsEmpty()
         {
             // Arrange
-            var productName = "Test Product";
-            var product = new Product { Id = Guid.NewGuid(), Name = productName };
-            var productDto = new ProductDto { Id = product.Id, Name = productName };
+            var products = new List<Product>
+            {
+                new Product { Id = Guid.NewGuid(), Name = "Product 1" },
+                new Product { Id = Guid.NewGuid(), Name = "Product 2" }
+            };
+            _mockRepository.Setup(repo => repo.GetAllAsync())
+                .ReturnsAsync(products);
 
-            _mockRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<Product, bool>>>()))
-                .ReturnsAsync(product);
-
-            var handler = new GetProductByNameQueryHandler(_mockRepository.Object, _mapper);
-            var query = new GetProductByNameQuery(productName);
-
-            // Act
-            var result = await handler.Handle(query, CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(productName, result.Name);
-            Assert.Equal(product.Id, result.Id);
-        }
-
-        [Fact]
-        public async Task ReturnNull_WhenProductNameIsEmpty()
-        {
-            // Arrange
-            var handler = new GetProductByNameQueryHandler(_mockRepository.Object, _mapper);
+            var handler = new GetProductsByNameQueryHandler(_mockRepository.Object, _mapper);
             var query = new GetProductByNameQuery("");
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            Assert.Null(result);
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, p => p.Name == "Product 1");
+            Assert.Contains(result, p => p.Name == "Product 2");
         }
 
         [Fact]
-        public async Task ReturnNull_WhenProductNotFound()
+        public async Task ReturnFilteredProducts_WhenNameIsProvided()
         {
             // Arrange
-            var productName = "Non-existent Product";
+            var products = new List<Product>
+            {
+                new Product { Id = Guid.NewGuid(), Name = "Apple" },
+                new Product { Id = Guid.NewGuid(), Name = "Banana" },
+                new Product { Id = Guid.NewGuid(), Name = "Orange" }
+            };
+            _mockRepository.Setup(repo => repo.GetAllAsync())
+                .ReturnsAsync(products);
 
-            _mockRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<Product, bool>>>()))
-                .ReturnsAsync((Product)null);
-
-            var handler = new GetProductByNameQueryHandler(_mockRepository.Object, _mapper);
-            var query = new GetProductByNameQuery(productName);
+            var handler = new GetProductsByNameQueryHandler(_mockRepository.Object, _mapper);
+            var query = new GetProductByNameQuery("an");
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            Assert.Null(result);
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, p => p.Name == "Banana");
+            Assert.Contains(result, p => p.Name == "Orange");
+            Assert.DoesNotContain(result, p => p.Name == "Apple");
+        }
+
+        [Fact]
+        public async Task ReturnEmptyList_WhenNoProductsMatch()
+        {
+            // Arrange
+            var products = new List<Product>
+            {
+                new Product { Id = Guid.NewGuid(), Name = "Apple" },
+                new Product { Id = Guid.NewGuid(), Name = "Banana" }
+            };
+            _mockRepository.Setup(repo => repo.GetAllAsync())
+                .ReturnsAsync(products);
+
+            var handler = new GetProductsByNameQueryHandler(_mockRepository.Object, _mapper);
+            var query = new GetProductByNameQuery("Orange");
+
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            Assert.Empty(result);
         }
     }
 }
-
