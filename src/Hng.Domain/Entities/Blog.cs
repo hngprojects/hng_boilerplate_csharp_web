@@ -8,6 +8,8 @@ public class Blog : EntityBase
     public string ImageUrl { get; set; }
     public string Content { get; set; }
     public DateTime PublishedDate { get; set; }
+    public Guid AuthorId { get; set; }
     public User Author { get; set; }
     public BlogCategory Category { get; set; }
+    public ICollection<Comment> Comments { get; set; }
 }
