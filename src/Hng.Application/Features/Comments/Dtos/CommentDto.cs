@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Hng.Application.Features.Comments;
+namespace Hng.Application.Features.Comments.Dtos;
 
 public class CommentDto
 {
@@ -8,4 +8,6 @@ public class CommentDto
     public Guid Id { get; set; }
     [JsonPropertyName("content")]
     public string Content { get; set; }
+    [JsonPropertyName("created_at")]
+    public DateTime CreatedAt { get; set; }
 }
