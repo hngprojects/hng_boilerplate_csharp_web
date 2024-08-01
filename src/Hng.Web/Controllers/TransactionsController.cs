@@ -1,5 +1,6 @@
 ﻿using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
+using Hng.Application.Shared.Dtos;
 using Hng.Infrastructure.Utilities.StringKeys;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +10,7 @@ using Newtonsoft.Json;
 namespace Hng.Web.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/transactions")]
     public class TransactionsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,16 +21,36 @@ namespace Hng.Web.Controllers
         }
 
         /// <summary>
-        /// Initiaze transation from Paystack
+        /// Initiate product transation from Paystack
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("initialize")]
+        [HttpPost("initiate/product")]
         [ProducesResponseType(typeof(InitializeTransactionResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> InitializeTransaction([FromBody] InitializeTransactionCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+        }
+
+        /// <summary>
+        /// Initiate subscription transation from Paystack
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("initiate/subscription")]
+        [ProducesResponseType(typeof(InitiateSubscriptionTransactionResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> InitializeSubscriptionTransaction([FromBody] InitiateSubscriptionTransactionCommand command)
         {
             var result = await _mediator.Send(command);
 
@@ -67,12 +88,38 @@ namespace Hng.Web.Controllers
         [HttpPost("callback")]
         public async Task<IActionResult> GetTransferStatsusForRecipients([FromBody] dynamic content)
         {
-            var data = JsonConvert.DeserializeObject<TransactionSuccessfulCommand>(content.ToString());
-
+            var data = JsonConvert.DeserializeObject<TransactionsWebhookCommand>(content.ToString());
             if (data.Event == PaystackEventKeys.charge_success)
-                await _mediator.Send(data);
-
+            {
+                if (data.Data.Metadata.ToString().Contains(nameof(ProductInitialized.ProductId)))
+                {
+                    var command = new TransactionWebhookCommand(data);
+                    await _mediator.Send(command);
+                }
+                else if (data.Data.Metadata.ToString().Contains(nameof(SubscriptionInitialized.SubId)))
+                {
+                    var command = new SubTransactionWebhookCommand(data);
+                    await _mediator.Send(command);
+                }
+            }
             return Ok(new { Status = true, Message = "success" });
+        }
+
+        /// <summary>
+        /// Get transactions by user ID.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("user/{userId}")]
+        [ProducesResponseType(typeof(SuccessResponseDto<PagedListDto<TransactionDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetTransactionsByUserId(Guid userId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            var response = await _mediator.Send(new GetTransactionsByUserIdQuery(userId, pageNumber, pageSize));
+            return response.Any()
+                ? Ok(new SuccessResponseDto<PagedListDto<TransactionDto>> { Data = response })
+                : NotFound(new FailureResponseDto<object> { Error = "No transactions found for this user", Data = false });
         }
     }
 }

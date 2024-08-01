@@ -1,14 +1,13 @@
-﻿using AutoMapper;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Commands;
 using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
-using Hng.Application.Features.Profiles.Mappers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Utilities.StringKeys;
 using Moq;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace Hng.Application.Test.Features.PaymentIntegrations.Paystack
@@ -19,20 +18,24 @@ namespace Hng.Application.Test.Features.PaymentIntegrations.Paystack
         {
             private readonly Mock<IPaystackClient> _paystackClientMock;
             private readonly Mock<PaystackApiKeys> _apiKeysMock;
+            private readonly Mock<IRepository<User>> _userRepoMock;
+            private readonly Mock<IRepository<Product>> _productRepoMock;
             private readonly Mock<IRepository<Transaction>> _paymentRepoMock;
-            private readonly IMapper _mapper;
             private readonly InitializeTransactionCommandHandler _handler;
 
             public InitializeTransactionCommandHandlerTests()
             {
-                var mappingProfile = new ProfileMapperProfile();
-                var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
-                _mapper = new Mapper(configuration);
-
                 _paystackClientMock = new Mock<IPaystackClient>();
                 _apiKeysMock = new Mock<PaystackApiKeys>();
+                _userRepoMock = new Mock<IRepository<User>>();
+                _productRepoMock = new Mock<IRepository<Product>>();
                 _paymentRepoMock = new Mock<IRepository<Transaction>>();
-                _handler = new InitializeTransactionCommandHandler(_paystackClientMock.Object, _apiKeysMock.Object, _paymentRepoMock.Object, _mapper);
+                _handler = new InitializeTransactionCommandHandler(
+                    _paystackClientMock.Object,
+                    _apiKeysMock.Object,
+                    _paymentRepoMock.Object,
+                    _userRepoMock.Object,
+                    _productRepoMock.Object);
             }
 
             [Fact]
@@ -58,6 +61,21 @@ namespace Hng.Application.Test.Features.PaymentIntegrations.Paystack
                     }
                 };
 
+                var user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@example.com",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Password = "hashedpassword",
+                    PasswordSalt = "salt"
+                };
+                var product = new Product()
+                {
+                    Id = Guid.NewGuid()
+                };
+                _userRepoMock.Setup(x => x.GetBySpec(It.IsAny<Expression<Func<User, bool>>>())).ReturnsAsync(user);
+                _productRepoMock.Setup(x => x.GetBySpec(It.IsAny<Expression<Func<Product, bool>>>())).ReturnsAsync(product);
                 _paystackClientMock
                     .Setup(x => x.InitializeTransaction(It.IsAny<InitializeTransactionRequest>()))
                     .ReturnsAsync(Result.Success(initializeResponse));
@@ -97,6 +115,21 @@ namespace Hng.Application.Test.Features.PaymentIntegrations.Paystack
                     Email = "customer@example.com",
                     Amount = 50000,
                 };
+                var user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "test@example.com",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Password = "hashedpassword",
+                    PasswordSalt = "salt"
+                };
+                var product = new Product()
+                {
+                    Id = Guid.NewGuid()
+                };
+                _userRepoMock.Setup(x => x.GetBySpec(It.IsAny<Expression<Func<User, bool>>>())).ReturnsAsync(user);
+                _productRepoMock.Setup(x => x.GetBySpec(It.IsAny<Expression<Func<Product, bool>>>())).ReturnsAsync(product);
 
                 _paystackClientMock
                     .Setup(x => x.InitializeTransaction(It.IsAny<InitializeTransactionRequest>()))

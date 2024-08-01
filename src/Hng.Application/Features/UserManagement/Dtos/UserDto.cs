@@ -2,13 +2,14 @@ using System.Text.Json.Serialization;
 using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Profiles.Dtos;
+using Hng.Domain.Entities;
 
 namespace Hng.Application.Features.UserManagement.Dtos
 {
     public class UserDto
     {
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+        [JsonPropertyName("fullname")]
+        public string FullName { get; set; }
 
         [JsonPropertyName("id")]
         public Guid Id { get; set; }
@@ -18,6 +19,8 @@ namespace Hng.Application.Features.UserManagement.Dtos
 
         [JsonPropertyName("profile")]
         public ProfileDto Profile { get; set; }
+        [JsonPropertyName("avatar_url")]
+        public string AvatarUrl { get; set; }
 
         [JsonIgnore]
         [JsonPropertyName("organisation")]
@@ -26,5 +29,8 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonIgnore]
         [JsonPropertyName("products")]
         public IEnumerable<ProductDto> Products { get; set; }
+
+        [JsonPropertyName("blogs")]
+        public ICollection<Blog> Blogs { get; set; } = [];
     }
 }
