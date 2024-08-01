@@ -7,6 +7,7 @@ using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Organisations.Queries;
 using Hng.Application.Shared.Dtos;
 using Hng.Domain.Common;
+using Hng.Infrastructure.Services.Interfaces;
 using Hng.Infrastructure.Utilities.Errors.OrganisationInvite;
 using Hng.Web.Extensions;
 using MediatR;
@@ -18,8 +19,9 @@ namespace Hng.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/v1/organizations")]
-public class OrganizationController(IMediator mediator) : ControllerBase
+public class OrganizationController(IMediator mediator, IAuthenticationService authenticationService) : ControllerBase
 {
+    private readonly IAuthenticationService authenticationService = authenticationService;
 
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status200OK)]
@@ -53,8 +55,7 @@ public class OrganizationController(IMediator mediator) : ControllerBase
 
     public async Task<ActionResult<CreateOrganizationDto>> CreateOrganizationInvite([FromBody] CreateOrganizationInviteDto body, string id)
     {
-        var inviterIdString = HttpContext.User.FindFirst(ClaimTypes.Sid).Value!;
-        var inviterId = Guid.Parse(inviterIdString);
+        var inviterId = await authenticationService.GetCurrentUserAsync();
         body.UserId = inviterId;
         body.OrganizationId = id;
         var command = new CreateOrganizationInviteCommand(body);
