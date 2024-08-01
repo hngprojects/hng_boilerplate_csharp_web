@@ -126,9 +126,9 @@ namespace Hng.Web.Controllers
             return Ok(new PaginatedResponseDto<PagedListDto<ProductDto>> { Data = products, Metadata = products.MetaData });
         }
         /// <summary>
-        /// Product - Get products by name
+        /// Product - Search products by name
         /// </summary>
-        [HttpGet("name")]
+        [HttpGet("search")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
