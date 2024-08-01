@@ -2,7 +2,6 @@ using AutoMapper;
 using Hng.Application.Features.OrganisationInvite.Commands;
 using Hng.Application.Features.OrganisationInvite.Dtos;
 using Hng.Domain.Common;
-using Hng.Domain.Entities;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 

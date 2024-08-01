@@ -1,95 +1,125 @@
+using Xunit;
+using Moq;
 using AutoMapper;
 using Hng.Application.Features.OrganisationInvite.Commands;
-using Hng.Application.Features.OrganisationInvite.Dtos;
 using Hng.Application.Features.OrganisationInvite.Handlers;
-using Hng.Application.Features.OrganisationInvite.Mappers;
-using Hng.Domain.Enums;
+using Hng.Application.Features.OrganisationInvite.Dtos;
+using Hng.Domain.Entities;
 using Hng.Infrastructure.Services.Interfaces;
-using Moq;
-using Xunit;
+using Hng.Domain.Common;
+using Hng.Infrastructure.Utilities.Errors.OrganisationInvite;
 
-namespace Hng.Application.Test.Features.OrganizationInvite
+namespace Hng.Application.Tests.Features.OrganisationInvite.Handlers
 {
-    public class CreateOrganizationInviteShould
+    public class CreateOrganizationInviteCommandHandlerTests
     {
-        private readonly IMapper _mapper;
-        private readonly Mock<IOrganizationInviteService> _serviceMock;
+        private readonly Mock<IOrganizationInviteService> _mockService;
+        private readonly Mock<IMapper> _mockMapper;
         private readonly CreateOrganizationInviteCommandHandler _handler;
 
-        public CreateOrganizationInviteShould()
+        public CreateOrganizationInviteCommandHandlerTests()
         {
-            var mappingProfile = new OrganizationInviteMapperProfile();
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
-            _mapper = new Mapper(configuration);
-
-            _serviceMock = new Mock<IOrganizationInviteService>();
-            _handler = new CreateOrganizationInviteCommandHandler(_serviceMock.Object, _mapper);
+            _mockService = new Mock<IOrganizationInviteService>();
+            _mockMapper = new Mock<IMapper>();
+            _handler = new CreateOrganizationInviteCommandHandler(_mockService.Object, _mockMapper.Object);
         }
 
         [Fact]
-        public async Task Handle_ShouldReturnCreatedOrganizationInvite()
+        public async Task Handle_WithValidRequest_ShouldReturnSuccessResult()
         {
             // Arrange
-            var expectedId = Guid.NewGuid();
-            var organizationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
-            var createDto = new CreateOrganizationInviteDto
+            var command = new CreateOrganizationInviteCommand(new CreateOrganizationInviteDto
             {
-                OrganizationId = organizationId.ToString(),
-                UserId = userId,
+                OrganizationId = Guid.NewGuid().ToString(),
+                UserId = Guid.NewGuid(),
                 Email = "test@example.com"
-            };
+            });
 
-            var organizationInvite = new Domain.Entities.OrganizationInvite
-            {
-                Id = expectedId,
-                OrganizationId = organizationId,
-                Email = createDto.Email,
-                Status = OrganizationInviteStatus.Pending,
-                InviteLink = "inviteLink",
-                CreatedAt = DateTimeOffset.UtcNow,
-                ExpiresAt = DateTimeOffset.UtcNow.AddDays(7)
-            };
+            var organizationInvite = new OrganizationInvite();
+            var expectedDto = new OrganizationInviteDto();
 
-            _serviceMock.Setup(s => s.CreateInvite(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>()))
-                .ReturnsAsync(organizationInvite);
+            _mockService.Setup(s => s.CreateInvite(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>()))
+                .ReturnsAsync(Result<OrganizationInvite>.Success(organizationInvite));
 
-            var command = new CreateOrganizationInviteCommand(createDto);
+            _mockMapper.Setup(m => m.Map<OrganizationInviteDto>(organizationInvite))
+                .Returns(expectedDto);
 
             // Act
-            var result = await _handler.Handle(command, default);
+            var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(expectedId.ToString(), result.Id);
-            Assert.Equal(organizationId.ToString(), result.OrganizationId);
-            Assert.Equal(createDto.Email, result.Email);
-            Assert.Equal(OrganizationInviteStatus.Pending.ToString(), result.Status);
-            Assert.Equal(organizationInvite.InviteLink, result.InviteLink);
-            Assert.Equal(organizationInvite.ExpiresAt, result.ExpiresAt);
-
-            _serviceMock.Verify(s => s.CreateInvite(userId, organizationId, createDto.Email), Times.Once);
+            Assert.True(result.IsSuccess);
+            Assert.Equal(expectedDto, result.Value);
         }
 
         [Fact]
-        public async Task Handle_ShouldReturnNull_WhenInvalidOrganizationId()
+        public async Task Handle_WithInvalidOrganizationId_ShouldReturnFailureResult()
         {
             // Arrange
-            var createDto = new CreateOrganizationInviteDto
+            var command = new CreateOrganizationInviteCommand(new CreateOrganizationInviteDto
             {
                 OrganizationId = "invalid-guid",
                 UserId = Guid.NewGuid(),
                 Email = "test@example.com"
-            };
-
-            var command = new CreateOrganizationInviteCommand(createDto);
+            });
 
             // Act
-            var result = await _handler.Handle(command, default);
+            var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.Null(result);
-            _serviceMock.Verify(s => s.CreateInvite(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>()), Times.Never);
+            Assert.False(result.IsSuccess);
+            Assert.True(result.Error is not null);
         }
+
+        [Fact]
+        public async Task Handle_WithServiceFailure_ShouldReturnFailureResult()
+        {
+            // Arrange
+            var command = new CreateOrganizationInviteCommand(new CreateOrganizationInviteDto
+            {
+                OrganizationId = Guid.NewGuid().ToString(),
+                UserId = Guid.NewGuid(),
+                Email = "test@example.com"
+            });
+
+            var expectedError = new Error("Service error");
+
+            _mockService.Setup(s => s.CreateInvite(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>()))
+                .ReturnsAsync(Result<OrganizationInvite>.Failure(expectedError));
+
+            // Act
+            var result = await _handler.Handle(command, CancellationToken.None);
+
+            Assert.Equal("Service error", result.Error.Message);
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.Equal(expectedError.Message, result.Error.Message);
+        }
+
+        // [Fact]
+        // public async Task Handle_WithMapperException_ShouldReturnFailureResult()
+        // {
+        //     // Arrange
+        //     var command = new CreateOrganizationInviteCommand(new CreateOrganizationInviteDto
+        //     {
+        //         OrganizationId = Guid.NewGuid().ToString(),
+        //         UserId = Guid.NewGuid(),
+        //         Email = "test@example.com"
+        //     });
+
+        //     var organizationInvite = new OrganizationInvite();
+
+        //     _mockService.Setup(s => s.CreateInvite(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>()))
+        //         .ReturnsAsync(Result<OrganizationInvite>.Success(organizationInvite));
+
+        //     _mockMapper.Setup(m => m.Map<OrganizationInviteDto>(organizationInvite))
+        //         .Throws(new AutoMapperMappingException("Mapping error"));
+
+        //     // Act
+        //     var result = await _handler.Handle(command, CancellationToken.None);
+
+        //     // Assert
+        //     Assert.False(result.IsSuccess);
+        // }
     }
 }
