@@ -7,5 +7,7 @@
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; } = null;
+        public ICollection<RolePermission> Permissions { get; set; } = [];
+        public ICollection<UserRole> UsersRoles { get; set; } = [];
     }
 }

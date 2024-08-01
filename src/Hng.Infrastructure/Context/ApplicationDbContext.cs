@@ -13,6 +13,7 @@ namespace Hng.Infrastructure.Context
             modelBuilder.ApplyConfiguration<NewsLetterSubscriber>(new NewsLetterSubscriberConfig());
             modelBuilder.ApplyConfiguration<Role>(new RoleConfig());
             modelBuilder.ApplyConfiguration<RolePermission>(new RolePermissionConfig());
+            modelBuilder.ApplyConfiguration<UserRole>(new UserRoleConfig());
             modelBuilder.ApplyConfiguration<Transaction>(new PaymentConfiguration());
             modelBuilder.ApplyConfiguration<Subscription>(new SubscriptionConfiguration());
             modelBuilder.Entity<EmailTemplate>()
@@ -39,5 +40,7 @@ namespace Hng.Infrastructure.Context
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+
     }
 }
