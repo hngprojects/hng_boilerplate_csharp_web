@@ -9,7 +9,7 @@ namespace Hng.Domain.EntitiesConfigurations
         public void Configure(EntityTypeBuilder<RolePermission> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x=>x.Name)
+            builder.Property(x => x.Name)
                 .HasMaxLength(128)
                 .IsRequired();
 

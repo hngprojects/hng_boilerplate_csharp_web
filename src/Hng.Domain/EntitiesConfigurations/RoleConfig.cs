@@ -12,9 +12,9 @@ namespace Hng.Domain.EntitiesConfigurations
             builder.Property(x => x.Name)
                 .HasMaxLength(250)
                 .IsRequired();
-            builder.Property(x=>x.Description);
-            builder.Property(x=> x.IsActive).IsRequired();
-            builder.Property(x=>x.CreatedAt).IsRequired();
+            builder.Property(x => x.Description);
+            builder.Property(x => x.IsActive).IsRequired();
+            builder.Property(x => x.CreatedAt).IsRequired();
         }
     }
 }
