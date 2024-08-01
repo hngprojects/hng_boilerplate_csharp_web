@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Hng.Domain.EntitiesConfigurations
 {
-    internal class UserRoleConfig : IEntityTypeConfiguration<UserRole>
+    public class UserRoleConfig : IEntityTypeConfiguration<UserRole>
     {
         public void Configure(EntityTypeBuilder<UserRole> builder)
         {
@@ -16,6 +16,13 @@ namespace Hng.Domain.EntitiesConfigurations
                 ur.UserId,
                 ur.RoleId
             }).IsUnique();
+            builder.HasOne(ur => ur.Role)
+                .WithMany(r => r.UsersRoles)
+                .HasForeignKey(ur => ur.RoleId);
+
+            builder.HasOne(ur => ur.User)
+                .WithMany(r => r.UsersRoles)
+                .HasForeignKey(ur => ur.UserId);
         }
     }
 }
