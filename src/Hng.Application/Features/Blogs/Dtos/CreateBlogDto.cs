@@ -13,5 +13,8 @@ public class CreateBlogDto
     [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("category")]
     public BlogCategory Category { get; set; }
+    
+    [JsonPropertyName("image_url")]
+    public string ImageUrl { get; set; }
 }
 
