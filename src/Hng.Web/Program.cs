@@ -45,7 +45,7 @@ await app.MigrateAndSeed();
 
 //if (app.Environment.IsDevelopment())
 //{
-    
+
 //}
 
 app.UseSwagger(c => c.RouteTemplate = "docs/{documentName}/swagger.json");
