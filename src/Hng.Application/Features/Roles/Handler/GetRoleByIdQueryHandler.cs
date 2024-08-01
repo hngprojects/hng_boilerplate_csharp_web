@@ -41,7 +41,7 @@ namespace Hng.Application.Features.Roles.Handler
                 Description = role.Description,
                 Permissions = role.Permissions.Select(p => new PermissionDto
                 {
-                    Id = p.Id.ToString(),
+                    Id = p.Id,
                     Name=p.Name,
                     Description = p.Description,
                 }).ToList()
