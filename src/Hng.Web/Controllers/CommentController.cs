@@ -10,7 +10,7 @@ namespace Hng.Web.Controllers;
 [Route("api/v1")]
 public class CommentController : ControllerBase
 {
-    
+
     private readonly IMediator _mediator;
 
     public CommentController(IMediator mediator)

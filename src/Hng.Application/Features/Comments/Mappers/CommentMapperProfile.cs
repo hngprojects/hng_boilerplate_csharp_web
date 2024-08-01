@@ -12,5 +12,5 @@ public class CommentMapperProfile : Profile
         CreateMap<Comment, CommentDto>()
             .ReverseMap();
     }
-    
+
 }
