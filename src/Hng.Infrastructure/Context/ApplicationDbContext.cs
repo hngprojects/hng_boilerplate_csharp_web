@@ -32,6 +32,8 @@ namespace Hng.Infrastructure.Context
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<OrganizationInvite> OrganizationInvites { get; set; }
     }
 }
