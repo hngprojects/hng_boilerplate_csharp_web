@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Queries;
-using Hng.Application.Features.Products.Validators;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -114,26 +113,19 @@ namespace Hng.Web.Controllers
                 });
         }
         /// <summary>
-        /// Product - Get products by name
+        /// Product - Filter and search products by name
         /// </summary>
-        [HttpGet("name/{product_name}")]
+        [HttpGet("name")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ProductDto>> GetProductByName(string product_name)
+        public async Task<ActionResult<List<ProductDto>>> GetProductsByName([FromQuery] string product_name)
         {
             var query = new GetProductByNameQuery(product_name);
-            var product = await _mediator.Send(query);
-            return product != null
-                              ? Ok(new SuccessResponseDto<ProductDto> { Data = product })
-                              : NotFound(new FailureResponseDto<object>
-                              {
-                                  Error = "Not Found",
-                                  Message = "Product not found",
-                                  Data = false
-                              });
+            var products = await _mediator.Send(query);
+            return Ok(products);
         }
     }
 }

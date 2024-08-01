@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Handlers;
@@ -90,3 +87,4 @@ namespace Hng.Application.Test.Features.Products
 
     }
 }
+
