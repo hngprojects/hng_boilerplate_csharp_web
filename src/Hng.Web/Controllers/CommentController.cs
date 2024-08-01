@@ -8,19 +8,12 @@ namespace Hng.Web.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/v1")]
-public class CommentController : ControllerBase
+[Route("api/v1/posts/{blogId:guid}/comments")]
+public class CommentController(IMediator mediator) : ControllerBase
 {
+    private readonly IMediator _mediator = mediator;
 
-    private readonly IMediator _mediator;
-
-    public CommentController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
-    [Authorize]
-    [HttpPost("posts/{blogId:guid}/comments")]
+    [HttpPost]
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<CommentDto>> CreateComment([FromRoute] Guid blogId, [FromBody] CreateCommentDto body)
     {
