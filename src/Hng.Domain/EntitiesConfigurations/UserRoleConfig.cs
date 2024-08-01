@@ -13,6 +13,7 @@ namespace Hng.Domain.EntitiesConfigurations
             builder.Property(ur => ur.RoleId).IsRequired();
             builder.HasIndex(ur => new
             {
+                ur.OrganizationId,
                 ur.UserId,
                 ur.RoleId
             }).IsUnique();
@@ -23,6 +24,10 @@ namespace Hng.Domain.EntitiesConfigurations
             builder.HasOne(ur => ur.User)
                 .WithMany(r => r.UsersRoles)
                 .HasForeignKey(ur => ur.UserId);
+
+            builder.HasOne(ur => ur.Orgainzation)
+                .WithMany(r => r.UsersRoles)
+                .HasForeignKey(ur => ur.OrganizationId);
         }
     }
 }
