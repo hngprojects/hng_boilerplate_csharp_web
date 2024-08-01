@@ -10,8 +10,7 @@ public record CreateOrganizationInviteDto
     [JsonPropertyName("email")]
     public string Email { get; set; }
 
-    [Required]
-    [JsonPropertyName("org_id")]
+    [JsonIgnore]
     public string OrganizationId { get; set; }
 
     [JsonIgnore]

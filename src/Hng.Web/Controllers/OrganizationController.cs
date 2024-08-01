@@ -1,12 +1,13 @@
-﻿using System.Security.Claims;
+﻿using System.Net;
+using System.Security.Claims;
 using Hng.Application.Features.OrganisationInvite.Commands;
 using Hng.Application.Features.OrganisationInvite.Dtos;
 using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Organisations.Queries;
-using Hng.Domain.Entities;
-using Hng.Infrastructure.Services;
-using Hng.Infrastructure.Services.Interfaces;
+using Hng.Application.Shared.Dtos;
+using Hng.Domain.Common;
+using Hng.Infrastructure.Utilities.Errors.OrganisationInvite;
 using Hng.Web.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -43,23 +44,36 @@ public class OrganizationController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(CreateOrganization), response);
     }
 
-
-    [HttpPost("invite")]
+    [HttpPost("{id}/invite")]
     [ProducesResponseType(typeof(CreateOrganizationDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.Conflict)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.UnprocessableContent)]
 
-    public async Task<ActionResult<CreateOrganizationDto>> CreateOrganizationInvite([FromBody] CreateOrganizationInviteDto body)
+    public async Task<ActionResult<CreateOrganizationDto>> CreateOrganizationInvite([FromBody] CreateOrganizationInviteDto body, string id)
     {
-        var inviterIdString = HttpContext.User.FindFirst(ClaimTypes.Sid)!.Value;
+        var inviterIdString = HttpContext.User.FindFirst(ClaimTypes.Sid).Value!;
         var inviterId = Guid.Parse(inviterIdString);
         body.UserId = inviterId;
+        body.OrganizationId = id;
         var command = new CreateOrganizationInviteCommand(body);
-        var response = await mediator.Send(command);
+        Result<OrganizationInviteDto> result = await mediator.Send(command);
 
-        if (response == null)
+        if (result.IsSuccess) return this.CustomCreatedResult("Invitation created successfully", result.Value);
+        FailureResponseDto<string> failureResponse = new()
         {
-            return UnprocessableEntity();
-        }
+            Data = string.Empty,
+            Error = "An error occured with your request",
+            Message = result.Error.Message
+        };
 
-        return this.CreatedResult("Invitation created successfully", new { invitation = response });
+        return result.Error switch
+        {
+            InviteAlreadyExistsError => Conflict(failureResponse),
+            OrganisationDoesNotExistError => NotFound(failureResponse),
+            UserIsNotOwnerError => Unauthorized(failureResponse),
+            (_) => UnprocessableEntity(failureResponse)
+        };
     }
 }

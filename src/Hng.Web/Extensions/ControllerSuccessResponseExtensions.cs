@@ -4,7 +4,7 @@ namespace Hng.Web.Extensions;
 
 public static class ControllerSuccessResponseExtensions
 {
-    public static ObjectResult CreatedResult(this ControllerBase controller, string message, object data)
+    public static ObjectResult CustomCreatedResult(this ControllerBase controller, string message, object data)
     {
         return new ObjectResult(new
         {

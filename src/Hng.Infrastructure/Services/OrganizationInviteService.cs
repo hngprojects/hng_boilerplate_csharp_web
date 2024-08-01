@@ -1,8 +1,10 @@
 using System.Security.Cryptography;
 using System.Text;
+using Hng.Domain.Common;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
+using Hng.Infrastructure.Utilities.Errors.OrganisationInvite;
 
 namespace Hng.Infrastructure.Services;
 
@@ -11,18 +13,18 @@ public class OrganizationInviteService(IRepository<Organization> Organizationrep
     private readonly IRepository<Organization> organizationrepository = Organizationrepository;
     private readonly IRepository<OrganizationInvite> repository = repository;
 
-    public async Task<OrganizationInvite> CreateInvite(Guid userId, Guid orgId, string email)
+    public async Task<Result<OrganizationInvite>> CreateInvite(Guid userId, Guid orgId, string email)
     {
         Organization org = await organizationrepository.GetAsync(orgId);
 
         if (org == null)
         {
-            return null;
+            return OrganisationDoesNotExistError.FromId(orgId);
         }
 
-        if (await DoesInviteExist(email, orgId)) return null;
+        if (org.OwnerId != userId) return UserIsNotOwnerError.FromIds(userId, org.Id);
 
-        if (org.OwnerId != userId) return null;
+        if (await DoesInviteExist(email, orgId)) return InviteAlreadyExistsError.FromEmail(email);
 
         var organizationInvite = new OrganizationInvite()
         {
@@ -35,7 +37,7 @@ public class OrganizationInviteService(IRepository<Organization> Organizationrep
 
         await repository.SaveChanges();
 
-        return organizationInvite;
+        return Result<OrganizationInvite>.Success(organizationInvite);
     }
 
     private static string GenerateUniqueInviteLink(string email)
