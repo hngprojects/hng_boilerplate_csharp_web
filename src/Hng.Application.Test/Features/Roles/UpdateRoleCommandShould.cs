@@ -4,6 +4,7 @@
     using Hng.Application.Features.Roles.Command;
     using Hng.Application.Features.Roles.Dto;
     using Hng.Application.Features.Roles.Handler;
+    using Hng.Application.Features.Roles.Mappers;
     using Hng.Domain.Entities;
     using Hng.Infrastructure.Repository.Interface;
     using Moq;
@@ -16,14 +17,18 @@
     public class UpdateRoleCommandHandlerTests
     {
         private readonly Mock<IRepository<Role>> _mockRoleRepository;
-        private readonly Mock<IMapper> _mockMapper;
+        private readonly IMapper _mapper;
         private readonly UpdateRoleCommandHandler _handler;
 
         public UpdateRoleCommandHandlerTests()
         {
             _mockRoleRepository = new Mock<IRepository<Role>>();
-            _mockMapper = new Mock<IMapper>();
-            _handler = new UpdateRoleCommandHandler(_mockRoleRepository.Object, _mockMapper.Object);
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<RoleMappingProfile>();
+            });
+            _mapper = config.CreateMapper();
+            _handler = new UpdateRoleCommandHandler(_mockRoleRepository.Object, _mapper);
         }
 
         [Fact]
@@ -51,12 +56,7 @@
             var command = new UpdateRoleCommand(Guid.NewGuid(), roleId, requestDto);
             var existingRole = new Role { Id = roleId, Name = "Old Role", Description = "Old description" };
             _mockRoleRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<Role, bool>>>())).ReturnsAsync(existingRole);
-            _mockMapper.Setup(m => m.Map(It.IsAny<UpdateRoleCommand>(), It.IsAny<Role>())).Callback<UpdateRoleCommand, Role>((src, dest) =>
-            {
-                dest.Name = src.UPTRoleRequest.Name;
-                dest.Description = src.UPTRoleRequest.Description;
-            });
-            _mockMapper.Setup(m => m.Map<UpdateRoleResponseDto>(It.IsAny<Role>())).Returns(new UpdateRoleResponseDto { StatusCode = 200, Message = "Role updated successfully" });
+            
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);

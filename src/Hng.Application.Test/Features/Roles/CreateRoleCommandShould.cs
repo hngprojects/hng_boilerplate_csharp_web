@@ -2,6 +2,7 @@
 using Hng.Application.Features.Roles.Command;
 using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Handler;
+using Hng.Application.Features.Roles.Mappers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
@@ -14,15 +15,19 @@ namespace Hng.Application.Test.Features.Roles
     {
         private readonly Mock<IRepository<Domain.Entities.Organization>> _mockOrganizationRepository;
         private readonly Mock<IRepository<Role>> _mockRoleRepository;
-        private readonly Mock<IMapper> _mockMapper;
+        private readonly IMapper _mapper;
         private readonly CreateRoleCommandHandler _handler;
 
         public CreateRoleCommandShould()
         {
             _mockOrganizationRepository = new Mock<IRepository<Domain.Entities.Organization>>();
             _mockRoleRepository = new Mock<IRepository<Role>>();
-            _mockMapper = new Mock<IMapper>();
-            _handler = new CreateRoleCommandHandler(_mockOrganizationRepository.Object, _mockRoleRepository.Object, _mockMapper.Object);
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<RoleMappingProfile>();
+            });
+            _mapper = config.CreateMapper();
+            _handler = new CreateRoleCommandHandler(_mockOrganizationRepository.Object, _mockRoleRepository.Object, _mapper);
         }
 
         [Fact]
@@ -89,16 +94,6 @@ namespace Hng.Application.Test.Features.Roles
 
             // Set up the mock for AutoMapper
             var role = new Role { Id = Guid.NewGuid(), Name = "Admin", Description = "Admin role" };
-            _mockMapper.Setup(m => m.Map<Role>(It.IsAny<CreateRoleCommand>())).Returns(role);
-            _mockMapper.Setup(m => m.Map<CreateRoleResponseDto>(It.IsAny<Role>())).Returns(new CreateRoleResponseDto
-            {
-                Id = role.Id,
-                Name = role.Name,
-                Description = role.Description,
-                StatusCode = 201,
-                Message = "Role created successfully"
-            });
-
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
 
