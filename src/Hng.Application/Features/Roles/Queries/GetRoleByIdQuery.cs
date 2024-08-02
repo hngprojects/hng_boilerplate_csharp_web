@@ -10,7 +10,13 @@ namespace Hng.Application.Features.Roles.Queries
 {
     public class GetRoleByIdQuery : IRequest<RoleDetailsDto>
     {
-        public Guid OrganizationId { get; set; }
-        public Guid RoleId { get; set; }
+        public GetRoleByIdQuery(Guid id, Guid orgId)
+        {
+            RoleId = id;
+            OrganizationId = orgId;
+        }
+
+        public Guid RoleId { get; }
+        public Guid OrganizationId { get; }
     }
 }

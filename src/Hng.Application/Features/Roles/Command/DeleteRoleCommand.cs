@@ -6,15 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hng.Application.Features.Roles.Queries
+namespace Hng.Application.Features.Roles.Command
 {
-    public class GetRolesQuery : IRequest<IEnumerable<RoleDto>>
+    public class DeleteRoleCommand : IRequest<DeleteRoleResponseDto>
     {
-        public GetRolesQuery(Guid organizationId)
+        public DeleteRoleCommand(Guid organizationId, Guid roleId)
         {
             OrganizationId = organizationId;
+            RoleId = roleId;
         }
 
         public Guid OrganizationId { get; }
+        public Guid RoleId { get; }
     }
+
 }
