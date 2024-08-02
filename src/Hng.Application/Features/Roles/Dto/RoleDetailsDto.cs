@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.Roles.Dto
 {
@@ -16,8 +11,11 @@ namespace Hng.Application.Features.Roles.Dto
         public string Name { get; set; }
         [JsonPropertyName("description")]
         public string Description { get; set; }
+        [JsonPropertyName("permissions")]
         public List<PermissionDto> Permissions { get; set; }
+        [JsonPropertyName("error")]
         public string Error { get; set; }
+        [JsonPropertyName("message")]
         public string Message { get; set; }
     }
 
