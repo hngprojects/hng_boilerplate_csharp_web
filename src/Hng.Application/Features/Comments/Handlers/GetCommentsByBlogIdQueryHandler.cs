@@ -11,7 +11,7 @@ public class GetCommentsByBlogIdQueryHandler(IMapper mapper, IRepository<Comment
 {
     private readonly IRepository<Comment> _commentRepository = commentRepository;
     private readonly IMapper _mapper = mapper;
-    
+
     public async Task<IEnumerable<CommentDto>> Handle(GetCommentsByBlogIdQuery request, CancellationToken cancellationToken)
     {
         var comments = await _commentRepository.GetAllBySpec(c => c.BlogId == request.BlogId);
