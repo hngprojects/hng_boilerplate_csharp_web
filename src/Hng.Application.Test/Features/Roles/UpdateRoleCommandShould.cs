@@ -8,6 +8,7 @@
     using Hng.Infrastructure.Repository.Interface;
     using Moq;
     using System;
+    using System.Linq.Expressions;
     using System.Threading;
     using System.Threading.Tasks;
     using Xunit;
@@ -49,7 +50,7 @@
             var requestDto = new UpdateRoleRequestDto { Name = "Updated Role", Description = "Updated description" };
             var command = new UpdateRoleCommand(Guid.NewGuid(), roleId, requestDto);
             var existingRole = new Role { Id = roleId, Name = "Old Role", Description = "Old description" };
-            _mockRoleRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync(existingRole);
+            _mockRoleRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<Role, bool>>>())).ReturnsAsync(existingRole);
             _mockMapper.Setup(m => m.Map(It.IsAny<UpdateRoleCommand>(), It.IsAny<Role>())).Callback<UpdateRoleCommand, Role>((src, dest) =>
             {
                 dest.Name = src.UPTRoleRequest.Name;

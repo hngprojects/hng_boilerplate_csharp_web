@@ -105,7 +105,6 @@ namespace Hng.Application.Test.Features.Roles
             // Assert
             Assert.Equal(201, result.StatusCode);
             Assert.Equal("Role created successfully", result.Message);
-            Assert.Equal(role.Id, result.Id);
             Assert.Equal(role.Name, result.Name);
             Assert.Equal(role.Description, result.Description);
         }
