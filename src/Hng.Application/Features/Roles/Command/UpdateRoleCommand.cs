@@ -10,7 +10,7 @@ namespace Hng.Application.Features.Roles.Command
 {
     public class UpdateRoleCommand : IRequest<UpdateRoleResponseDto>
     {
-        public UpdateRoleCommand(Guid orgId,Guid roleId,UpdateRoleRequestDto uptRoleRequest)
+        public UpdateRoleCommand(Guid orgId, Guid roleId, UpdateRoleRequestDto uptRoleRequest)
         {
             OrgId = orgId;
             RoleId = roleId;

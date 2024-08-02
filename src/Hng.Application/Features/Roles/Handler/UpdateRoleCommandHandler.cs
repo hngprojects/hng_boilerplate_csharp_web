@@ -20,7 +20,7 @@ namespace Hng.Application.Features.Roles.Handler
 
         public async Task<UpdateRoleResponseDto> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
         {
-            var role = await _roleRepository.GetBySpec(r=> r.Id==request.RoleId && r.OrganizationId==request.OrgId);
+            var role = await _roleRepository.GetBySpec(r => r.Id == request.RoleId && r.OrganizationId == request.OrgId);
 
             if (role is null)
             {

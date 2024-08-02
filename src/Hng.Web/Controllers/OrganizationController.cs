@@ -49,7 +49,7 @@ public class OrganizationController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(CreateRoleResponseDto), StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateRole(Guid orgId, [FromBody] CreateRoleRequestDto request)
     {
-        CreateRoleCommand command=new CreateRoleCommand(orgId, request);
+        CreateRoleCommand command = new CreateRoleCommand(orgId, request);
         var response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
     }

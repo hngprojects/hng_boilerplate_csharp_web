@@ -41,7 +41,7 @@ namespace Hng.Application.Features.Roles.Mappers
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ReverseMap();
 
-       
+
             CreateMap<UpdateRoleCommand, Role>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UPTRoleRequest.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.UPTRoleRequest.Description))

@@ -29,8 +29,8 @@
         public async Task Handle_RoleNotFound_ReturnsNotFound()
         {
             // Arrange
-            var requestDto = new UpdateRoleRequestDto { Name="foo" };
-            var command = new UpdateRoleCommand(Guid.NewGuid(),Guid.NewGuid() ,requestDto);
+            var requestDto = new UpdateRoleRequestDto { Name = "foo" };
+            var command = new UpdateRoleCommand(Guid.NewGuid(), Guid.NewGuid(), requestDto);
             _mockRoleRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync((Role)null);
 
             // Act
@@ -45,9 +45,9 @@
         public async Task Handle_ValidRequest_ReturnsSuccess()
         {
             // Arrange
-            var roleId=Guid.NewGuid();
+            var roleId = Guid.NewGuid();
             var requestDto = new UpdateRoleRequestDto { Name = "Updated Role", Description = "Updated description" };
-            var command = new UpdateRoleCommand(Guid.NewGuid(),roleId,requestDto);
+            var command = new UpdateRoleCommand(Guid.NewGuid(), roleId, requestDto);
             var existingRole = new Role { Id = roleId, Name = "Old Role", Description = "Old description" };
             _mockRoleRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync(existingRole);
             _mockMapper.Setup(m => m.Map(It.IsAny<UpdateRoleCommand>(), It.IsAny<Role>())).Callback<UpdateRoleCommand, Role>((src, dest) =>

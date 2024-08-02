@@ -34,7 +34,7 @@ namespace Hng.Application.Test.Features.Roles
                 Name = "RoleName",
                 Description = "RoleDescription"
             };
-            var command = new CreateRoleCommand(Guid.NewGuid(),roleRequestDto);
+            var command = new CreateRoleCommand(Guid.NewGuid(), roleRequestDto);
 
             _mockOrganizationRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync((Domain.Entities.Organization)null);
 
@@ -55,7 +55,7 @@ namespace Hng.Application.Test.Features.Roles
                 Name = "Admin",
                 Description = "RoleDescription"
             };
-            var command = new CreateRoleCommand(Guid.NewGuid(),roleRequestDto);
+            var command = new CreateRoleCommand(Guid.NewGuid(), roleRequestDto);
 
             _mockOrganizationRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync(new Domain.Entities.Organization());
             _mockRoleRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<Role, bool>>>())).ReturnsAsync(new Role());

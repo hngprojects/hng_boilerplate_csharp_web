@@ -51,7 +51,7 @@ namespace Hng.Application.Features.Roles.Handler
 
             var role = _mapper.Map<Role>(request);
             role.Id = Guid.NewGuid();
-            role.OrganizationId=request.OrganizationId;
+            role.OrganizationId = request.OrganizationId;
             role.IsActive = true;
             role.CreatedAt = DateTime.UtcNow;
 
