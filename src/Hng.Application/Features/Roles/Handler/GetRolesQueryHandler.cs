@@ -25,7 +25,7 @@ namespace Hng.Application.Features.Roles.Handler
             var roles = await _roleRepository.GetAllBySpec(r => r.OrganizationId == request.OrganizationId);
             return roles.Select(r => new RoleDto
             {
-                Id = r.Id.ToString(),
+                Id = r.Id,
                 Name = r.Name,
                 Description = r.Description
             });

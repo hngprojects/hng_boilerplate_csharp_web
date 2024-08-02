@@ -61,7 +61,7 @@ namespace Hng.Application.Features.Roles.Handler
             return new CreateRoleResponseDto
             {
                 StatusCode = 201,
-                Id = role.Id.ToString(),
+                Id = role.Id,
                 Name = role.Name,
                 Description = role.Description,
                 Message = "Role created successfully"

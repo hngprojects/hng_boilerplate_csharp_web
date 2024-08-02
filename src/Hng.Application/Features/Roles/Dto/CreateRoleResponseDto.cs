@@ -19,6 +19,7 @@ namespace Hng.Application.Features.Roles.Dto
         [JsonPropertyName("description")]
         public string Description { get; set; }
         public string Error { get; set; }
+        public string Message { get; set; }
 
     }
 }
