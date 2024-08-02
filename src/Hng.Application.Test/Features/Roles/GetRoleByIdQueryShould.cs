@@ -5,12 +5,7 @@ using Hng.Application.Features.Roles.Queries;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Hng.Application.Test.Features.Roles
@@ -69,7 +64,7 @@ namespace Hng.Application.Test.Features.Roles
                 Id = role.Id.ToString(),
                 Name = role.Name,
                 Description = role.Description,
-                StatusCode = 200 
+                StatusCode = 200
             });
 
             // Act

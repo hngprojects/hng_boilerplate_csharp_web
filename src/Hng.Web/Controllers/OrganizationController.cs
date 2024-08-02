@@ -2,6 +2,7 @@
 using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Organisations.Queries;
 using Hng.Application.Features.Roles.Command;
+using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Services;
@@ -40,14 +41,24 @@ public class OrganizationController(IMediator mediator) : ControllerBase
         var response = await mediator.Send(command);
         return CreatedAtAction(nameof(CreateOrganization), response);
     }
-    [HttpPost("organizations/{orgId}/roles")]
-    public async Task<IActionResult> CreateRole(Guid orgId, [FromBody] CreateRoleCommand command)
+
+    /// <summary>
+    /// Create Role For Organization
+    /// </summary>
+    [HttpPost("organizations/{orgId:guid}/roles")]
+    [ProducesResponseType(typeof(CreateRoleResponseDto), StatusCodes.Status201Created)]
+    public async Task<IActionResult> CreateRole(Guid orgId, [FromBody] CreateRoleRequestDto request)
     {
-        command.RoleRequestBody.OrganizationId = orgId;
+        CreateRoleCommand command=new CreateRoleCommand(orgId, request);
         var response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
     }
-    [HttpGet("organizations/{orgId}/roles")]
+
+    /// <summary>
+    /// Get All Roles In Organisation
+    /// </summary>
+    [HttpGet("organizations/{orgId:guid}/roles")]
+    [ProducesResponseType(typeof(IEnumerable<RoleDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRoles(Guid orgId)
     {
         var query = new GetRolesQuery(orgId);
@@ -55,7 +66,11 @@ public class OrganizationController(IMediator mediator) : ControllerBase
         return Ok(new { status_code = 200, data = roles });
     }
 
-    [HttpGet("organizations/{orgId}/roles/{roleId}")]
+    /// <summary>
+    /// Get Organizations Role By Id
+    /// </summary>
+    [HttpGet("organizations/{orgId:guid}/roles/{roleId}")]
+    [ProducesResponseType(typeof(RoleDetailsDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRole(Guid orgId, Guid roleId)
     {
         var query = new GetRoleByIdQuery(orgId, roleId);
@@ -63,16 +78,23 @@ public class OrganizationController(IMediator mediator) : ControllerBase
         return StatusCode(roleDetails.StatusCode, new { roleDetails.StatusCode, roleDetails.Id, roleDetails.Name, roleDetails.Description, roleDetails.Permissions });
     }
 
-    [HttpPut("organizations/{orgId}/roles/{roleId}")]
-    public async Task<IActionResult> UpdateRole(Guid orgId, Guid roleId, [FromBody] UpdateRoleCommand command)
+    /// <summary>
+    /// Update Organisations Role
+    /// </summary>
+    [HttpPut("organizations/{orgId:guid}/roles/{roleId}")]
+    [ProducesResponseType(typeof(UpdateRoleResponseDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateRole(Guid orgId, Guid roleId, [FromBody] UpdateRoleRequestDto request)
     {
-        command.UPTRoleRequest.OrganizationId = orgId;
-        command.UPTRoleRequest.RoleId = roleId;
+        UpdateRoleCommand command = new(orgId, roleId, request);
         var response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
     }
 
-    [HttpDelete("organizations/{orgId}/roles/{roleId}")]
+    /// <summary>
+    /// Delete Organizations Role
+    /// </summary>
+    [HttpDelete("organizations/{orgId:guid}/roles/{roleId}")]
+    [ProducesResponseType(typeof(DeleteRoleResponseDto), StatusCodes.Status201Created)]
     public async Task<IActionResult> DeleteRole(Guid orgId, Guid roleId)
     {
         var command = new DeleteRoleCommand(orgId, roleId);

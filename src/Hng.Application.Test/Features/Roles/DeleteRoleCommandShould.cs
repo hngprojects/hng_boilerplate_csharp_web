@@ -3,13 +3,7 @@ using Hng.Application.Features.Roles.Handler;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Hng.Application.Test.Features.Roles

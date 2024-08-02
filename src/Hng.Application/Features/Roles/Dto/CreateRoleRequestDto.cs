@@ -9,8 +9,6 @@ namespace Hng.Application.Features.Roles.Dto
 {
     public class CreateRoleRequestDto
     {
-        [JsonPropertyName("id")]
-        public Guid OrganizationId { get; set; }
         [JsonPropertyName("name")]
         public string Name { get; set; }
         [JsonPropertyName("description")]

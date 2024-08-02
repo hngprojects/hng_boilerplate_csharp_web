@@ -2,16 +2,11 @@
 using Hng.Application.Features.Roles.Command;
 using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Handler;
-using Hng.Infrastructure.Repository.Interface;
 using Hng.Domain.Entities;
+using Hng.Infrastructure.Repository.Interface;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
 using System.Linq.Expressions;
+using Xunit;
 
 namespace Hng.Application.Test.Features.Roles
 {
@@ -36,11 +31,10 @@ namespace Hng.Application.Test.Features.Roles
             // Arrange
             var roleRequestDto = new CreateRoleRequestDto
             {
-                OrganizationId = Guid.NewGuid(),
                 Name = "RoleName",
                 Description = "RoleDescription"
             };
-            var command = new CreateRoleCommand(roleRequestDto);
+            var command = new CreateRoleCommand(Guid.NewGuid(),roleRequestDto);
 
             _mockOrganizationRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync((Domain.Entities.Organization)null);
 
@@ -58,11 +52,10 @@ namespace Hng.Application.Test.Features.Roles
             // Arrange
             var roleRequestDto = new CreateRoleRequestDto
             {
-                OrganizationId = Guid.NewGuid(),
                 Name = "Admin",
                 Description = "RoleDescription"
             };
-            var command = new CreateRoleCommand(roleRequestDto);
+            var command = new CreateRoleCommand(Guid.NewGuid(),roleRequestDto);
 
             _mockOrganizationRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync(new Domain.Entities.Organization());
             _mockRoleRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<Role, bool>>>())).ReturnsAsync(new Role());
@@ -82,12 +75,11 @@ namespace Hng.Application.Test.Features.Roles
             // Arrange
             var roleRequestDto = new CreateRoleRequestDto
             {
-                OrganizationId = Guid.NewGuid(),
                 Name = "Admin",
                 Description = "Admin role"
             };
 
-            var command = new CreateRoleCommand(roleRequestDto);
+            var command = new CreateRoleCommand(Guid.NewGuid(), roleRequestDto);
 
             // Set up the mock for organization repository to return a valid organization
             _mockOrganizationRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync(new Domain.Entities.Organization());

@@ -4,11 +4,6 @@ using Hng.Application.Features.Roles.Dto;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Roles.Handler
 {
@@ -25,9 +20,9 @@ namespace Hng.Application.Features.Roles.Handler
 
         public async Task<UpdateRoleResponseDto> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
         {
-            var role = await _roleRepository.GetAsync(request.UPTRoleRequest.RoleId);
+            var role = await _roleRepository.GetBySpec(r=> r.Id==request.RoleId && r.OrganizationId==request.OrgId);
 
-            if (role == null)
+            if (role is null)
             {
                 return new UpdateRoleResponseDto
                 {

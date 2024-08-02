@@ -27,18 +27,18 @@ namespace Hng.Application.Features.Roles.Handler
 
         public async Task<CreateRoleResponseDto> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
         {
-            var organization = await _organizationRepository.GetAsync(request.RoleRequestBody.OrganizationId);
+            var organization = await _organizationRepository.GetAsync(request.OrganizationId);
             if (organization == null)
             {
                 return new CreateRoleResponseDto
                 {
                     StatusCode = 404,
                     Error = "Organisation not found",
-                    Message = $"The organisation with ID {request.RoleRequestBody.OrganizationId} does not exist"
+                    Message = $"The organisation with ID {request.OrganizationId} does not exist"
                 };
             }
 
-            var existingRole = await _roleRepository.GetBySpec(r => r.Name == request.RoleRequestBody.Name && r.OrganizationId == request.RoleRequestBody.OrganizationId);
+            var existingRole = await _roleRepository.GetBySpec(r => r.Name == request.RoleRequestBody.Name && r.OrganizationId == request.OrganizationId);
             if (existingRole != null)
             {
                 return new CreateRoleResponseDto
@@ -50,6 +50,8 @@ namespace Hng.Application.Features.Roles.Handler
             }
 
             var role = _mapper.Map<Role>(request);
+            role.Id = Guid.NewGuid();
+            role.OrganizationId=request.OrganizationId;
             role.IsActive = true;
             role.CreatedAt = DateTime.UtcNow;
 

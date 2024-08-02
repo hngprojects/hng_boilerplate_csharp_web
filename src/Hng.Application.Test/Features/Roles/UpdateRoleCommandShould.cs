@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Hng.Application.Test.Features.Roles
+﻿namespace Hng.Application.Test.Features.Roles
 {
     using AutoMapper;
     using Hng.Application.Features.Roles.Command;
@@ -35,8 +29,8 @@ namespace Hng.Application.Test.Features.Roles
         public async Task Handle_RoleNotFound_ReturnsNotFound()
         {
             // Arrange
-            var requestDto = new UpdateRoleRequestDto { RoleId = Guid.NewGuid() };
-            var command = new UpdateRoleCommand(requestDto);
+            var requestDto = new UpdateRoleRequestDto { Name="foo" };
+            var command = new UpdateRoleCommand(Guid.NewGuid(),Guid.NewGuid() ,requestDto);
             _mockRoleRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync((Role)null);
 
             // Act
@@ -51,9 +45,10 @@ namespace Hng.Application.Test.Features.Roles
         public async Task Handle_ValidRequest_ReturnsSuccess()
         {
             // Arrange
-            var requestDto = new UpdateRoleRequestDto { RoleId = Guid.NewGuid(), Name = "Updated Role", Description = "Updated description" };
-            var command = new UpdateRoleCommand(requestDto);
-            var existingRole = new Role { Id = requestDto.RoleId, Name = "Old Role", Description = "Old description" };
+            var roleId=Guid.NewGuid();
+            var requestDto = new UpdateRoleRequestDto { Name = "Updated Role", Description = "Updated description" };
+            var command = new UpdateRoleCommand(Guid.NewGuid(),roleId,requestDto);
+            var existingRole = new Role { Id = roleId, Name = "Old Role", Description = "Old description" };
             _mockRoleRepository.Setup(repo => repo.GetAsync(It.IsAny<Guid>())).ReturnsAsync(existingRole);
             _mockMapper.Setup(m => m.Map(It.IsAny<UpdateRoleCommand>(), It.IsAny<Role>())).Callback<UpdateRoleCommand, Role>((src, dest) =>
             {
