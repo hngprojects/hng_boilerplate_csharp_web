@@ -56,7 +56,7 @@
             var command = new UpdateRoleCommand(Guid.NewGuid(), roleId, requestDto);
             var existingRole = new Role { Id = roleId, Name = "Old Role", Description = "Old description" };
             _mockRoleRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<Role, bool>>>())).ReturnsAsync(existingRole);
-            
+
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
