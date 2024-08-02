@@ -43,14 +43,14 @@ public class OrganizationController(IMediator mediator) : ControllerBase
     [HttpPost("organizations/{orgId}/roles")]
     public async Task<IActionResult> CreateRole(Guid orgId, [FromBody] CreateRoleCommand command)
     {
-        command.OrganizationId = orgId;
+        command.RoleRequestBody.OrganizationId = orgId;
         var response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
     }
     [HttpGet("organizations/{orgId}/roles")]
     public async Task<IActionResult> GetRoles(Guid orgId)
     {
-        var query = new GetRolesQuery { OrganizationId = orgId };
+        var query = new GetRolesQuery(orgId);
         var roles = await mediator.Send(query);
         return Ok(new { status_code = 200, data = roles });
     }
@@ -58,10 +58,28 @@ public class OrganizationController(IMediator mediator) : ControllerBase
     [HttpGet("organizations/{orgId}/roles/{roleId}")]
     public async Task<IActionResult> GetRole(Guid orgId, Guid roleId)
     {
-        var query = new GetRoleByIdQuery { OrganizationId = orgId, RoleId = roleId };
+        var query = new GetRoleByIdQuery(orgId, roleId);
         var roleDetails = await mediator.Send(query);
         return StatusCode(roleDetails.StatusCode, new { roleDetails.StatusCode, roleDetails.Id, roleDetails.Name, roleDetails.Description, roleDetails.Permissions });
     }
+
+    [HttpPut("organizations/{orgId}/roles/{roleId}")]
+    public async Task<IActionResult> UpdateRole(Guid orgId, Guid roleId, [FromBody] UpdateRoleCommand command)
+    {
+        command.UPTRoleRequest.OrganizationId = orgId;
+        command.UPTRoleRequest.RoleId = roleId;
+        var response = await mediator.Send(command);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    [HttpDelete("organizations/{orgId}/roles/{roleId}")]
+    public async Task<IActionResult> DeleteRole(Guid orgId, Guid roleId)
+    {
+        var command = new DeleteRoleCommand(orgId, roleId);
+        var response = await mediator.Send(command);
+        return StatusCode(response.StatusCode, response);
+    }
+
 
 
 

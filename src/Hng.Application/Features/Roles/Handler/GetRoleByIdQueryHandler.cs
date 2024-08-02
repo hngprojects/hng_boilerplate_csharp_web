@@ -1,4 +1,5 @@
-﻿using Hng.Application.Features.Roles.Dto;
+﻿using AutoMapper;
+using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
@@ -14,10 +15,12 @@ namespace Hng.Application.Features.Roles.Handler
     public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, RoleDetailsDto>
     {
         private readonly IRepository<Role> _roleRepository;
+        private readonly IMapper _mapper;
 
-        public GetRoleByIdQueryHandler(IRepository<Role> roleRepository)
+        public GetRoleByIdQueryHandler(IRepository<Role> roleRepository, IMapper mapper)
         {
             _roleRepository = roleRepository;
+            _mapper = mapper;
         }
 
         public async Task<RoleDetailsDto> Handle(GetRoleByIdQuery request, CancellationToken cancellationToken)
@@ -33,19 +36,11 @@ namespace Hng.Application.Features.Roles.Handler
                 };
             }
 
-            return new RoleDetailsDto
-            {
-                StatusCode = 200,
-                Id = role.Id.ToString(),
-                Name = role.Name,
-                Description = role.Description,
-                Permissions = role.Permissions.Select(p => new PermissionDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                }).ToList()
-            };
+            var response = _mapper.Map<RoleDetailsDto>(role);
+            response.StatusCode = 200;
+            response.Message = "Role details retrieved successfully";
+
+            return response;
         }
     }
 

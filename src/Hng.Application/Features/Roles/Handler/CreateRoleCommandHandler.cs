@@ -1,4 +1,5 @@
-﻿using Hng.Application.Features.Roles.Command;
+﻿using AutoMapper;
+using Hng.Application.Features.Roles.Command;
 using Hng.Application.Features.Roles.Dto;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
@@ -15,27 +16,29 @@ namespace Hng.Application.Features.Roles.Handler
     {
         private readonly IRepository<Organization> _organizationRepository;
         private readonly IRepository<Role> _roleRepository;
+        private readonly IMapper _mapper;
 
-        public CreateRoleCommandHandler(IRepository<Organization> organizationRepository, IRepository<Role> roleRepository)
+        public CreateRoleCommandHandler(IRepository<Organization> organizationRepository, IRepository<Role> roleRepository, IMapper mapper)
         {
             _organizationRepository = organizationRepository;
             _roleRepository = roleRepository;
+            _mapper = mapper;
         }
 
         public async Task<CreateRoleResponseDto> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
         {
-            var organization = await _organizationRepository.GetAsync(request.OrganizationId);
+            var organization = await _organizationRepository.GetAsync(request.RoleRequestBody.OrganizationId);
             if (organization == null)
             {
                 return new CreateRoleResponseDto
                 {
                     StatusCode = 404,
                     Error = "Organisation not found",
-                    Message = $"The organisation with ID {request.OrganizationId} does not exist"
+                    Message = $"The organisation with ID {request.RoleRequestBody.OrganizationId} does not exist"
                 };
             }
 
-            var existingRole = await _roleRepository.GetBySpec(r => r.Name == request.Name && r.OrganizationId == request.OrganizationId);
+            var existingRole = await _roleRepository.GetBySpec(r => r.Name == request.RoleRequestBody.Name && r.OrganizationId == request.RoleRequestBody.OrganizationId);
             if (existingRole != null)
             {
                 return new CreateRoleResponseDto
@@ -46,26 +49,18 @@ namespace Hng.Application.Features.Roles.Handler
                 };
             }
 
-            var role = new Role
-            {
-                Name = request.Name,
-                Description = request.Description,
-                OrganizationId = request.OrganizationId,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            };
+            var role = _mapper.Map<Role>(request);
+            role.IsActive = true;
+            role.CreatedAt = DateTime.UtcNow;
 
             await _roleRepository.AddAsync(role);
             await _roleRepository.SaveChanges();
 
-            return new CreateRoleResponseDto
-            {
-                StatusCode = 201,
-                Id = role.Id,
-                Name = role.Name,
-                Description = role.Description,
-                Message = "Role created successfully"
-            };
+            var response = _mapper.Map<CreateRoleResponseDto>(role);
+            response.StatusCode = 201;
+            response.Message = "Role created successfully";
+
+            return response;
         }
     }
 

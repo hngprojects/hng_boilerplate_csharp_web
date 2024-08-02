@@ -1,4 +1,5 @@
-﻿using Hng.Application.Features.Roles.Dto;
+﻿using AutoMapper;
+using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
@@ -14,21 +15,22 @@ namespace Hng.Application.Features.Roles.Handler
     public class GetRolesQueryHandler : IRequestHandler<GetRolesQuery, IEnumerable<RoleDto>>
     {
         private readonly IRepository<Role> _roleRepository;
+        private readonly IMapper _mapper;
 
-        public GetRolesQueryHandler(IRepository<Role> roleRepository)
+        public GetRolesQueryHandler(IRepository<Role> roleRepository, IMapper mapper)
         {
             _roleRepository = roleRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<RoleDto>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
         {
             var roles = await _roleRepository.GetAllBySpec(r => r.OrganizationId == request.OrganizationId);
-            return roles.Select(r => new RoleDto
+            if (roles is null)
             {
-                Id = r.Id,
-                Name = r.Name,
-                Description = r.Description
-            });
+                return Enumerable.Empty<RoleDto>();
+            }
+            return _mapper.Map<IEnumerable<RoleDto>>(roles);
         }
     }
 

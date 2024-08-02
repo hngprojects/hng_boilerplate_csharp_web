@@ -1,4 +1,5 @@
 ﻿using Hng.Application.Features.Roles.Dto;
+using Hng.Application.Features.UserManagement.Dtos;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,11 @@ namespace Hng.Application.Features.Roles.Command
 {
     public class CreateRoleCommand : IRequest<CreateRoleResponseDto>
     {
-        public Guid OrganizationId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public CreateRoleCommand(CreateRoleRequestDto roleRequest)
+        {
+            RoleRequestBody = roleRequest;
+        }
+
+        public CreateRoleRequestDto RoleRequestBody { get; }
     }
 }
