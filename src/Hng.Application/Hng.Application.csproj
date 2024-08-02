@@ -37,7 +37,6 @@
   <Folder Include="Features\Jobs\Queries\" />
   <Folder Include="Features\Roles\Mappers\" />
    <Folder Include="Features\SuperAdmin\Commands\" />
-    <Folder Include="Features\Products\Queries\" />
   <Folder Include="Features\UserManagement\Commands\" />
   </ItemGroup>
 
