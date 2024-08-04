@@ -45,7 +45,7 @@ public class OrganizationController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Create Role For Organization
     /// </summary>
-    [HttpPost("organizations/{orgId:guid}/roles")]
+    [HttpPost("{orgId:guid}/roles")]
     [ProducesResponseType(typeof(CreateRoleResponseDto), StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateRole(Guid orgId, [FromBody] CreateRoleRequestDto request)
     {
@@ -57,7 +57,7 @@ public class OrganizationController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Get All Roles In Organisation
     /// </summary>
-    [HttpGet("organizations/{orgId:guid}/roles")]
+    [HttpGet("{orgId:guid}/roles")]
     [ProducesResponseType(typeof(IEnumerable<RoleDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRoles(Guid orgId)
     {
@@ -69,7 +69,7 @@ public class OrganizationController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Get Organizations Role By Id
     /// </summary>
-    [HttpGet("organizations/{orgId:guid}/roles/{roleId}")]
+    [HttpGet("{orgId:guid}/roles/{roleId}")]
     [ProducesResponseType(typeof(RoleDetailsDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRole(Guid orgId, Guid roleId)
     {
@@ -81,7 +81,7 @@ public class OrganizationController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Update Organisations Role
     /// </summary>
-    [HttpPut("organizations/{orgId:guid}/roles/{roleId}")]
+    [HttpPut("{orgId:guid}/roles/{roleId}")]
     [ProducesResponseType(typeof(UpdateRoleResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateRole(Guid orgId, Guid roleId, [FromBody] UpdateRoleRequestDto request)
     {
@@ -93,7 +93,7 @@ public class OrganizationController(IMediator mediator) : ControllerBase
     /// <summary>
     /// Delete Organizations Role
     /// </summary>
-    [HttpDelete("organizations/{orgId:guid}/roles/{roleId}")]
+    [HttpDelete("{orgId:guid}/roles/{roleId}")]
     [ProducesResponseType(typeof(DeleteRoleResponseDto), StatusCodes.Status201Created)]
     public async Task<IActionResult> DeleteRole(Guid orgId, Guid roleId)
     {
@@ -101,8 +101,4 @@ public class OrganizationController(IMediator mediator) : ControllerBase
         var response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
     }
-
-
-
-
 }
