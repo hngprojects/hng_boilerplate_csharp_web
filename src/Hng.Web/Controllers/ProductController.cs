@@ -35,22 +35,22 @@ namespace Hng.Web.Controllers
             return Ok(successResponse);
         }
 
-		[HttpPost("AddProducts")]
-		[Authorize]
-		[ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
-		public async Task<ActionResult<ProductsDto>> AddProducts([FromBody] AddMultipleProductDto body)
-		{
-			var loggedInUserId = HttpContext.User.FindFirst(ClaimTypes.Sid).Value;
-			var command = new AddProductsCommand(loggedInUserId, body.Products);
-			var response = await _mediator.Send(command);
+        [HttpPost("AddProducts")]
+        [Authorize]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
+        public async Task<ActionResult<ProductsDto>> AddProducts([FromBody] AddMultipleProductDto body)
+        {
+            var loggedInUserId = HttpContext.User.FindFirst(ClaimTypes.Sid).Value;
+            var command = new AddProductsCommand(loggedInUserId, body.Products);
+            var response = await _mediator.Send(command);
 
-			var successResponse = new SuccessResponseDto<ProductsDto>();
-			successResponse.Data = response;
-			successResponse.Message = "Product Successfully";
-			return Ok(successResponse);
-		}
+            var successResponse = new SuccessResponseDto<ProductsDto>();
+            successResponse.Data = response;
+            successResponse.Message = "Product Successfully";
+            return Ok(successResponse);
+        }
 
-		[HttpGet("{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
