@@ -35,7 +35,7 @@ namespace Hng.Web.Controllers
             return Ok(successResponse);
         }
 
-        [HttpPost("AddProducts")]
+        [HttpPost("add-products")]
         [Authorize]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
         public async Task<ActionResult<ProductsDto>> AddProducts([FromBody] AddMultipleProductDto body)
