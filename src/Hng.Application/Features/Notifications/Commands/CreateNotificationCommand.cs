@@ -3,14 +3,12 @@ using MediatR;
 
 namespace Hng.Application.Features.Notifications.Commands
 {
-    public class CreateNotificationCommand : IRequest<NotificationDto>
+    public class CreateNotificationCommand : IRequest<NotificationResult>
     {
-        public CreateNotificationCommand(CreateNotificationDto notificationDto, string loggedInUserId)
+        public CreateNotificationCommand(CreateNotificationDto createNotificationDto)
         {
-            NotificationBody = notificationDto;
-            LoggedInUserId = loggedInUserId;
+            Notification = createNotificationDto;
         }
-        public CreateNotificationDto NotificationBody { get; }
-        public string LoggedInUserId { get; }
+        public CreateNotificationDto Notification { get; }
     }
 }

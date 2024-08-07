@@ -7,7 +7,8 @@ namespace Hng.Application.Features.Notifications.Mappers
     {
         public NotificationMapperProfile()
         {
-            CreateMap<CreateNotificationDto, Notification>();
+            CreateMap<CreateNotificationSettingsDto, NotificationSettings>();
+            CreateMap<NotificationSettings, NotificationSettingsDto>();
             CreateMap<Notification, NotificationDto>();
         }
     }
