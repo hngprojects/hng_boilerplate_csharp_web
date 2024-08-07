@@ -1,6 +1,8 @@
 using AutoMapper;
+using Google.Apis.Auth;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
+
 
 namespace Hng.Application.Features.UserManagement.Mappers
 {
@@ -8,6 +10,9 @@ namespace Hng.Application.Features.UserManagement.Mappers
     {
         public UserMappingProfile()
         {
+            CreateMap<GoogleJsonWebSignature.Payload,User>()
+                .ForMember(dest=>dest.FirstName, opt=>opt.MapFrom(src=> src.Name))
+                .ForMember(dest=>dest.LastName, opt=>opt.MapFrom(src=> src.GivenName));
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ReverseMap();

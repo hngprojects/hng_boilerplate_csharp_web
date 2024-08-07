@@ -44,10 +44,15 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
             if (dbUser == null)
             {
+
                 var newUser = _mapper.Map<User>(payload);
+                newUser.Id = Guid.NewGuid();
                 newUser.AvatarUrl = payload.Picture;
 
+                var userOrgs= 
+
                 await _userRepo.AddAsync(newUser);
+                await _userRepo.SaveChanges();
 
                 var access_token = _tokenService.GenerateJwt(newUser);
 
@@ -56,8 +61,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 {
                     Data = new
                     {
-                        user = _mapper.Map<UserDto>(newUser),
-                        access_token
+                        user = _mapper.Map<UserDto>(newUser)
                     },
                     AccessToken = access_token,
                     Message = "Registration successful, user logged in."
@@ -71,11 +75,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             {
                 AccessToken = token,
                 Message = "Login successful",
-                Data = new
-                {
-                    user,
-                    access_token = token
-                }
+                Data = new { user }
             };
         }
     }
