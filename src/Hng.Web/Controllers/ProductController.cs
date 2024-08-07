@@ -2,7 +2,6 @@ using System.Security.Claims;
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Queries;
-using Hng.Application.Features.Products.Validators;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -112,6 +111,19 @@ namespace Hng.Web.Controllers
                     message = "Product not found",
                     error = "Not Found"
                 });
+        }
+
+        /// <summary>
+        /// Get all product endpoint
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetProducts([FromQuery] GetProductsQueryParameters parameters)
+        {
+            var products = await _mediator.Send(new GetProductsQuery(parameters));
+            return Ok(new PaginatedResponseDto<PagedListDto<ProductDto>> { Data = products, Metadata = products.MetaData });
         }
     }
 }
