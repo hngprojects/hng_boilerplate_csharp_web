@@ -1,10 +1,12 @@
+name: csharp_dev
+
 services:
   postgres:
     image: postgres:latest
     container_name: postgres
     environment:
-      POSTGRES_DB: csharp_dev
-      POSTGRES_USER: csharp_dev
+      POSTGRES_DB: ${POSTGRES_DB:-csharp_dev}
+      POSTGRES_USER: ${POSTGRES_USER:-csharp_dev}
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data

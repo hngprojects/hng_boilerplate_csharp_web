@@ -4,7 +4,6 @@ WORKDIR /app
 EXPOSE 5000
 
 ENV ASPNETCORE_URLS=http://+:5000
-ENV ASPNETCORE_ENVIRONMENT=Development
 
 # Stage 2: Build Image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build

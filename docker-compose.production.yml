@@ -1,11 +1,11 @@
-name: csharp_staging
+name: csharp_production
 
 services:
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-csharp_staging}
-      POSTGRES_USER: ${POSTGRES_USER:-csharp_staging}
+      POSTGRES_DB: ${POSTGRES_DB:-csharp_production}
+      POSTGRES_USER: ${POSTGRES_USER:-csharp_production}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
@@ -18,7 +18,7 @@ services:
      - network     
 
   web:
-    image: csharp:staging
+    image: csharp:production
     environment:
       ASPNETCORE_ENVIRONMENT: Staging
     depends_on:
