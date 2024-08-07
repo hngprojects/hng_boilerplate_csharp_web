@@ -1,3 +1,5 @@
+using CSharpFunctionalExtensions;
+using Hng.Application.Features.Profiles.Dtos;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.UserManagement.Queries;
 using MediatR;
@@ -33,6 +35,20 @@ namespace Hng.Web.Controllers
         {
             var users = await _mediator.Send(new GetUsersQuery());
             return Ok(users);
+        }
+
+        [Authorize]
+        [HttpPut("profile")]
+        [ProducesResponseType(typeof(Result<ProfileDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto profileDto)
+        {
+            var response = await _mediator.Send(profileDto);
+
+            if (response.IsFailure)
+                return StatusCode(404, response.Error);
+
+            return Ok(response.Value);
         }
 
     }
