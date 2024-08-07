@@ -31,6 +31,13 @@ public class FaqMappingProfile : AutoMapper.Profile
             .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
             .ForMember(dest => dest.Answer, opt => opt.MapFrom(src => src.Answer))
             .ReverseMap();
+
+        // Mapping from Faq to FaqResponseDto
+        CreateMap<Faq, FaqResponseDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
+            .ForMember(dest => dest.Answer, opt => opt.MapFrom(src => src.Answer))
+            .ReverseMap();
     }
 }
 

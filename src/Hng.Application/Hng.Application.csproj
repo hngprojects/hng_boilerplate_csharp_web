@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Folder Include="Features\Faq\Queries\" />
   <Folder Include="Features\Jobs\Queries\" />
    <Folder Include="Features\SuperAdmin\Commands\" />
   <Folder Include="Features\UserManagement\Commands\" />

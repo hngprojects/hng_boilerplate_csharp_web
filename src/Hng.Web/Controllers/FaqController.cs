@@ -1,5 +1,6 @@
 ﻿using Hng.Application.Features.Faq.Commands;
 using Hng.Application.Features.Faq.Dtos;
+using Hng.Application.Features.Faq.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -38,6 +39,18 @@ public class FaqController : ControllerBase
         var command = new DeleteFaqCommand(id);
         var result = await _mediator.Send(command);
         return StatusCode(result.StatusCode, result);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetAllFaqs()
+    {
+        var query = new GetAllFaqsQuery();
+        var result = await _mediator.Send(query);
+        return Ok(new
+        {
+            Status = 200,
+            Message = "FAQs retrieved successfully",
+            Data = result
+        });
     }
 }
 
