@@ -1,5 +1,4 @@
 name: Dev Deployment
-
 on:
   push:
     branches:

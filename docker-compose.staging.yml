@@ -1,0 +1,35 @@
+name: csharp_staging
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-${COMPOSE_PROJECT_NAME}}
+      POSTGRES_USER: ${POSTGRES_USER:-csharp_staging}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+
+  redis:
+    image: redis:latest
+
+  web:
+    image: csharp:latest
+    environment:
+      ASPNETCORE_ENVIRONMENT: Staging
+    depends_on:
+      - postgres
+      - redis
+
+  # nginx:
+  #   image: nginx:latest
+  #   container_name: nginx
+  #   ports:
+  #     - "5000:80"
+  #   depends_on:
+  #     - web
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  postgres_data:
