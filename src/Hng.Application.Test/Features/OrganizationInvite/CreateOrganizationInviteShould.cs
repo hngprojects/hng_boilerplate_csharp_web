@@ -95,31 +95,5 @@ namespace Hng.Application.Tests.Features.OrganisationInvite.Handlers
             Assert.False(result.IsSuccess);
             Assert.Equal(expectedError.Message, result.Error.Message);
         }
-
-        // [Fact]
-        // public async Task Handle_WithMapperException_ShouldReturnFailureResult()
-        // {
-        //     // Arrange
-        //     var command = new CreateOrganizationInviteCommand(new CreateOrganizationInviteDto
-        //     {
-        //         OrganizationId = Guid.NewGuid().ToString(),
-        //         UserId = Guid.NewGuid(),
-        //         Email = "test@example.com"
-        //     });
-
-        //     var organizationInvite = new OrganizationInvite();
-
-        //     _mockService.Setup(s => s.CreateInvite(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>()))
-        //         .ReturnsAsync(Result<OrganizationInvite>.Success(organizationInvite));
-
-        //     _mockMapper.Setup(m => m.Map<OrganizationInviteDto>(organizationInvite))
-        //         .Throws(new AutoMapperMappingException("Mapping error"));
-
-        //     // Act
-        //     var result = await _handler.Handle(command, CancellationToken.None);
-
-        //     // Assert
-        //     Assert.False(result.IsSuccess);
-        // }
     }
 }
