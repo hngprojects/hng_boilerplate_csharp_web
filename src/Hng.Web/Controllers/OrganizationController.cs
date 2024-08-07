@@ -40,6 +40,15 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         }) : Ok(response);
     }
 
+    [HttpGet]
+    [ProducesResponseType(typeof(SuccessResponseDto<List<OrganizationDto>>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<SuccessResponseDto<List<OrganizationDto>>>> GetOrganizations()
+    {
+        var query = new GetAllUsersOrganizationsQuery();
+        var response = await mediator.Send(query);
+        return Ok(response);
+    }
+
     [HttpPost]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<OrganizationDto>> CreateOrganization([FromBody] CreateOrganizationDto body)
