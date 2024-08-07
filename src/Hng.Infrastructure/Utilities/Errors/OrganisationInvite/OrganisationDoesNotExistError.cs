@@ -8,7 +8,7 @@ public class OrganisationDoesNotExistError : ImplicitErrorOperator
 
     public static OrganisationDoesNotExistError FromId(Guid id)
     {
-        return new OrganisationDoesNotExistError($"No organisation with {id} exists");
+        return new OrganisationDoesNotExistError($"No organisation exists for the id {id}");
     }
 }
 

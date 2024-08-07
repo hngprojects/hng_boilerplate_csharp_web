@@ -395,6 +395,8 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrganizationId");
+
                     b.ToTable("OrganizationInvites");
                 });
 
@@ -793,6 +795,15 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.OrganizationInvite", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.Organization", null)
+                        .WithMany("OrganizationInvites")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
                     b.HasOne("Hng.Domain.Entities.User", "User")
@@ -928,6 +939,8 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
                 {
+                    b.Navigation("OrganizationInvites");
+
                     b.Navigation("Subscriptions");
 
                     b.Navigation("UsersRoles");

@@ -8,7 +8,7 @@ public class InviteAlreadyExistsError : ImplicitErrorOperator
 
     public static InviteAlreadyExistsError FromEmail(string email)
     {
-        return new InviteAlreadyExistsError($"An invite already exists for {email}");
+        return new InviteAlreadyExistsError($"An invite already exists for the email {email}");
     }
 }
 

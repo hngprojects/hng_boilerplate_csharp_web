@@ -6,7 +6,7 @@ public class UserIsNotOwnerError : ImplicitErrorOperator
 
     public static UserIsNotOwnerError FromIds(Guid userId, Guid organizationId)
     {
-        return new UserIsNotOwnerError($"The logged-in user is not the owner of the specified organization");
+        return new UserIsNotOwnerError($"You are not the owner of the specified organization");
     }
 }
 
