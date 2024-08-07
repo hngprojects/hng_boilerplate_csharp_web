@@ -1,6 +1,6 @@
-﻿using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Queries;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
+﻿using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Requests;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Handlers.Queries;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Services;
 using Hng.Infrastructure.Utilities.StringKeys;
 using Moq;
 using Xunit;

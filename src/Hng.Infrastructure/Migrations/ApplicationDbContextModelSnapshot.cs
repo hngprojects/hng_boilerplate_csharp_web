@@ -133,6 +133,23 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("EmailTemplates");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.Faq", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Answer")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FAQ");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Job", b =>
                 {
                     b.Property<Guid>("Id")
@@ -238,6 +255,34 @@ namespace Hng.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.NotificationSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("ActivityWorkspaceEmail")
                         .HasColumnType("boolean");
 
@@ -269,7 +314,7 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("NotificationSettings");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
@@ -399,17 +444,38 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("AvatarUrl")
                         .HasColumnType("text");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FacebookLink")
+                        .HasColumnType("text");
+
                     b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("JobTitle")
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");
 
+                    b.Property<string>("LinkedinLink")
+                        .HasColumnType("text");
+
                     b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Pronoun")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TwitterLink")
                         .HasColumnType("text");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -435,14 +501,54 @@ namespace Hng.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrganizationId");
+
                     b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.RolePermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Subscription", b =>
@@ -460,8 +566,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<DateTime?>("ExpiryDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Frequency")
-                        .HasColumnType("integer");
+                    b.Property<string>("Frequency")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -469,8 +576,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<Guid?>("OrganizationId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Plan")
-                        .HasColumnType("integer");
+                    b.Property<string>("Plan")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("timestamp with time zone");
@@ -513,8 +621,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<DateTime?>("PaidAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Partners")
-                        .HasColumnType("integer");
+                    b.Property<string>("Partners")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("ProductId")
                         .HasColumnType("uuid");
@@ -522,14 +631,16 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Reference")
                         .HasColumnType("text");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("SubscriptionId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid");
@@ -537,6 +648,8 @@ namespace Hng.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("Reference");
 
                     b.HasIndex("SubscriptionId");
 
@@ -584,6 +697,33 @@ namespace Hng.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.UserRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("OrganizationId", "UserId", "RoleId")
+                        .IsUnique();
+
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("OrganizationUser", b =>
@@ -642,6 +782,17 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.NotificationSettings", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
                     b.HasOne("Hng.Domain.Entities.User", "User")
@@ -662,6 +813,28 @@ namespace Hng.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.Role", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.Organization", "Organisation")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organisation");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.RolePermission", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.Role", "Role")
+                        .WithMany("Permissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Subscription", b =>
@@ -706,6 +879,33 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.UserRole", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.Organization", "Orgainzation")
+                        .WithMany("UsersRoles")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hng.Domain.Entities.Role", "Role")
+                        .WithMany("UsersRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hng.Domain.Entities.User", "User")
+                        .WithMany("UsersRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Orgainzation");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("OrganizationUser", b =>
                 {
                     b.HasOne("Hng.Domain.Entities.Organization", null)
@@ -729,11 +929,20 @@ namespace Hng.Infrastructure.Migrations
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
                 {
                     b.Navigation("Subscriptions");
+
+                    b.Navigation("UsersRoles");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
                     b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.Role", b =>
+                {
+                    b.Navigation("Permissions");
+
+                    b.Navigation("UsersRoles");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>
@@ -747,6 +956,8 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("Subscriptions");
 
                     b.Navigation("Transactions");
+
+                    b.Navigation("UsersRoles");
                 });
 #pragma warning restore 612, 618
         }

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Hng.Domain.EntityConfigurations
+namespace Hng.Domain.EntitiesConfigurations
 {
     public class NewsLetterSubscriberConfig : IEntityTypeConfiguration<NewsLetterSubscriber>
     {

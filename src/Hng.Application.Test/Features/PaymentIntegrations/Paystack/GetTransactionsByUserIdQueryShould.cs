@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Queries;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Requests;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Responses;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Handlers.Queries;
 using Hng.Application.Shared.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
