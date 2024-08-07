@@ -5,11 +5,13 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Hng.Application.Features.Notifications.Dtos
+namespace Hng.Application.Features.Faq.Dtos
 {
-    public class CreateNotificationDto
+    public class DeleteFaqResponseDto
     {
+        public int StatusCode { get; set; }
         [JsonPropertyName("message")]
         public string Message { get; set; }
     }
+
 }
