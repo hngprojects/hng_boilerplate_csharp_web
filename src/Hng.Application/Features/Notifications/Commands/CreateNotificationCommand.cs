@@ -5,12 +5,10 @@ namespace Hng.Application.Features.Notifications.Commands
 {
     public class CreateNotificationCommand : IRequest<NotificationResult>
     {
-        public CreateNotificationCommand(CreateNotificationDto createNotificationDto, string loggedInUserId)
+        public CreateNotificationCommand(CreateNotificationDto createNotificationDto)
         {
             Notification = createNotificationDto;
-            LoggedInUserId = loggedInUserId;
         }
         public CreateNotificationDto Notification { get; }
-        public string LoggedInUserId { get; }
     }
 }

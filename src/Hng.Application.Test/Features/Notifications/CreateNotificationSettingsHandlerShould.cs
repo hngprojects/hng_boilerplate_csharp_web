@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using Hng.Application.Features.Notifications.Commands;
+using Hng.Application.Features.Notifications.Dtos;
 using Hng.Application.Features.Notifications.Handlers;
 using Hng.Application.Features.Notifications.Mappers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Services.Interfaces;
 using Moq;
-using Xunit;
 using System.Linq.Expressions;
-using Hng.Application.Features.Notifications.Dtos;
+using Xunit;
 
 namespace Hng.Application.Test.Features.Notifications
 {
@@ -16,6 +17,7 @@ namespace Hng.Application.Test.Features.Notifications
         private readonly IMapper _mapper;
         private readonly Mock<IRepository<NotificationSettings>> _mockNotificationRepository;
         private readonly Mock<IRepository<User>> _mockUserRepository;
+        private readonly Mock<IAuthenticationService> _mockAuthenticationService;
         private readonly CreateNotificationSettingsHandler _handler;
 
         public CreateNotificationSettingsHandlerShould()
@@ -26,7 +28,13 @@ namespace Hng.Application.Test.Features.Notifications
 
             _mockNotificationRepository = new Mock<IRepository<NotificationSettings>>();
             _mockUserRepository = new Mock<IRepository<User>>();
-            _handler = new CreateNotificationSettingsHandler(_mockNotificationRepository.Object, _mockUserRepository.Object, _mapper);
+            _mockAuthenticationService = new Mock<IAuthenticationService>();
+            _handler = new CreateNotificationSettingsHandler(
+                _mockNotificationRepository.Object,
+                _mockUserRepository.Object,
+                _mockAuthenticationService.Object,
+                _mapper
+            );
         }
 
         [Fact]
@@ -41,7 +49,7 @@ namespace Hng.Application.Test.Features.Notifications
                 ActivityWorkspaceEmail = true
             };
 
-            var command = new CreateNotificationSettingsCommand(createNotificationDto, userId.ToString());
+            var command = new CreateNotificationSettingsCommand(createNotificationDto);
 
             var user = new User { Id = userId };
             var newNotification = new NotificationSettings
@@ -52,15 +60,14 @@ namespace Hng.Application.Test.Features.Notifications
                 ActivityWorkspaceEmail = createNotificationDto.ActivityWorkspaceEmail
             };
 
+            _mockAuthenticationService.Setup(auth => auth.GetCurrentUserAsync())
+                .ReturnsAsync(userId);
             _mockUserRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
                 .ReturnsAsync(user);
-
             _mockNotificationRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<NotificationSettings, bool>>>()))
                 .ReturnsAsync((NotificationSettings)null);
-
             _mockNotificationRepository.Setup(r => r.AddAsync(It.IsAny<NotificationSettings>()))
                 .ReturnsAsync(newNotification);
-
             _mockNotificationRepository.Setup(r => r.SaveChanges())
                 .Returns(Task.CompletedTask);
 
@@ -90,7 +97,7 @@ namespace Hng.Application.Test.Features.Notifications
                 ActivityWorkspaceEmail = true
             };
 
-            var command = new CreateNotificationSettingsCommand(createNotificationDto, userId.ToString());
+            var command = new CreateNotificationSettingsCommand(createNotificationDto);
 
             var user = new User { Id = userId };
             var existingNotification = new NotificationSettings
@@ -101,15 +108,14 @@ namespace Hng.Application.Test.Features.Notifications
                 ActivityWorkspaceEmail = false
             };
 
+            _mockAuthenticationService.Setup(auth => auth.GetCurrentUserAsync())
+                .ReturnsAsync(userId);
             _mockUserRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
                 .ReturnsAsync(user);
-
             _mockNotificationRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<NotificationSettings, bool>>>()))
                 .ReturnsAsync(existingNotification);
-
             _mockNotificationRepository.Setup(r => r.UpdateAsync(It.IsAny<NotificationSettings>()))
                 .Returns(Task.CompletedTask);
-
             _mockNotificationRepository.Setup(r => r.SaveChanges())
                 .Returns(Task.CompletedTask);
 
@@ -139,8 +145,10 @@ namespace Hng.Application.Test.Features.Notifications
                 ActivityWorkspaceEmail = true
             };
 
-            var command = new CreateNotificationSettingsCommand(createNotificationDto, userId.ToString());
+            var command = new CreateNotificationSettingsCommand(createNotificationDto);
 
+            _mockAuthenticationService.Setup(auth => auth.GetCurrentUserAsync())
+                .ReturnsAsync(userId);
             _mockUserRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
                 .ReturnsAsync((User)null);
 

@@ -4,7 +4,6 @@ using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Hng.Web.Controllers
 {
@@ -30,8 +29,7 @@ namespace Hng.Web.Controllers
         {
             try
             {
-                var loggedInUserId = HttpContext.User.FindFirst(ClaimTypes.Sid).Value;
-                var createCommand = new CreateNotificationCommand(command, loggedInUserId);
+                var createCommand = new CreateNotificationCommand(command);
                 var response = await _mediator.Send(createCommand);
                 if (response.IsSuccess)
                 {

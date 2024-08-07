@@ -4,6 +4,7 @@ using Hng.Application.Features.Notifications.Dtos;
 using Hng.Application.Shared.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 
 namespace Hng.Application.Features.Notifications.Handlers
@@ -13,19 +14,21 @@ namespace Hng.Application.Features.Notifications.Handlers
         private readonly IRepository<NotificationSettings> _notificationSettingsRepository;
         private readonly IRepository<Notification> _notificationRepository;
         private readonly IRepository<User> _userRepository;
+        private readonly IAuthenticationService _authenticationService;
         private readonly IMapper _mapper;
 
-        public CreateNotificationCommandHandler(IRepository<NotificationSettings> notificationSettingsRepository, IRepository<Notification> notificationRepository, IRepository<User> userRepository, IMapper mapper)
+        public CreateNotificationCommandHandler(IRepository<NotificationSettings> notificationSettingsRepository, IRepository<Notification> notificationRepository, IRepository<User> userRepository, IAuthenticationService authenticationService, IMapper mapper)
         {
             _notificationSettingsRepository = notificationSettingsRepository;
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
+            _authenticationService = authenticationService;
             _mapper = mapper;
         }
 
         public async Task<NotificationResult> Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
         {
-            var userId = Guid.Parse(request.LoggedInUserId);
+            var userId = await _authenticationService.GetCurrentUserAsync();
             var user = await _userRepository.GetBySpec(u => u.Id == userId);
             var settings = await _notificationSettingsRepository.GetBySpec(u => u.UserId == userId);
             if (user != null)
