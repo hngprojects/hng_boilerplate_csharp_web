@@ -11,8 +11,6 @@ namespace Hng.Application.Features.Profiles.Dtos
 
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email format")]
         public string Email { get; set; }
 
         [Phone(ErrorMessage = "Invalid phone number")]

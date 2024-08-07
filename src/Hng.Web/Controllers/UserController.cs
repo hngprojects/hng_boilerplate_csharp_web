@@ -38,11 +38,12 @@ namespace Hng.Web.Controllers
         }
 
         [Authorize]
-        [HttpPut("profile")]
+        [HttpPut("{email}/profile")]
         [ProducesResponseType(typeof(Result<ProfileDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto profileDto)
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto profileDto, string email)
         {
+            profileDto.Email = email;
             var response = await _mediator.Send(profileDto);
 
             if (response.IsFailure)
