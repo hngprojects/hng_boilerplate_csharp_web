@@ -49,7 +49,15 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 newUser.Id = Guid.NewGuid();
                 newUser.AvatarUrl = payload.Picture;
 
-
+                var userOrg = new Organization
+                {
+                    Name = $"{newUser.FirstName}'s Org",
+                    OwnerId = newUser.Id,
+                    Email = newUser.Email,
+                    CreatedAt = DateTime.UtcNow,
+                    Id = Guid.NewGuid()
+                };
+                newUser.Organizations.Add(userOrg);
                 await _userRepo.AddAsync(newUser);
                 await _userRepo.SaveChanges();
 
