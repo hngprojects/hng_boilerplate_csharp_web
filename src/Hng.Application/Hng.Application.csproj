@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.5" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="JasperFx.Core" Version="1.8.0" />
@@ -35,7 +36,6 @@
   <ItemGroup>
   <Folder Include="Features\Jobs\Queries\" />
    <Folder Include="Features\SuperAdmin\Commands\" />
-    <Folder Include="Features\Products\Queries\" />
   <Folder Include="Features\UserManagement\Commands\" />
   </ItemGroup>
 

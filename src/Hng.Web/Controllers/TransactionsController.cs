@@ -1,5 +1,5 @@
-﻿using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
+﻿using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Requests;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Responses;
 using Hng.Application.Shared.Dtos;
 using Hng.Infrastructure.Utilities.StringKeys;
 using MediatR;

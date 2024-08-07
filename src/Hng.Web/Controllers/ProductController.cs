@@ -125,5 +125,20 @@ namespace Hng.Web.Controllers
             var products = await _mediator.Send(new GetProductsQuery(parameters));
             return Ok(new PaginatedResponseDto<PagedListDto<ProductDto>> { Data = products, Metadata = products.MetaData });
         }
+        /// <summary>
+        /// Product - Search products by name
+        /// </summary>
+        [HttpGet("search")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<List<ProductDto>>> GetProductsByName([FromQuery] string product_name)
+        {
+            var query = new GetProductByNameQuery(product_name);
+            var products = await _mediator.Send(query);
+            return Ok(products);
+        }
     }
 }

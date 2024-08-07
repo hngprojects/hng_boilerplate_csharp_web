@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Hng.Domain.Entities;
+using Hng.Application.Features.Comments.Dtos;
 using Hng.Domain.Enums;
 
 namespace Hng.Application.Features.Blogs.Dtos;
@@ -16,9 +16,13 @@ public class BlogDto
     public string Content { get; set; }
     [JsonPropertyName("published_date")]
     public DateTime PublishedDate { get; set; }
-    [JsonPropertyName("author")]
-    public User Author { get; set; }
+
+    [JsonPropertyName("author_id")]
+    public Guid AuthorId { get; set; }
+
     [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("category")]
     public BlogCategory Category { get; set; }
+    [JsonPropertyName("comments")]
+    public ICollection<CommentDto> Comments { get; set; }
 }

@@ -13,7 +13,7 @@ namespace Hng.Application.Test.Features.Notifications
     public class GetNotificationSettingsHandlerShould
     {
         private readonly IMapper _mapper;
-        private readonly Mock<IRepository<Notification>> _mockNotificationRepository;
+        private readonly Mock<IRepository<NotificationSettings>> _mockNotificationRepository;
         private readonly GetNotificationSettingsHandler _handler;
 
         public GetNotificationSettingsHandlerShould()
@@ -22,7 +22,7 @@ namespace Hng.Application.Test.Features.Notifications
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
             _mapper = new Mapper(configuration);
 
-            _mockNotificationRepository = new Mock<IRepository<Notification>>();
+            _mockNotificationRepository = new Mock<IRepository<NotificationSettings>>();
             _handler = new GetNotificationSettingsHandler(_mockNotificationRepository.Object, _mapper);
         }
 
@@ -33,7 +33,7 @@ namespace Hng.Application.Test.Features.Notifications
             var userId = Guid.NewGuid();
             var query = new GetNotificationSettingsQuery(userId);
 
-            var existingNotification = new Notification
+            var existingNotification = new NotificationSettings
             {
                 UserId = userId,
                 EmailNotifications = true,
@@ -41,7 +41,7 @@ namespace Hng.Application.Test.Features.Notifications
                 ActivityWorkspaceEmail = true
             };
 
-            _mockNotificationRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<Notification, bool>>>()))
+            _mockNotificationRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<NotificationSettings, bool>>>()))
                 .ReturnsAsync(existingNotification);
 
             // Act
@@ -54,7 +54,7 @@ namespace Hng.Application.Test.Features.Notifications
             Assert.Equal(existingNotification.MobilePushNotifications, result.MobilePushNotifications);
             Assert.Equal(existingNotification.ActivityWorkspaceEmail, result.ActivityWorkspaceEmail);
 
-            _mockNotificationRepository.Verify(r => r.GetBySpec(It.Is<Expression<Func<Notification, bool>>>(expr => expr.Compile()(existingNotification))), Times.Once);
+            _mockNotificationRepository.Verify(r => r.GetBySpec(It.Is<Expression<Func<NotificationSettings, bool>>>(expr => expr.Compile()(existingNotification))), Times.Once);
         }
 
         [Fact]
@@ -64,8 +64,8 @@ namespace Hng.Application.Test.Features.Notifications
             var userId = Guid.NewGuid();
             var query = new GetNotificationSettingsQuery(userId);
 
-            _mockNotificationRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<Notification, bool>>>()))
-                .ReturnsAsync((Notification)null);
+            _mockNotificationRepository.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<NotificationSettings, bool>>>()))
+                .ReturnsAsync((NotificationSettings)null);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -73,7 +73,7 @@ namespace Hng.Application.Test.Features.Notifications
             // Assert
             Assert.Null(result);
 
-            _mockNotificationRepository.Verify(r => r.GetBySpec(It.IsAny<Expression<Func<Notification, bool>>>()), Times.Once);
+            _mockNotificationRepository.Verify(r => r.GetBySpec(It.IsAny<Expression<Func<NotificationSettings, bool>>>()), Times.Once);
         }
     }
 }
