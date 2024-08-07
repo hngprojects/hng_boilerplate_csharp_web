@@ -1,0 +1,43 @@
+﻿using Hng.Application.Features.Faq.Commands;
+using Hng.Application.Features.Faq.Dtos;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+
+[Route("api/v1/faqs")]
+[ApiController]
+public class FaqController : ControllerBase
+{
+    private readonly IMediator _mediator;
+
+    public FaqController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateFaq([FromBody] CreateFaqRequestDto faqRequest)
+    {
+        var command = new CreateFaqCommand(faqRequest);
+        var result = await _mediator.Send(command);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateFaq(Guid id, [FromBody] UpdateFaqRequestDto faqRequest)
+    {
+        var command = new UpdateFaqCommand(id, faqRequest);
+        var result = await _mediator.Send(command);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteFaq(Guid id)
+    {
+        var command = new DeleteFaqCommand(id);
+        var result = await _mediator.Send(command);
+        return StatusCode(result.StatusCode, result);
+    }
+}
+
