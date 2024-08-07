@@ -49,7 +49,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 newUser.Id = Guid.NewGuid();
                 newUser.AvatarUrl = payload.Picture;
 
-                var userOrgs= 
+                var userOrgs =
 
                 await _userRepo.AddAsync(newUser);
                 await _userRepo.SaveChanges();

@@ -35,7 +35,7 @@ public class OrganizationController(IMediator mediator) : ControllerBase
     [ProducesResponseType(typeof(SuccessResponseDto<List<OrganizationDto>>), StatusCodes.Status200OK)]
     public async Task<ActionResult<SuccessResponseDto<List<OrganizationDto>>>> GetOrganizations()
     {
-        var query= new GetAllUsersOrganizationsQuery();
+        var query = new GetAllUsersOrganizationsQuery();
         var response = await mediator.Send(query);
         return Ok(response);
     }
