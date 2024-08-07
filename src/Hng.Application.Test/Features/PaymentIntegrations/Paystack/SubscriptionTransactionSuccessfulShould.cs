@@ -1,5 +1,5 @@
-﻿using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Handlers.Commands;
+﻿using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Requests;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Handlers.Commands;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Utilities.StringKeys;

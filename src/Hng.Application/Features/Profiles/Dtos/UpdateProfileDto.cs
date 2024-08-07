@@ -1,30 +1,37 @@
-using System.Text.Json.Serialization;
+﻿using CSharpFunctionalExtensions;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Hng.Application.Features.Profiles.Dtos
 {
-    public class ProfileDto
+    public record UpdateProfileDto : IRequest<Result<ProfileDto>>
     {
-        [JsonPropertyName("first_name")]
         public string FirstName { get; set; }
-        [JsonPropertyName("last_name")]
+
         public string LastName { get; set; }
-        [JsonPropertyName("phone_number")]
+
+        public string Email { get; set; }
+
+        [Phone(ErrorMessage = "Invalid phone number")]
         public string PhoneNumber { get; set; }
-        [JsonPropertyName("avatar_url")]
+
         public string AvatarUrl { get; set; }
-        [JsonPropertyName("user_id")]
-        public Guid UserId { get; set; }
-        [JsonPropertyName("user_name")]
+
         public string Username { get; set; }
+
         public string Pronoun { get; set; }
-        [JsonPropertyName("job_title")]
+
         public string JobTitle { get; set; }
+
         public string Bio { get; set; }
-        [JsonPropertyName("facebook_link")]
+
         public string FacebookLink { get; set; }
-        [JsonPropertyName("twitter_link")]
+
         public string TwitterLink { get; set; }
-        [JsonPropertyName("linkedin_link")]
+
         public string LinkedinLink { get; set; }
+
+        public IFormFile DisplayPhoto { get; set; }
     }
 }
