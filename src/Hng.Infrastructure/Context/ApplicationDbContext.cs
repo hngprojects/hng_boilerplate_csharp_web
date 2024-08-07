@@ -42,6 +42,8 @@ namespace Hng.Infrastructure.Context
         public DbSet<Role> Roles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Faq> FAQ { get; set; }
+
 
     }
 }
