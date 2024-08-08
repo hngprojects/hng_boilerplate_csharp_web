@@ -3,7 +3,8 @@ using MediatR;
 
 namespace Hng.Application.Features.Blogs.Commands;
 
-public class UpdateBlogCommand(BlogDto blog) : IRequest<BlogDto>
+public class UpdateBlogCommand(UpdateBlogDto blog, Guid id) : IRequest<BlogDto>
 {
-    public BlogDto BlogBody { get; } = blog;
+    public Guid BlogId { get; } = id;
+    public UpdateBlogDto Blog { get; } = blog;
 }
