@@ -58,5 +58,5 @@ jobs:
           script: |
             gunzip -c /tmp/csharp.tar.gz | docker load
             rm -f /tmp/csharp.tar.gz
-            cd ~/hng_boilerplate_nextjs
+            cd ~/hng_boilerplate_csharp_web
             docker compose -p csharp up -d
