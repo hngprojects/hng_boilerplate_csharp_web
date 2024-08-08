@@ -20,22 +20,19 @@ services:
   web:
     image: csharp:production
     environment:
-      ASPNETCORE_ENVIRONMENT: Staging
+      ASPNETCORE_ENVIRONMENT: Production
     depends_on:
       - postgres
       - redis
     volumes:
-      - ./src/Hng.Web/appsettings.Staging.json:/app/appsettings.Staging.json  
-    ports:
-      - "5020:5000"
+      - ./src/Hng.Web/appsettings.Staging.json:/app/appsettings.Production.json
     networks:
-      - network    
+      - network
 
   # nginx:
   #   image: nginx:latest
-  #   container_name: nginx
   #   ports:
-  #     - "5000:80"
+  #     - "5020:80"
   #   depends_on:
   #     - web
   #   volumes:
