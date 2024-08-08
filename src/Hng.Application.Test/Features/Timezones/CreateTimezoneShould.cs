@@ -95,7 +95,7 @@ namespace Hng.Application.Tests.Features.Timezones.Handlers.Commands
             // Assert
             Assert.NotNull(result);
             Assert.Equal(409, result.StatusCode);
-            Assert.Equal("Timezone 'America/New_York' already exists.", result.Error);
+            Assert.Equal($"Timezone '{createDto.Timezone}' already exists.", result.Error);
             Assert.Equal("Timezone already exists", result.Message);
         }
     }
