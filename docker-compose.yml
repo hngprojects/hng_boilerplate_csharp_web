@@ -1,4 +1,4 @@
-name: csharp
+  name: csharp
 
 services:
   backend:
@@ -7,6 +7,8 @@ services:
       context: .
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+    volumes:
+      - ./src/Hng.Web/appsettings.Development.json:/appsettings.Development.json
     depends_on:
       - postgres
       - redis
