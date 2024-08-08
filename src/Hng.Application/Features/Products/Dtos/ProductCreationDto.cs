@@ -25,4 +25,9 @@ namespace Hng.Application.Features.Products.Dtos
         [JsonPropertyName("price")]
         public decimal Price { get; set; }
     }
+
+    public class AddMultipleProductDto
+    {
+        public List<ProductCreationDto> Products { get; set; }
+    }
 }

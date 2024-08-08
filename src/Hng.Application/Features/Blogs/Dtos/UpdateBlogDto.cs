@@ -3,7 +3,7 @@ using Hng.Domain.Enums;
 
 namespace Hng.Application.Features.Blogs.Dtos;
 
-public class CreateBlogDto
+public class UpdateBlogDto
 {
     [JsonPropertyName("title")]
     public string Title { get; set; }
@@ -16,4 +16,3 @@ public class CreateBlogDto
     [JsonPropertyName("image_url")]
     public string ImageUrl { get; set; }
 }
-
