@@ -18,7 +18,6 @@ namespace Hng.Web.Controllers
             _mediator = mediator;
         }
 
-
         /// <summary>
         /// Create a new timezone.
         /// </summary>

@@ -20,7 +20,6 @@ namespace Hng.Application.Features.Timezones.Handlers.Commands
 
         public async Task<CreateTimezoneResponseDto> Handle(CreateTimezoneCommand request, CancellationToken cancellationToken)
         {
-            // Check if the timezone already exists
             var existingTimezone = await _repository.GetBySpec(t => t.TimezoneValue == request.Timezone);
             if (existingTimezone != null)
             {
