@@ -34,7 +34,7 @@ namespace Hng.Application.Tests.Features.Timezones.Handlers.Commands
             var createDto = new CreateTimezoneCommand
             {
                 Timezone = "America/New_York",
-                GmtOffset = "-05:00",
+                GmtOffset = "-06:00",
                 Description = "Eastern Standard Time"
             };
             var timezone = new Timezone
