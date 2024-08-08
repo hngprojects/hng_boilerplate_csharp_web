@@ -162,7 +162,7 @@ namespace Hng.Web.Controllers
         [HttpGet("get-user-product")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> GetUserProduct([FromQuery] GetUserProductsQueryParameters parameters)
+        public async Task<ActionResult> GetUserProduct([FromQuery] GetProductsQueryParameters parameters)
         {
             var products = await _mediator.Send(new GetUserProductsQuery(parameters));
             return Ok(new PaginatedResponseDto<PagedListDto<ProductDto>> { Data = products, Metadata = products.MetaData });
