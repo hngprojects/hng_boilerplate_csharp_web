@@ -7,6 +7,8 @@ services:
       context: .
     environment:
       ASPNETCORE_ENVIRONMENT: Staging
+    volumes:
+      - ./src/Hng.Web/appsettings.Staging.json:/appsettings.Staging.json
     depends_on:
       - postgres
       - redis
