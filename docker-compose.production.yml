@@ -9,13 +9,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
-    networks:
-      - network 
 
   redis:
     image: redis:latest
-    networks:
-     - network     
 
   web:
     image: csharp:production
@@ -25,22 +21,16 @@ services:
       - postgres
       - redis
     volumes:
-      - ./src/Hng.Web/appsettings.Staging.json:/app/appsettings.Production.json
-    networks:
-      - network
+      - ./src/Hng.Web/appsettings.Production.json:/app/appsettings.Production.json # This line was changed because production cannot use the staging database
 
-  # nginx:
-  #   image: nginx:latest
-  #   ports:
-  #     - "5020:80"
-  #   depends_on:
-  #     - web
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  nginx:
+    image: nginx:latest
+    ports:
+      - "5020:80"
+    depends_on:
+      - web
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
 
 volumes:
   postgres_data:
-
-networks:
-  network:
-    driver: bridge
