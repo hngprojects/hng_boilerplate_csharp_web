@@ -20,34 +20,34 @@ namespace Hng.Application.Features.Products.Handlers
             _mapper = mapper;
             _authenticationService = authenticationService;
         }
-		public async Task<ProductsDto> Handle(AddProductsCommand request, CancellationToken cancellationToken)
-		{
-			var userId = await _authenticationService.GetCurrentUserAsync();
-			if (userId == Guid.Empty)
-			{
-				throw new ApplicationException("User ID is not available in the claims.");
-			}
+        public async Task<ProductsDto> Handle(AddProductsCommand request, CancellationToken cancellationToken)
+        {
+            var userId = await _authenticationService.GetCurrentUserAsync();
+            if (userId == Guid.Empty)
+            {
+                throw new ApplicationException("User ID is not available in the claims.");
+            }
 
-			var productResponse = new ProductsDto();
-			var products = new List<ProductDto>();
+            var productResponse = new ProductsDto();
+            var products = new List<ProductDto>();
 
-			foreach (var item in request.productBody)
-			{
-				var product = _mapper.Map<Product>(item);
-				product.Id = Guid.NewGuid();
-				product.UserId = userId;
-				product.CreatedAt = DateTime.UtcNow;
-				product.UpdatedAt = DateTime.UtcNow;
-				await _repository.AddAsync(product);
+            foreach (var item in request.productBody)
+            {
+                var product = _mapper.Map<Product>(item);
+                product.Id = Guid.NewGuid();
+                product.UserId = userId;
+                product.CreatedAt = DateTime.UtcNow;
+                product.UpdatedAt = DateTime.UtcNow;
+                await _repository.AddAsync(product);
 
-				products.Add(_mapper.Map<ProductDto>(product));
-			}
-			await _repository.SaveChanges();
+                products.Add(_mapper.Map<ProductDto>(product));
+            }
+            await _repository.SaveChanges();
 
-			productResponse.Products = products;
+            productResponse.Products = products;
 
-			return productResponse;
-		}
+            return productResponse;
+        }
 
-	}
+    }
 }
