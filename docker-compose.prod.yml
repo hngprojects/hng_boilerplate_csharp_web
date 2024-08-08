@@ -1,0 +1,36 @@
+name: csharp_prod
+
+services:
+  backend:
+    image: ${COMPOSE_PROJECT_NAME}
+    build:
+      context: .
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      - postgres
+      - redis
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "5002:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-${COMPOSE_PROJECT_NAME}}
+      POSTGRES_USER: ${POSTGRES_USER:-${COMPOSE_PROJECT_NAME}}
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+
+volumes:
+  postgres_data:
