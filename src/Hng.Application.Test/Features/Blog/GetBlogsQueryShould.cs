@@ -23,8 +23,7 @@ namespace Hng.Application.Test.Features.Blog
 
             var mapperConfig = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Domain.Entities.Blog, BlogDto>()
-                    .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author));
+                cfg.CreateMap<Domain.Entities.Blog, BlogDto>();
                 cfg.CreateMap<User, User>();
             });
 
@@ -38,7 +37,7 @@ namespace Hng.Application.Test.Features.Blog
             // Arrange
             var blogs = new List<Domain.Entities.Blog>
             {
-                new Domain.Entities.Blog
+                new()
                 {
                     Id = Guid.NewGuid(),
                     Title = "Test Blog 1",
@@ -48,7 +47,7 @@ namespace Hng.Application.Test.Features.Blog
                     Author = new User { Id = Guid.NewGuid(), FirstName = "AuthorName1" },
                     Category = BlogCategory.Data
                 },
-                new Domain.Entities.Blog
+                new()
                 {
                     Id = Guid.NewGuid(),
                     Title = "Test Blog 2",
