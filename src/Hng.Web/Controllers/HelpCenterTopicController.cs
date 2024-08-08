@@ -58,7 +58,7 @@ namespace Hng.Web.Controllers
             return StatusCode(result.StatusCode, result);
         }
         [HttpGet("search")]
-        public async Task<IActionResult> SearchTopics([FromQuery] SearchHelpCenterTopicsRequestDto  request)
+        public async Task<IActionResult> SearchTopics([FromQuery] SearchHelpCenterTopicsRequestDto request)
         {
             var query = new SearchHelpCenterTopicsQuery(request);
             var result = await _mediator.Send(query);
