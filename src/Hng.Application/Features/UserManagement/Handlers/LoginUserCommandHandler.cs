@@ -46,7 +46,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
             return new UserLoginResponseDto<object>
             {
-                Data = new { user = userDto, access_token = token },
+                Data = new { user = userDto },
                 AccessToken = token,
                 Message = "Login successful"
             };

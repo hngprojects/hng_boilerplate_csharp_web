@@ -16,7 +16,7 @@ public class User : EntityBase
 
     [Phone(ErrorMessage = "Please enter a valid phone number.")]
     [Required]
-    public string PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = "08027373922";
     public string Password { get; set; }
     public string PasswordSalt { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
