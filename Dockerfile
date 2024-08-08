@@ -14,11 +14,11 @@ RUN dotnet restore Hng.Csharp.Web.sln
 
 # Build
 WORKDIR /src/Hng.Web
-RUN dotnet build Hng.Web.csproj --no-restore -c Release -o /app/build
+RUN dotnet build Hng.Web.csproj -c Release -o /app/build
 
 # Stage 3: Publish Image
 FROM build AS publish
-RUN dotnet publish Hng.Web.csproj --no-build -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish Hng.Web.csproj -c Release -o /app/publish /p:UseAppHost=false
 
 # Stage 4: Final Image
 FROM base AS final
