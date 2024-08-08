@@ -68,4 +68,18 @@ public class BlogController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(BlogDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<BlogDto>> UpdateBlog(Guid id, [FromBody] UpdateBlogDto updateBlogDto)
+    {
+        var command = new UpdateBlogCommand(updateBlogDto, id);
+        var result = await _mediator.Send(command);
+        return Ok(result);
+    }
+
+
+
 }
