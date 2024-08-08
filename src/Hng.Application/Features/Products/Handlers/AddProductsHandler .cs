@@ -3,6 +3,7 @@ using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 
 namespace Hng.Application.Features.Products.Handlers
@@ -11,30 +12,39 @@ namespace Hng.Application.Features.Products.Handlers
     {
         private readonly IRepository<Product> _repository;
         private readonly IMapper _mapper;
+		private readonly IAuthenticationService _authenticationService;
 
-        public AddProductsHandler(IRepository<Product> productReposiotry, IMapper mapper)
-        {
-            _repository = productReposiotry;
-            _mapper = mapper;
-        }
-        public async Task<ProductsDto> Handle(AddProductsCommand request, CancellationToken cancellationToken)
-        {
-            var productResponse = new ProductsDto();
+		public AddProductsHandler(IRepository<Product> productReposiotry, IMapper mapper, IAuthenticationService authenticationService)
+		{
+			_repository = productReposiotry;
+			_mapper = mapper;
+			_authenticationService = authenticationService;
+		}
+		public async Task<ProductsDto> Handle(AddProductsCommand request, CancellationToken cancellationToken)
+		{
+			var userId = await _authenticationService.GetCurrentUserAsync();
+			if (userId == Guid.Empty)
+			{
+				throw new ApplicationException("User ID is not available in the claims.");
+			}
 
-            foreach (var item in request.productBody)
-            {
-                var product = _mapper.Map<Product>(item);
-                product.Id = Guid.NewGuid();
-                product.UserId = Guid.Parse(request.UserId);
-                product.CreatedAt = DateTime.UtcNow;
-                product.UpdatedAt = DateTime.UtcNow;
-                await _repository.AddAsync(product);
+			var productResponse = new ProductsDto();
 
-                productResponse.Products.Add(_mapper.Map<ProductDto>(product));
-            }
-            await _repository.SaveChanges();
+			foreach (var item in request.productBody)
+			{
+				var product = _mapper.Map<Product>(item);
+				product.Id = Guid.NewGuid();
+				product.UserId = userId;
+				product.CreatedAt = DateTime.UtcNow;
+				product.UpdatedAt = DateTime.UtcNow;
+				await _repository.AddAsync(product);
 
-            return productResponse;
-        }
-    }
+				productResponse.Products.Add(_mapper.Map<ProductDto>(product));
+			}
+			await _repository.SaveChanges();
+
+			return productResponse;
+		}
+
+	}
 }

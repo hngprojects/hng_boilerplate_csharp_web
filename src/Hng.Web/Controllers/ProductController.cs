@@ -40,8 +40,7 @@ namespace Hng.Web.Controllers
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
         public async Task<ActionResult<ProductsDto>> AddProducts([FromBody] AddMultipleProductDto body)
         {
-            var loggedInUserId = HttpContext.User.FindFirst(ClaimTypes.Sid).Value;
-            var command = new AddProductsCommand(loggedInUserId, body.Products);
+            var command = new AddProductsCommand(body.Products);
             var response = await _mediator.Send(command);
 
             var successResponse = new SuccessResponseDto<ProductsDto>();
