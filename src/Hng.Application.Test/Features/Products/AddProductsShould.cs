@@ -11,29 +11,29 @@ using Xunit;
 
 namespace Hng.Application.Test.Features.Products
 {
-	public class AddProductsTest
+    public class AddProductsTest
     {
         private readonly IMapper _mapper;
         private readonly Mock<IRepository<Product>> _repositoryMock;
         private readonly AddProductsHandler _handler;
-		private readonly Mock<IAuthenticationService> _authenticationServiceMock;
+        private readonly Mock<IAuthenticationService> _authenticationServiceMock;
 
-		public AddProductsTest()
+        public AddProductsTest()
         {
             var mappingProfile = new ProductMapperProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
             _mapper = new Mapper(configuration);
-			_authenticationServiceMock = new Mock<IAuthenticationService>();
-			_repositoryMock = new Mock<IRepository<Product>>();
+            _authenticationServiceMock = new Mock<IAuthenticationService>();
+            _repositoryMock = new Mock<IRepository<Product>>();
             _handler = new AddProductsHandler(_repositoryMock.Object, _mapper, _authenticationServiceMock.Object);
         }
 
         [Fact]
         public async Task Handle_ShouldReturnAddedListOfProducts()
         {
-			var expectedId  = Guid.NewGuid();
+            var expectedId = Guid.NewGuid();
 
-			var addProductsDto = new List<ProductCreationDto>()
+            var addProductsDto = new List<ProductCreationDto>()
             {
                 new ProductCreationDto
                 {
@@ -53,10 +53,10 @@ namespace Hng.Application.Test.Features.Products
 
             _repositoryMock.Setup(r => r.AddAsync(It.IsAny<Product>()))
                 .ReturnsAsync((Product org) =>
-				{
-					org.Id = expectedId;
-					return org;
-				});
+                {
+                    org.Id = expectedId;
+                    return org;
+                });
 
             var command = new AddProductsCommand(addProductsDto);
 
