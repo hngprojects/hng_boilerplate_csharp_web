@@ -5,6 +5,7 @@ using Hng.Application.Features.Timezones.Mappers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace Hng.Application.Tests.Features.Timezones.Handlers.Commands
@@ -36,7 +37,6 @@ namespace Hng.Application.Tests.Features.Timezones.Handlers.Commands
                 GmtOffset = "-05:00",
                 Description = "Eastern Standard Time"
             };
-
             var timezone = new Timezone
             {
                 Id = expectedId,
@@ -44,13 +44,10 @@ namespace Hng.Application.Tests.Features.Timezones.Handlers.Commands
                 GmtOffset = createDto.GmtOffset,
                 Description = createDto.Description
             };
-
-            _repositoryMock.Setup(r => r.GetBySpec(It.IsAny<System.Linq.Expressions.Expression<Func<Timezone, bool>>>()))
+            _repositoryMock.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<Timezone, bool>>>()))
                 .ReturnsAsync((Timezone)null);
-
             _repositoryMock.Setup(r => r.AddAsync(It.IsAny<Timezone>()))
                 .ReturnsAsync(timezone);
-
             _repositoryMock.Setup(r => r.SaveChanges())
                 .Returns(Task.CompletedTask);
 

@@ -32,6 +32,7 @@ namespace Hng.Application.Features.Timezones.Handlers.Commands
             }
 
             var timezone = _mapper.Map<Timezone>(request);
+            timezone.Id = Guid.NewGuid(); // Set the ID property
             await _repository.AddAsync(timezone);
             await _repository.SaveChanges();
 
