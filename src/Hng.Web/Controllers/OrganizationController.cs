@@ -4,9 +4,7 @@ using Hng.Application.Features.Organisations.Queries;
 using Hng.Application.Features.Roles.Command;
 using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
-using Hng.Domain.Entities;
-using Hng.Infrastructure.Services;
-using Hng.Infrastructure.Services.Interfaces;
+using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +29,15 @@ public class OrganizationController(IMediator mediator) : ControllerBase
             is_successful = false,
             status_code = 404
         }) : Ok(response);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(SuccessResponseDto<List<OrganizationDto>>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<SuccessResponseDto<List<OrganizationDto>>>> GetOrganizations()
+    {
+        var query = new GetAllUsersOrganizationsQuery();
+        var response = await mediator.Send(query);
+        return Ok(response);
     }
 
     [HttpPost]

@@ -45,6 +45,15 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 createdUser.Id = Guid.NewGuid();
                 (createdUser.PasswordSalt, createdUser.Password) = _passwordService.GeneratePasswordSaltAndHash(request.SignUpBody.Password);
 
+                var userOrg = new Organization
+                {
+                    Name = $"{createdUser.FirstName}'s Org",
+                    OwnerId = createdUser.Id,
+                    Email = createdUser.Email,
+                    CreatedAt = DateTime.UtcNow,
+                    Id = Guid.NewGuid()
+                };
+                createdUser.Organizations.Add(userOrg);
                 await _userRepository.AddAsync(createdUser);
                 await _userRepository.SaveChanges();
 
