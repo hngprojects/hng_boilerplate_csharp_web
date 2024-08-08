@@ -5,7 +5,6 @@ using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Mysqlx;
 
 namespace Hng.Web.Controllers;
 

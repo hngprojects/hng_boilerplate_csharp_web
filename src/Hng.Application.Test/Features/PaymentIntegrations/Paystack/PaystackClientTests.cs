@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Requests;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Dtos.Responses;
-using Hng.Application.Features.PaymentIntegrations.Paystack.Services;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Requests;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Responses;
+using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Services;
 using System.Net;
 using Xunit;
 

@@ -133,6 +133,23 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("EmailTemplates");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.Faq", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Answer")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Question")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FAQ");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Job", b =>
                 {
                     b.Property<Guid>("Id")
@@ -238,6 +255,34 @@ namespace Hng.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.NotificationSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("ActivityWorkspaceEmail")
                         .HasColumnType("boolean");
 
@@ -269,7 +314,7 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("NotificationSettings");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
@@ -365,17 +410,38 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("AvatarUrl")
                         .HasColumnType("text");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FacebookLink")
+                        .HasColumnType("text");
+
                     b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("JobTitle")
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");
 
+                    b.Property<string>("LinkedinLink")
+                        .HasColumnType("text");
+
                     b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Pronoun")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TwitterLink")
                         .HasColumnType("text");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -672,6 +738,17 @@ namespace Hng.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Notification", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.NotificationSettings", b =>
                 {
                     b.HasOne("Hng.Domain.Entities.User", "User")
                         .WithMany()
