@@ -18,6 +18,7 @@ namespace Hng.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddTransient<IGoogleAuthService, GoogleAuthService>();
             services.AddScoped<IPasswordService, PasswordService>();
+            services.AddScoped<IOrganizationInviteService, OrganizationInviteService>();
             services.AddScoped<SeederService>();
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
             services.AddScoped<IMessageQueueService, MessageQueueService>();
