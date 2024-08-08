@@ -18,7 +18,7 @@ public class UpdateBlogCommandHandler(
     private readonly IRepository<Blog> _blogRepository = blogRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
 
-    public async  Task<BlogDto> Handle(UpdateBlogCommand request, CancellationToken cancellationToken)
+    public async Task<BlogDto> Handle(UpdateBlogCommand request, CancellationToken cancellationToken)
     {
         var blog = await _blogRepository.GetBySpec(b => b.Id == request.BlogId);
         var loggedInUserId = await _authenticationService.GetCurrentUserAsync();

@@ -16,7 +16,7 @@ public class BlogDto
     public string Content { get; set; }
     [JsonPropertyName("published_date")]
     public DateTime PublishedDate { get; set; }
-    
+
     [JsonPropertyName("updated_date")]
     public DateTime UpdatedDate { get; set; }
 

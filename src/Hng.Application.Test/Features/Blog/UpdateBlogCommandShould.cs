@@ -105,6 +105,6 @@ namespace Hng.Application.Test.Features.Blog
             var command = new UpdateBlogCommand(new UpdateBlogDto(), blogId);
             await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _handler.Handle(command, CancellationToken.None));
         }
-        
+
     }
 }
