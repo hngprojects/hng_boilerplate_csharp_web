@@ -7,6 +7,8 @@ services:
       context: .
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+    volumes:
+      - ./src/Hng.Web/appsettings.Production.json:/appsettings.Production.json
     depends_on:
       - postgres
       - redis
