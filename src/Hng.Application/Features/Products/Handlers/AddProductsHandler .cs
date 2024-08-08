@@ -29,6 +29,7 @@ namespace Hng.Application.Features.Products.Handlers
             }
 
             var productResponse = new ProductsDto();
+            var products = new List<ProductDto>();
 
             foreach (var item in request.productBody)
             {
@@ -39,9 +40,11 @@ namespace Hng.Application.Features.Products.Handlers
                 product.UpdatedAt = DateTime.UtcNow;
                 await _repository.AddAsync(product);
 
-                productResponse.Products.Add(_mapper.Map<ProductDto>(product));
+                products.Add(_mapper.Map<ProductDto>(product));
             }
             await _repository.SaveChanges();
+
+            productResponse.Products = products;
 
             return productResponse;
         }

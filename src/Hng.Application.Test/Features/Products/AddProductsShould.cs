@@ -31,6 +31,7 @@ namespace Hng.Application.Test.Features.Products
         [Fact]
         public async Task Handle_ShouldReturnAddedListOfProducts()
         {
+            var userId = Guid.NewGuid();
             var expectedId = Guid.NewGuid();
 
             var addProductsDto = new List<ProductCreationDto>()
@@ -51,6 +52,7 @@ namespace Hng.Application.Test.Features.Products
                 }
             };
 
+            _authenticationServiceMock.Setup(s => s.GetCurrentUserAsync()).ReturnsAsync(userId);
             _repositoryMock.Setup(r => r.AddAsync(It.IsAny<Product>()))
                 .ReturnsAsync((Product org) =>
                 {
@@ -60,18 +62,19 @@ namespace Hng.Application.Test.Features.Products
 
             var command = new AddProductsCommand(addProductsDto);
 
-            var result = await _handler.Handle(command, default);
+            var result = await _handler.Handle(command, CancellationToken.None);
 
             Assert.NotNull(result);
+            Assert.Equal(addProductsDto[0].Name, result.Products[0].Name);
+            Assert.Equal(addProductsDto[0].Description, result.Products[0].Description);
+            Assert.Equal(addProductsDto[0].Category, result.Products[0].Category);
+            Assert.Equal(addProductsDto[0].Price, result.Products[0].Price);
             Assert.Equal(addProductsDto.Count, result.Products.Count);
             Assert.Equal(addProductsDto[1].Name, result.Products[1].Name);
             Assert.Equal(addProductsDto[1].Description, result.Products[1].Description);
             Assert.Equal(addProductsDto[1].Category, result.Products[1].Category);
             Assert.Equal(addProductsDto[1].Price, result.Products[1].Price);
-            Assert.Equal(addProductsDto[2].Name, result.Products[2].Name);
-            Assert.Equal(addProductsDto[2].Description, result.Products[2].Description);
-            Assert.Equal(addProductsDto[2].Category, result.Products[2].Category);
-            Assert.Equal(addProductsDto[2].Price, result.Products[2].Price);
+
         }
     }
 }
