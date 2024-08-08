@@ -54,10 +54,10 @@ namespace Hng.Application.Test.Features.Products
 
             _authenticationServiceMock.Setup(s => s.GetCurrentUserAsync()).ReturnsAsync(userId);
             _repositoryMock.Setup(r => r.AddAsync(It.IsAny<Product>()))
-                .ReturnsAsync((Product org) =>
+                .ReturnsAsync((Product product) =>
                 {
-                    org.Id = expectedId;
-                    return org;
+                    product.Id = expectedId;
+                    return product;
                 });
 
             var command = new AddProductsCommand(addProductsDto);
