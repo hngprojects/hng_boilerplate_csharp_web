@@ -1,12 +1,31 @@
 name: Dev Deployment
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
 
 jobs:
-  deploy_to_dev:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t csharp .
+
+      - name: Save and compress Docker image
+        run: docker save csharp | gzip > csharp.tar.gz
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v2
+        with:
+          name: csharp
+          path: csharp.tar.gz
+        
+  deploy:
+    needs: build
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
 
@@ -15,16 +34,29 @@ jobs:
       url: ${{ vars.URL }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Download Docker image
+        uses: actions/download-artifact@v2
+        with:
+          name: csharp
+          path: .
 
-    - name: Deploy To Dev Server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
-        script: |
-          cd development/scripts
-          ./dev-deploy.sh
+      - name: Copy image to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          source: csharp.tar.gz
+          target: "/tmp"
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            gunzip -c /tmp/csharp.tar.gz | docker load
+            rm -f /tmp/csharp.tar.gz
+            cd ~/hng_boilerplate_nextjs
+            docker compose -p csharp up -d
