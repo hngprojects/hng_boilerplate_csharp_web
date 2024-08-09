@@ -9,6 +9,11 @@ jobs:
       name: preview
       url: ${{ steps.deploy.outputs.preview-url }}
     runs-on: ubuntu-latest
+    env:
+      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+      SSH_HOST: ${{ secrets.HOST }}
+      SSH_PORT: ${{ secrets.SSH_PORT }}
+      SSH_PASSWORD: ${{ secrets.PASSWORD }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -16,10 +21,10 @@ jobs:
         name: Pull Request Deploy
         uses: hngprojects/pr-deploy@dev
         with:
-          server_host: ${{ secrets.HOST }}
-          server_username: ${{ secrets.USERNAME }}
-          server_password: ${{ secrets.PASSWORD }}
-          server_port: ${{ secrets.PORT }}
+          server_host: ${{ env.HOST }}
+          server_username: ${{ env.USERNAME }}
+          server_password: ${{ env.PASSWORD }}
+          server_port: ${{ secrets.SSH_PORT }}
           comment: true
           context: '.'
           dockerfile: 'Dockerfile'
