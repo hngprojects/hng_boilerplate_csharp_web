@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Hng.Domain.Entities;
 using Hng.Domain.Enums;
 
 namespace Hng.Application.Features.Blogs.Dtos;
