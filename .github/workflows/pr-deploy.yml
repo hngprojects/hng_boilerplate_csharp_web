@@ -3,6 +3,7 @@ on:
   pull_request:
     branches: [dev]
     types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
 
 jobs:
   deploy-pr:
@@ -17,10 +18,10 @@ jobs:
         name: Pull Request Deploy
         uses: hngprojects/pr-deploy@dev
         with:
-          server_host: ${{ secrets.HOST }}
-          server_username: ${{ secrets.USERNAME }}
-          server_password: ${{ secrets.PASSWORD }}
-          server_port: ${{ secrets.PORT }}
+          server_host: ${{ env.HOST }}
+          server_username: ${{ env.USERNAME }}
+          server_password: ${{ env.PASSWORD }}
+          server_port: ${{ env.PORT }}
           comment: true
           context: '.'
           dockerfile: 'Dockerfile'
