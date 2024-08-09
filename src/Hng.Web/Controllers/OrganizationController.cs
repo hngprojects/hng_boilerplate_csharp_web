@@ -13,7 +13,7 @@ namespace Hng.Web.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/v1/organizations")]
+[Route("api/v1/organisations")]
 public class OrganizationController(IMediator mediator) : ControllerBase
 {
 
