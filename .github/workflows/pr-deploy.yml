@@ -26,7 +26,7 @@ jobs:
           exposed_port: '8000'
           host_volume_path: '/var/'
           container_volume_path: '/var/'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.TOKEN }}
       - name: Print Preview Url
         run: |
           echo "Preview Url: ${{ steps.deploy.outputs.preview-url }}" 
