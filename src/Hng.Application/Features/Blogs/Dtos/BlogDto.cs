@@ -17,6 +17,9 @@ public class BlogDto
     [JsonPropertyName("published_date")]
     public DateTime PublishedDate { get; set; }
 
+    [JsonPropertyName("updated_date")]
+    public DateTime UpdatedDate { get; set; }
+
     [JsonPropertyName("author_id")]
     public Guid AuthorId { get; set; }
 
