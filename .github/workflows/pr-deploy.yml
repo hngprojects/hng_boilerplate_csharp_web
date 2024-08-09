@@ -25,8 +25,8 @@ jobs:
           context: '.'
           dockerfile: 'Dockerfile'
           exposed_port: '8000'
-          host_volume_path: '/var/'
-          container_volume_path: '/var/'
+          #host_volume_path: '/var/'
+          #container_volume_path: '/var/'
           github_token: ${{ secrets.TOKEN }}
       - name: Print Preview Url
         run: |
