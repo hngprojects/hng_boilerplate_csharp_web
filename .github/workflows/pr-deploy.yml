@@ -1,21 +1,24 @@
 name: Validate PR
 on:
   pull_request:
+    branches: [dev]
     types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
 
 jobs:
   deploy-pr:
     environment: 
-      name: preview
-      url: ${{ steps.deploy.outputs.preview-url }}
+      name: development
+      # url: ${{ steps.deploy.outputs.preview-url }}
     runs-on: ubuntu-latest
     env:
       SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
       SSH_HOST: ${{ secrets.HOST }}
       SSH_PORT: ${{ secrets.SSH_PORT }}
       SSH_PASSWORD: ${{ secrets.PASSWORD }}
+
     steps:
-      - name: Checkout repo
+      - name: Checkout to branch
         uses: actions/checkout@v4
       - id: deploy
         name: Pull Request Deploy
