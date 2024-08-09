@@ -36,8 +36,6 @@
   <ItemGroup>
   <Folder Include="Features\Jobs\Queries\" />
    <Folder Include="Features\SuperAdmin\Commands\" />
-   <Folder Include="Features\Timezones\Handlers\Queries\" />
-   <Folder Include="Features\Timezones\Queries\" />
   <Folder Include="Features\UserManagement\Commands\" />
   </ItemGroup>
 

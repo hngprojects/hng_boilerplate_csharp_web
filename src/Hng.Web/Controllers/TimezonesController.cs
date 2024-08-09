@@ -1,5 +1,7 @@
 ﻿using Hng.Application.Features.Timezones.Commands;
 using Hng.Application.Features.Timezones.Dtos;
+using Hng.Application.Features.Timezones.Queries;
+using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +11,11 @@ namespace Hng.Web.Controllers
     [Authorize]
     [ApiController]
     [Route("api/v1/timezones")]
-    public class TimezoneController : ControllerBase
+    public class TimezonesController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public TimezoneController(IMediator mediator)
+        public TimezonesController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -44,6 +46,19 @@ namespace Hng.Web.Controllers
         {
             command.Id = id;
             return Ok(await _mediator.Send(command));
+        }
+
+        /// <summary>
+        /// Get all supported timezones with pagination.
+        /// </summary>
+        /// <param name="query">The query parameters for pagination.</param>
+        /// <returns>A paginated list of timezones.</returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(PaginatedResponseDto<List<TimezoneDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllTimezones([FromQuery] GetAllTimezonesQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
     }
 }
