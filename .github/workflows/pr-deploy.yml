@@ -10,10 +10,10 @@ jobs:
       url: ${{ steps.deploy.outputs.preview-url }}
     runs-on: ubuntu-latest
     env:
-      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-      SSH_HOST: ${{ secrets.HOST }}
-      SSH_PORT: ${{ secrets.SSH_PORT }}
-      SSH_PASSWORD: ${{ secrets.PASSWORD }}
+      SSH_USERNAME: ${{ env.SSH_USERNAME }}
+      SSH_HOST: ${{ env.HOST }}
+      SSH_PORT: ${{ senv.SSH_PORT }}
+      SSH_PASSWORD: ${{ env.PASSWORD }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
