@@ -11,6 +11,12 @@ jobs:
       name: preview
       #url: ${{ steps.deploy.outputs.preview-url }}
     runs-on: ubuntu-latest
+    env:
+      SSH_USERNAME: ${{ secrets.USERNAME }}
+      SSH_HOST: ${{ secrets.HOST }}
+      SSH_PORT: ${{ secrets.PORT }}
+      SSH_PASSWORD: ${{ secrets.PASSWORD }}
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
