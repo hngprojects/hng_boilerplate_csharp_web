@@ -9,7 +9,7 @@ namespace Hng.Application.Features.HelpCenter.Dtos
 {
     public class HelpCenterResponseDto<T>
     {
-        [JsonPropertyName("statuscode")]
+        [JsonPropertyName("status_code")]
         public int StatusCode { get; set; }
         [JsonPropertyName("message")]
         public string Message { get; set; }
