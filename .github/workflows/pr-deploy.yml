@@ -6,7 +6,7 @@ on:
 jobs:
   deploy-pr:
     environment: 
-      name: preview
+      name: dev
       url: ${{ steps.deploy.outputs.preview-url }}
     runs-on: ubuntu-latest
     env:
