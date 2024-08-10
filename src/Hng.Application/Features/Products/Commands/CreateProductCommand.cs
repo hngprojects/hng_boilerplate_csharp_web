@@ -1,22 +1,18 @@
 ﻿using Hng.Application.Features.Products.Dtos;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Products.Commands
 {
-    public class CreateProductCommand : IRequest<ProductDto>
+    public class CreateProductCommand : IRequest<CreateProductResponseDto>
     {
-        public CreateProductCommand(string userId, ProductCreationDto productCreation)
-        {
-            UserId = userId;
-            productBody = productCreation;
-        }
+        public Guid OrgId { get; set; }
+        public ProductCreationDto ProductDto { get; set; }
 
-        public string UserId { get; }
-        public ProductCreationDto productBody { get; }
+        public CreateProductCommand(Guid orgId, ProductCreationDto productDto)
+        {
+            OrgId = orgId;
+            ProductDto = productDto;
+        }
     }
 }
+
