@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Queries;
@@ -7,10 +6,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace Hng.Web.Controllers
 {
     [ApiController]
-    [Route("api/v1/products")]
+    [Route("api/v1")]
     public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,19 +20,33 @@ namespace Hng.Web.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Product - Creates a new product
+        /// </summary>
+        [HttpPost("organisations/{orgId}/products")]
         [Authorize]
-        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
-        public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductCreationDto body)
+        [ProducesResponseType(typeof(SuccessResponseDto<CreateProductResponseDto>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> CreateProduct(Guid orgId, [FromBody] ProductCreationDto createProductDto)
         {
-            var loggedInUserId = HttpContext.User.FindFirst(ClaimTypes.Sid).Value;
-            var command = new CreateProductCommand(loggedInUserId, body);
-            var response = await _mediator.Send(command);
-
-            var successResponse = new SuccessResponseDto<ProductDto>();
-            successResponse.Data = response;
-            successResponse.Message = "Product Successfully";
-            return Ok(successResponse);
+            try
+            {
+                var command = new CreateProductCommand(orgId, createProductDto);
+                var response = await _mediator.Send(command);
+                return response != null
+                    ? CreatedAtAction(nameof(CreateProduct), new SuccessResponseDto<CreateProductResponseDto> { Message = "Product created successfully", Data = response })
+                    : NotFound(new FailureResponseDto<object> { Error = "Not Found", Message = $"Organization with ID {orgId} not found.", Data = false });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new FailureResponseDto<object>
+                {
+                    Error = "Bad Request",
+                    Message = ex.Message,
+                    Data = false
+                });
+            }
         }
 
         [HttpPost("add-products")]
