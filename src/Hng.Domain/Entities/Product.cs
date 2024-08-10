@@ -8,7 +8,13 @@ public class Product : EntityBase
     public bool Available { get; set; }
     public Guid UserId { get; set; }
     public User User { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public string Status { get; set; } = "In Stock";
+    public string ImageUrl { get; set; }
+    public string Size { get; set; }
+    public int Quantity { get; set; }
+    public Guid OrganizationId { get; set; }
+    public Organization Organization { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }
