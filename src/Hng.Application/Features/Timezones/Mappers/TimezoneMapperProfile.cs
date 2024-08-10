@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Hng.Application.Features.Timezones.Commands;
+﻿using Hng.Application.Features.Timezones.Commands;
 using Hng.Application.Features.Timezones.Dtos;
 using Hng.Domain.Entities;
 
@@ -15,6 +14,11 @@ namespace Hng.Application.Features.Timezones.Mappers
 
             CreateMap<CreateTimezoneCommand, Timezone>()
                 .ForMember(dest => dest.TimezoneValue, opt => opt.MapFrom(src => src.Timezone));
+
+            CreateMap<UpdateTimezoneCommand, Timezone>()
+                 .ForMember(dest => dest.TimezoneValue, opt => opt.MapFrom(src => src.Timezone));
+
+            CreateMap<UpdateTimezoneDto, UpdateTimezoneCommand>();
         }
     }
 }

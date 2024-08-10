@@ -4,8 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.Timezones.Commands
 {
-    public class CreateTimezoneCommand : IRequest<TimezoneResponseDto>
+    public class UpdateTimezoneCommand : IRequest<TimezoneResponseDto>
     {
+        public Guid Id { get; set; }
         [JsonPropertyName("timezone")]
         public string Timezone { get; set; }
 

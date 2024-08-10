@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Hng.Application.Features.Timezones.Handlers.Commands
 {
-    public class CreateTimezoneCommandHandler : IRequestHandler<CreateTimezoneCommand, CreateTimezoneResponseDto>
+    public class CreateTimezoneCommandHandler : IRequestHandler<CreateTimezoneCommand, TimezoneResponseDto>
     {
         private readonly IRepository<Timezone> _repository;
         private readonly IMapper _mapper;
@@ -18,15 +18,14 @@ namespace Hng.Application.Features.Timezones.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<CreateTimezoneResponseDto> Handle(CreateTimezoneCommand request, CancellationToken cancellationToken)
+        public async Task<TimezoneResponseDto> Handle(CreateTimezoneCommand request, CancellationToken cancellationToken)
         {
             var existingTimezone = await _repository.GetBySpec(t => t.TimezoneValue == request.Timezone);
             if (existingTimezone != null)
             {
-                return new CreateTimezoneResponseDto
+                return new TimezoneResponseDto
                 {
                     StatusCode = 409,
-                    Error = $"Timezone '{request.Timezone}' already exists.",
                     Message = "Timezone already exists"
                 };
             }
@@ -37,7 +36,7 @@ namespace Hng.Application.Features.Timezones.Handlers.Commands
             await _repository.SaveChanges();
 
             var responseDto = _mapper.Map<TimezoneDto>(timezone);
-            return new CreateTimezoneResponseDto
+            return new TimezoneResponseDto
             {
                 Timezone = responseDto,
                 StatusCode = 201,
