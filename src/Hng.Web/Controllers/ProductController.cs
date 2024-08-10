@@ -23,7 +23,7 @@ namespace Hng.Web.Controllers
         /// <summary>
         /// Product - Creates a new product
         /// </summary>
-        [HttpPost("organisations/{orgId}/products")]
+        [HttpPost("organisations/{orgId:guid}/products")]
         [Authorize]
         [ProducesResponseType(typeof(SuccessResponseDto<CreateProductResponseDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
@@ -49,7 +49,7 @@ namespace Hng.Web.Controllers
             }
         }
 
-        [HttpPost("add-products")]
+        [HttpPost("products/add-products")]
         [Authorize]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
         public async Task<ActionResult<ProductsDto>> AddProducts([FromBody] AddMultipleProductDto body)
@@ -63,7 +63,7 @@ namespace Hng.Web.Controllers
             return Ok(successResponse);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("products/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -87,7 +87,7 @@ namespace Hng.Web.Controllers
         /// <summary>
         /// Product Deletion - deletes a product owned by a specific user
         /// </summary>
-        [HttpDelete("{id}")]
+        [HttpDelete("products/{id}")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteProductById(Guid id)
@@ -104,7 +104,7 @@ namespace Hng.Web.Controllers
         /// <summary>
         /// Product Categories - gets all categories for products
         /// </summary>
-        [HttpGet("categories")]
+        [HttpGet("products/categories")]
         [Authorize]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GeProductCategories()
@@ -123,7 +123,7 @@ namespace Hng.Web.Controllers
         /// <param name="id"></param>
         /// <param name="updateProductDto"></param>
         /// <returns></returns>
-        [HttpPut("{id:guid}")]
+        [HttpPut("products/{id:guid}")]
         [Authorize]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -145,7 +145,7 @@ namespace Hng.Web.Controllers
         /// Get all product endpoint
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("products")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> GetProducts([FromQuery] GetProductsQueryParameters parameters)
@@ -156,7 +156,7 @@ namespace Hng.Web.Controllers
         /// <summary>
         /// Product - Search products by name
         /// </summary>
-        [HttpGet("search")]
+        [HttpGet("products/search")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -173,7 +173,7 @@ namespace Hng.Web.Controllers
         /// Get all product endpoint with no search
         /// </summary>
         /// <returns></returns>
-        [HttpGet("get-user-product")]
+        [HttpGet("products/get-user-product")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> GetUserProduct([FromQuery] GetProductsQueryParameters parameters)
