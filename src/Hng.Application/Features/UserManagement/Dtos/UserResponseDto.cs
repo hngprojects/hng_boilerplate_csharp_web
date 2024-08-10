@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Hng.Application.Features.Organisations.Dtos;
+using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.UserManagement.Dtos
 {
@@ -18,5 +19,8 @@ namespace Hng.Application.Features.UserManagement.Dtos
 
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
+
+        [JsonPropertyName("organisation")]
+        public List<OrganizationDto> Organization { get; set; }
     }
 }

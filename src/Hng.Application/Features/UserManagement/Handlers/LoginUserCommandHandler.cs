@@ -42,11 +42,11 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
             var token = _tokenService.GenerateJwt(user);
 
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = _mapper.Map<UserResponseDto>(user);
 
             return new UserLoginResponseDto<object>
             {
-                Data = new { user = userDto },
+                Data = userDto,
                 AccessToken = token,
                 Message = "Login successful"
             };
