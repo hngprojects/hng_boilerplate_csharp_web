@@ -45,8 +45,5 @@ namespace Hng.Infrastructure.Context
         public DbSet<Faq> FAQ { get; set; }
         public DbSet<Timezone> Timezones { get; set; }
         public DbSet<HelpCenterTopic> HelpCenterTopic { get; set; }
-
-
->>>>>>>>> Temporary merge branch 2
     }
 }
