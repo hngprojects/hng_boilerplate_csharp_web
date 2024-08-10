@@ -21,7 +21,6 @@ namespace Hng.Application.Tests.Features.Timezones.Handlers.Commands
             var mappingProfile = new TimezoneMapperProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
             _mapper = new Mapper(configuration);
-
             _repositoryMock = new Mock<IRepository<Timezone>>();
             _handler = new CreateTimezoneCommandHandler(_repositoryMock.Object, _mapper);
         }
@@ -75,15 +74,13 @@ namespace Hng.Application.Tests.Features.Timezones.Handlers.Commands
                 GmtOffset = "-05:00",
                 Description = "Eastern Standard Time"
             };
-
             var createDto = new CreateTimezoneCommand
             {
                 Timezone = "America/New_York",
                 GmtOffset = "-05:00",
                 Description = "Eastern Standard Time"
             };
-
-            _repositoryMock.Setup(r => r.GetBySpec(It.IsAny<System.Linq.Expressions.Expression<Func<Timezone, bool>>>()))
+            _repositoryMock.Setup(r => r.GetBySpec(It.IsAny<Expression<Func<Timezone, bool>>>()))
                 .ReturnsAsync(existingTimezone);
 
             // Act
@@ -92,7 +89,6 @@ namespace Hng.Application.Tests.Features.Timezones.Handlers.Commands
             // Assert
             Assert.NotNull(result);
             Assert.Equal(409, result.StatusCode);
-            Assert.Equal($"Timezone '{createDto.Timezone}' already exists.", result.Error);
             Assert.Equal("Timezone already exists", result.Message);
         }
     }

@@ -1,10 +1,8 @@
-﻿using Hng.Application.Features.Timezones.Dtos;
-using MediatR;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace Hng.Application.Features.Timezones.Commands
+namespace Hng.Application.Features.Timezones.Dtos
 {
-    public class CreateTimezoneCommand : IRequest<TimezoneResponseDto>
+    public class UpdateTimezoneDto
     {
         [JsonPropertyName("timezone")]
         public string Timezone { get; set; }
