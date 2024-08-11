@@ -24,7 +24,6 @@ namespace Hng.Application.Features.UserManagement.Mappers
 
 
             CreateMap<User, UserResponseDto>()
-                .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => src.Organizations))
                 .ReverseMap();
         }
     }
