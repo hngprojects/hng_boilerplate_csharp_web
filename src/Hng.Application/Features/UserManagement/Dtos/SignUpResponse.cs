@@ -7,12 +7,17 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonPropertyName("message")]
         public string Message { get; set; }
         public SignupResponseData Data { get; set; }
+        [JsonPropertyName("access_token")]
+        public string Token { get; set; }
+        [JsonPropertyName("status_code")]
+        public int StatusCode { get; set; }
     }
 
     public class SignupResponseData
     {
-        [JsonPropertyName("access_token")]
-        public string Token { get; set; }
+        [JsonPropertyName("user")]
         public UserResponseDto User { get; set; }
+        [JsonPropertyName("organisations")]
+        public List<OrganisationDto> Organization { get; set; } = [];
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Hng.Application.Features.Organisations.Dtos;
+using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.UserManagement.Dtos
 {
@@ -13,10 +14,14 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonPropertyName("last_name")]
         public string LastName { get; set; }
 
+        [JsonPropertyName("avatar_url")]
+        public string AvatarUrl { get; set; }
         [JsonPropertyName("email")]
         public string Email { get; set; }
 
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
+        [JsonPropertyName("is_superadmin")]
+        public bool IsSuperAdmin { get; set; }
     }
 }

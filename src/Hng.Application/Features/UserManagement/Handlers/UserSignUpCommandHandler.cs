@@ -5,6 +5,7 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Hng.Application.Features.UserManagement.Handlers
@@ -12,15 +13,17 @@ namespace Hng.Application.Features.UserManagement.Handlers
     public class UserSignUpCommandHandler : IRequestHandler<UserSignUpCommand, SignUpResponse>
     {
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Role> _roleRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<UserSignUpCommandHandler> _logger;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
 
 
-        public UserSignUpCommandHandler(IRepository<User> userRepository, IMapper mapper, ILogger<UserSignUpCommandHandler> logger, IPasswordService passwordService, ITokenService tokenService)
+        public UserSignUpCommandHandler(IRepository<User> userRepository, IRepository<Role> roleRepository, IMapper mapper, ILogger<UserSignUpCommandHandler> logger, IPasswordService passwordService, ITokenService tokenService)
         {
             _userRepository = userRepository;
+            _roleRepository = roleRepository;
             _mapper = mapper;
             _logger = logger;
             _passwordService = passwordService;
@@ -38,6 +41,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     return new SignUpResponse
                     {
                         Message = "Email already exists",
+
                     };
                 }
 
@@ -54,19 +58,32 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     Id = Guid.NewGuid()
                 };
                 createdUser.Organizations.Add(userOrg);
+                var role = new Role
+                {
+                    Id = Guid.NewGuid(),
+                    OrganizationId = userOrg.Id,
+                    Name = "Admin",
+                    IsActive = true,
+                };
+                role.UsersRoles.Add(new UserRole
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = createdUser.Id,
+                    OrganizationId = userOrg.Id
+                });
                 await _userRepository.AddAsync(createdUser);
+                await _roleRepository.AddAsync(role);
                 await _userRepository.SaveChanges();
 
                 var token = _tokenService.GenerateJwt(createdUser);
+                SignupResponseData signUpResponseData = GetUserDetails(createdUser);
 
                 return new SignUpResponse
                 {
                     Message = "User registered successfully",
-                    Data = new SignupResponseData
-                    {
-                        Token = token,
-                        User = _mapper.Map<UserResponseDto>(createdUser),
-                    }
+                    Data = signUpResponseData,
+                    Token = token,
+                    StatusCode = StatusCodes.Status201Created
                 };
             }
             catch (Exception ex)
@@ -77,6 +94,20 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     Message = "An error occurred while processing your request",
                 };
             }
+        }
+
+        private SignupResponseData GetUserDetails(User createdUser)
+        {
+            var user = _mapper.Map<UserResponseDto>(createdUser);
+            var orgs = createdUser.Organizations.Select(o => new OrganisationDto
+            {
+                Id = o.Id,
+                Name = o.Name,
+                Role = o.UsersRoles.Where(x => x.User == createdUser && x.Orgainzation == o).FirstOrDefault()?.Role.Name,
+                IsOwner = o.OwnerId == createdUser.Id,
+            }).ToList();
+            var signUpResponseData = new SignupResponseData { User = user, Organization = orgs };
+            return signUpResponseData;
         }
     }
 }
