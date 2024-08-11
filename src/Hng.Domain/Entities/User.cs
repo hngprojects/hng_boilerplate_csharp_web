@@ -22,6 +22,7 @@ public class User : EntityBase
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public Profile Profile { get; set; }
+    public bool IsSuperAdmin { get; set; }
     public ICollection<Organization> Organizations { get; set; } = new List<Organization>();
     public ICollection<Product> Products { get; set; } = new List<Product>();
     public ICollection<Transaction> Transactions { get; set; } = [];
