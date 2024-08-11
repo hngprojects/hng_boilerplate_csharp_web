@@ -20,6 +20,7 @@ namespace Hng.Application.Test.Features.UserManagement
     public class GoogleLoginCommandHandlerTests
     {
         private readonly Mock<IRepository<User>> _userRepoMock;
+        private readonly Mock<IRepository<Role>> _roleRepoMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<IGoogleAuthService> _googleAuthServiceMock;
@@ -33,6 +34,7 @@ namespace Hng.Application.Test.Features.UserManagement
             _googleAuthServiceMock = new Mock<IGoogleAuthService>();
             _handler = new GoogleLoginCommandHandler(
                 _userRepoMock.Object,
+                _roleRepoMock.Object,
                 _tokenServiceMock.Object,
                 _mapperMock.Object,
                 _googleAuthServiceMock.Object);

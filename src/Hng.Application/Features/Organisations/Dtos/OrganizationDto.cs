@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Domain.Entities;
 
 namespace Hng.Application.Features.Organisations.Dtos;
 
@@ -46,4 +47,5 @@ public class OrganizationDto
     [JsonIgnore]
     [JsonPropertyName("users")]
     public ICollection<UserDto> Users { get; set; }
+    public ICollection<UserRole> UsersRoles { get; set; } = [];
 }

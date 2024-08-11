@@ -14,13 +14,14 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonPropertyName("last_name")]
         public string LastName { get; set; }
 
+        [JsonPropertyName("avatar_url")]
+        public string AvatarUrl { get; set; }
         [JsonPropertyName("email")]
         public string Email { get; set; }
 
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
-
-        [JsonPropertyName("organisation")]
-        public List<OrganizationDto> Organization { get; set; }
+        [JsonPropertyName("is_superadmin")]
+        public bool IsSuperAdmin { get; set; }
     }
 }
