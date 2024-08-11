@@ -29,6 +29,7 @@ namespace Hng.Application.Test.Features.UserManagement
         public GoogleLoginCommandHandlerTests()
         {
             _userRepoMock = new Mock<IRepository<User>>();
+            _roleRepoMock = new Mock<IRepository<Role>>();
             _tokenServiceMock = new Mock<ITokenService>();
             _mapperMock = new Mock<IMapper>();
             _googleAuthServiceMock = new Mock<IGoogleAuthService>();
