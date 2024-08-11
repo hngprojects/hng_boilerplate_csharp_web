@@ -25,7 +25,7 @@ namespace Hng.Application.Features.Products.Dtos
         public string Status { get; set; }
 
         [JsonPropertyName("quantity")]
-        public string Quantity { get; set; }
+        public int Quantity { get; set; }
 
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }

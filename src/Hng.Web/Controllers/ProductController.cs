@@ -49,6 +49,37 @@ namespace Hng.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Product - Search for products
+        /// </summary>
+        [HttpGet("organisations/{orgId:guid}/products")]
+        [Authorize]
+        [ProducesResponseType(typeof(SuccessResponseDto<IEnumerable<ProductResponseDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetAllProducts(Guid orgId)
+        {
+            try
+            {
+                var query = new GetAllProductsQuery(orgId);
+                var response = await _mediator.Send(query);
+                return Ok(new SuccessResponseDto<IEnumerable<ProductResponseDto>>
+                {
+                    Message = "Products retrieved successfully",
+                    Data = response
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new FailureResponseDto<object>
+                {
+                    Error = "Bad Request",
+                    Message = ex.Message,
+                    Data = false
+                });
+            }
+        }
+
         [HttpPost("products/add-products")]
         [Authorize]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
