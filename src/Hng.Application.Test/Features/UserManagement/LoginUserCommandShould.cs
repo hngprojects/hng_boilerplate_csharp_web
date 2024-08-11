@@ -29,7 +29,7 @@ namespace Hng.Application.Test.Features.UserManagement
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<User, UserDto>();
-                cfg.CreateMap<User,UserResponseDto>();
+                cfg.CreateMap<User, UserResponseDto>();
             });
             _mapper = config.CreateMapper();
 
