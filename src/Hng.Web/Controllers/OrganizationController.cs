@@ -114,7 +114,7 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         return StatusCode(response.StatusCode, response);
     }
 
-     /// <summary>
+    /// <summary>
     /// Create an invite link to join an organisation
     /// </summary>
     [HttpPost("{id}/invite")]
