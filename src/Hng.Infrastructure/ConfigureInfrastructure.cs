@@ -25,6 +25,7 @@ namespace Hng.Infrastructure
             services.AddHostedService<MessageQueueHandlerService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IFacebookAuthService, FacebookAuthService>();
+            services.AddScoped<IOrganisationInviteService, OrganisationInviteService>();
             return services;
         }
     }
