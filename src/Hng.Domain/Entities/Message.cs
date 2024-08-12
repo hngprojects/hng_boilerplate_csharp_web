@@ -1,12 +1,19 @@
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using System.Text;
 using Hng.Domain.Enums;
 
 namespace Hng.Domain.Entities;
 
 public class Message : EntityBase
 {
+    private Message(MessageType type, string recipientContact, string recipientName, string subject, string content)
+    {
+        Type = type;
+        RecipientName = recipientName;
+        RecipientContact = recipientContact;
+        Subject = subject;
+        Content = content;
+    }
+
     [Required]
     public MessageType Type { get; set; }
 
@@ -32,4 +39,9 @@ public class Message : EntityBase
     public DateTimeOffset CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTimeOffset? LastAttemptedAt { get; set; } = null;
+
+    public static Message CreateEmail(string recipientContact, string subject, string content, string recipientName = "You")
+    {
+        return new Message(MessageType.Email, recipientContact, recipientName, subject, content);
+    }
 }
