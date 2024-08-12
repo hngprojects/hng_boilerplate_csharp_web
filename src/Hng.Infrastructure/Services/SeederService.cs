@@ -214,7 +214,8 @@ public class SeederService
        .RuleFor(p => p.Price, f => f.Finance.Amount())
        .RuleFor(p => p.Category, f => f.Commerce.Categories(1).First())
        .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
-       .RuleFor(p => p.UserId, _entityIds[userKey]).Generate();
+       .RuleFor(p => p.UserId, _entityIds[userKey])
+       .RuleFor(product => product.Organization, CreateOrganisation()).Generate();
         return product;
     }
 
