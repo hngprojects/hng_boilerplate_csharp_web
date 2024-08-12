@@ -42,19 +42,8 @@ public class OrganisationInviteService(IRepository<Organization> organizationRep
 
     private static string GenerateUniqueInviteLink(string email)
     {
-        var now = DateTime.UtcNow;
+        return Guid.NewGuid().ToString();
 
-        string input = $"{email}_{now:yyyy-MM-dd-HH-mm-ss}";
-        byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
-
-        string base64Hash = Convert.ToBase64String(bytes)
-            .Replace("+", "")
-            .Replace("/", "")
-            .Replace("=", "");
-
-        string inviteLink = base64Hash[..16];
-
-        return inviteLink;
     }
 
     private async Task<bool> DoesInviteExist(string email, Guid orgId)
