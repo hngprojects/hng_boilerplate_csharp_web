@@ -36,18 +36,6 @@ namespace Hng.Application.Features.Profiles.Handlers
             if (user == null)
                 return Result.Failure<UpdateProfileResponseDto>("User with Email does not Exist!");
 
-            if (request.DisplayPhoto != null)
-            {
-                if (!string.IsNullOrWhiteSpace(user.Profile?.AvatarUrl))
-                    await _imageService.DeleteImageAsync(user.Profile?.AvatarUrl);
-
-                request.AvatarUrl = await _imageService.UploadImageAsync(request.DisplayPhoto);
-            }
-
-            if (request.DisplayPhoto == null && string.IsNullOrWhiteSpace(request.AvatarUrl))
-                if (!string.IsNullOrWhiteSpace(user.Profile?.AvatarUrl))
-                    await _imageService.DeleteImageAsync(user.Profile?.AvatarUrl);
-
             if (user.Profile == null)
             {
                 user.Profile = BuildProfile(request, user.Id);
@@ -89,7 +77,6 @@ namespace Hng.Application.Features.Profiles.Handlers
         {
             user.Profile.FirstName = !string.IsNullOrWhiteSpace(request.FirstName) ? request.FirstName : "";
             user.Profile.LastName = !string.IsNullOrWhiteSpace(request.LastName) ? request.LastName : "";
-            user.Profile.AvatarUrl = !string.IsNullOrWhiteSpace(request.AvatarUrl) ? request.AvatarUrl : "";
             user.Profile.Bio = !string.IsNullOrWhiteSpace(request.Bio) ? request.Bio : "";
             user.Profile.FacebookLink = !string.IsNullOrWhiteSpace(request.FacebookLink) ? request.FacebookLink : "";
             user.Profile.JobTitle = !string.IsNullOrWhiteSpace(request.JobTitle) ? request.JobTitle : "";
@@ -108,7 +95,6 @@ namespace Hng.Application.Features.Profiles.Handlers
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                AvatarUrl = request.AvatarUrl,
                 Bio = request.Bio,
                 FacebookLink = request.FacebookLink,
                 JobTitle = request.JobTitle,

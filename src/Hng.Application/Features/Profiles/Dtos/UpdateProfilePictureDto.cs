@@ -7,10 +7,10 @@ namespace Hng.Application.Features.Profiles.Dtos
 {
     public record UpdateProfilePictureDto : IRequest<Result<UpdateProfilePictureResponseDto>>
     {
-        public Guid UserId { get; set; }
+        [JsonPropertyName("email")]
+        public string Email { get; set; }
 
-        public string AvatarUrl { get; set; }
-
+        [JsonPropertyName("display_photo")]
         public IFormFile DisplayPhoto { get; set; }
     }
 

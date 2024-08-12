@@ -40,8 +40,6 @@ namespace Hng.Application.Test.Features.Profile
             var userProfile = user.Profile;
             var request = new UpdateProfilePictureDto()
             {
-                AvatarUrl = "https://res.cloudinary.com/kenelight4u/image/upload/v1723026364/HNG Bioler Plate/bmdqybm8pb2hu4dr8es7.jpg",
-                UserId = userid,
             };
 
             _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))

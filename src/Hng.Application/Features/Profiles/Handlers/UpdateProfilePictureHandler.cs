@@ -23,7 +23,7 @@ namespace Hng.Application.Features.Profiles.Handlers
 
         public async Task<Result<UpdateProfilePictureResponseDto>> Handle(UpdateProfilePictureDto request, CancellationToken cancellationToken)
         {
-            var user = await _userRepo.GetBySpec(u => u.Id == request.UserId, u => u.Profile);
+            var user = await _userRepo.GetBySpec(u => u.Email == request.Email, u => u.Profile);
 
             if (user == null)
                 return Result.Failure<UpdateProfilePictureResponseDto>("User with Email does not Exist!");
@@ -34,22 +34,20 @@ namespace Hng.Application.Features.Profiles.Handlers
             if (request.DisplayPhoto != null)
             {
                 if (request.DisplayPhoto.Length != 0 &&
-                    (request.DisplayPhoto.ContentType == "image/jpeg" || request.DisplayPhoto.ContentType == "image/png"))
+                    request.DisplayPhoto.ContentType != "image/jpeg" && request.DisplayPhoto.ContentType != "image/png")
                     return Result.Failure<UpdateProfilePictureResponseDto>("Logo can only be jpeg or png format");
 
-                request.AvatarUrl = await _imageService.UploadImageAsync(request.DisplayPhoto);
+                var avatarUrl = await _imageService.UploadImageAsync(request.DisplayPhoto);
 
                 if (!string.IsNullOrWhiteSpace(user.Profile?.AvatarUrl))
                     await _imageService.DeleteImageAsync(user.Profile?.AvatarUrl);
+
+                user.Profile.AvatarUrl = avatarUrl;
+                user.AvatarUrl = avatarUrl;
+
+                await _userRepo.UpdateAsync(user);
             }
 
-            if (request.DisplayPhoto == null && string.IsNullOrWhiteSpace(request.AvatarUrl))
-                if (!string.IsNullOrWhiteSpace(user.Profile?.AvatarUrl))
-                    await _imageService.DeleteImageAsync(user.Profile?.AvatarUrl);
-
-            user.Profile.AvatarUrl = request.AvatarUrl;
-
-            await _userRepo.UpdateAsync(user);
             await _userRepo.SaveChanges();
 
             return Result.Success(new UpdateProfilePictureResponseDto()
@@ -58,7 +56,7 @@ namespace Hng.Application.Features.Profiles.Handlers
                 StatusCode = StatusCodes.Status200OK,
                 Data = new UpdateProfilePictureResponse()
                 {
-                    AvatarUrl = request.AvatarUrl
+                    AvatarUrl = user.Profile.AvatarUrl
                 }
             });
         }
