@@ -2,10 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.Profiles.Dtos
 {
-    public record UpdateProfileDto : IRequest<Result<ProfileDto>>
+    public record UpdateProfileDto : IRequest<Result<UpdateProfileResponseDto>>
     {
         public string FirstName { get; set; }
 
@@ -33,5 +34,16 @@ namespace Hng.Application.Features.Profiles.Dtos
         public string LinkedinLink { get; set; }
 
         public IFormFile DisplayPhoto { get; set; }
+    }
+
+    public record UpdateProfileResponseDto
+    {
+        [JsonPropertyName("message")]
+        public string Message { get; set; }
+
+        public ProfileDto Data { get; set; }
+
+        [JsonPropertyName("status_code")]
+        public int StatusCode { get; set; }
     }
 }

@@ -5,11 +5,12 @@ using Hng.Application.Features.Profiles.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Profile = Hng.Domain.Entities.Profile;
 
 namespace Hng.Application.Features.Profiles.Handlers
 {
-    public class UpdateProfileHandler : IRequestHandler<UpdateProfileDto, Result<ProfileDto>>
+    public class UpdateProfileHandler : IRequestHandler<UpdateProfileDto, Result<UpdateProfileResponseDto>>
     {
         private readonly IRepository<User> _userRepo;
         private readonly IRepository<Profile> _profileRepo;
@@ -28,12 +29,12 @@ namespace Hng.Application.Features.Profiles.Handlers
             _mapper = mapper;
         }
 
-        public async Task<Result<ProfileDto>> Handle(UpdateProfileDto request, CancellationToken cancellationToken)
+        public async Task<Result<UpdateProfileResponseDto>> Handle(UpdateProfileDto request, CancellationToken cancellationToken)
         {
             var user = await _userRepo.GetBySpec(u => u.Email == request.Email, u => u.Profile);
 
             if (user == null)
-                return Result.Failure<ProfileDto>("User with Email does not Exist!");
+                return Result.Failure<UpdateProfileResponseDto>("User with Email does not Exist!");
 
             if (request.DisplayPhoto != null)
             {
@@ -67,7 +68,12 @@ namespace Hng.Application.Features.Profiles.Handlers
 
             var profileDto = _mapper.Map<ProfileDto>(user.Profile);
 
-            return Result.Success(profileDto);
+            return Result.Success(new UpdateProfileResponseDto()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Message = "Successful",
+                Data = profileDto
+            });
         }
 
         private static User UpdateUser(User user, UpdateProfileDto request)

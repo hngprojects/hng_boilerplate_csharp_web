@@ -1,42 +1,31 @@
-﻿using AutoMapper;
-using Hng.Application.Features.ExternalIntegrations.FilesUploadIntegrations.Cloudinary.Services;
+﻿using Hng.Application.Features.ExternalIntegrations.FilesUploadIntegrations.Cloudinary.Services;
 using Hng.Application.Features.Profiles.Dtos;
 using Hng.Application.Features.Profiles.Handlers;
-using Hng.Application.Features.Profiles.Mappers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
 using System.Linq.Expressions;
 using Xunit;
 
-namespace Hng.Application.Test.Features.UserManagement
+namespace Hng.Application.Test.Features.Profile
 {
-    public class UpdateProfileHandlerShould
+    public class UpdateProfilePictureHandlerShould
     {
         private readonly Mock<IRepository<User>> _userRepositoryMock;
-        private readonly Mock<IRepository<Domain.Entities.Profile>> _profileRepositoryMock;
         private readonly Mock<IImageService> _imageServiceMock;
-        private readonly IMapper _mapper;
-        private readonly UpdateProfileHandler _handler;
+        private readonly UpdateProfilePictureHandler _handler;
 
-        public UpdateProfileHandlerShould()
+        public UpdateProfilePictureHandlerShould()
         {
-            var profileMappingProfile = new ProfileMapperProfile();
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(profileMappingProfile));
-            _mapper = new Mapper(configuration);
-
             _userRepositoryMock = new Mock<IRepository<User>>();
-            _profileRepositoryMock = new Mock<IRepository<Domain.Entities.Profile>>();
             _imageServiceMock = new Mock<IImageService>();
-            _handler = new UpdateProfileHandler(
+            _handler = new UpdateProfilePictureHandler(
                 _userRepositoryMock.Object,
-                _profileRepositoryMock.Object,
-                _imageServiceMock.Object,
-                _mapper);
+                _imageServiceMock.Object);
         }
 
         [Fact]
-        public async Task UpdateProfileHandlerShouldReturnProfileDto()
+        public async Task UpdateProfileHandlerShouldReturnSuccessDto()
         {
             // Arrange
             var userid = Guid.NewGuid();
@@ -49,8 +38,11 @@ namespace Hng.Application.Test.Features.UserManagement
                 Profile = new Domain.Entities.Profile() { UserId = userid, Id = Guid.NewGuid() }
             };
             var userProfile = user.Profile;
-            var request = new UpdateProfileDto()
-            { AvatarUrl = "https://res.cloudinary.com/kenelight4u/image/upload/v1723026364/HNG Bioler Plate/bmdqybm8pb2hu4dr8es7.jpg", Bio = "Good test" };
+            var request = new UpdateProfilePictureDto()
+            {
+                AvatarUrl = "https://res.cloudinary.com/kenelight4u/image/upload/v1723026364/HNG Bioler Plate/bmdqybm8pb2hu4dr8es7.jpg",
+                UserId = userid,
+            };
 
             _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                 .ReturnsAsync(user);
