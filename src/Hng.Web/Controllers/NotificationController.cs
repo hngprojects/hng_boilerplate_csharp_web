@@ -125,11 +125,15 @@ namespace Hng.Web.Controllers
             {
                 var command = new UpdateNotificationCommand(notificationId, request.IsRead);
                 var response = await _mediator.Send(command);
-
-                return Ok(new SuccessResponseDto<NotificationDto>
+                return response != null ? Ok(new SuccessResponseDto<NotificationDto>
                 {
                     Message = "Notification updated successfully",
                     Data = response
+                }) : NotFound(new FailureResponseDto<object>
+                {
+                    Error = "Not Found",
+                    Message = "Notification not found",
+                    Data = false
                 });
             }
 
