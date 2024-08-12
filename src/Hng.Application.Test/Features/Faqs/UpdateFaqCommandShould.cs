@@ -7,6 +7,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -37,7 +38,7 @@ namespace Hng.Application.Test.Features.Faqs
             var faqRequest = new UpdateFaqRequestDto { Question = "Updated Question", Answer = "Updated Answer" };
             var faq = new Faq { Id = faqId, Question = "Old Question", Answer = "Old Answer" };
 
-            _repositoryMock.Setup(x => x.GetAsync(faqId)).ReturnsAsync(faq);
+            _repositoryMock.Setup(x => x.GetBySpec(It.IsAny<Expression<Func<Faq, bool>>>())).ReturnsAsync(faq);
 
             var command = new UpdateFaqCommand(faqId, faqRequest);
 
@@ -49,6 +50,7 @@ namespace Hng.Application.Test.Features.Faqs
             Assert.Equal(200, result.StatusCode);
             Assert.Equal("FAQ updated successfully", result.Message);
         }
+
 
         [Fact]
         public async Task Handle_ShouldReturnNotFound_WhenFaqDoesNotExist()

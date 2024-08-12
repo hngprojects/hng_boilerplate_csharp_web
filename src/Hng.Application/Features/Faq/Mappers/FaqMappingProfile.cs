@@ -6,6 +6,7 @@ public class FaqMappingProfile : AutoMapper.Profile
 {
     public FaqMappingProfile()
     {
+        CreateMap<Faq, FaqResponseDto>();
         // Mapping from Faq to CreateFaqResponseDto
         CreateMap<Faq, CreateFaqResponseDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -24,6 +25,7 @@ public class FaqMappingProfile : AutoMapper.Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
             .ForMember(dest => dest.Answer, opt => opt.MapFrom(src => src.Answer))
+            .ForMember(dest => dest.category, opt => opt.MapFrom(src => src.category))
             .ReverseMap();
 
         // Mapping from UpdateFaqRequestDto to Faq
