@@ -111,19 +111,19 @@ namespace Hng.Web.Controllers
         /// <summary>
         /// Mark a single notification as read
         /// </summary>
-        /// <param name="notificationId">The ID of the notification</param>
+        /// <param name="notification_id">The ID of the notification</param>
         /// <param name="request">The request body containing is_read flag</param>
         /// <returns>Response indicating the result of the operation</returns>
-        [HttpPatch("{notificationId}")]
+        [HttpPatch("{notification_id}")]
         [ProducesResponseType(typeof(SuccessResponseDto<NotificationDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> MarkNotificationAsRead(Guid notificationId, [FromBody] UpdateNotificationDto request)
+        public async Task<IActionResult> MarkNotificationAsRead(Guid notification_id, [FromBody] UpdateNotificationDto request)
         {
             try
             {
-                var command = new UpdateNotificationCommand(notificationId, request.IsRead);
+                var command = new UpdateNotificationCommand(notification_id, request.IsRead);
                 var response = await _mediator.Send(command);
                 return response != null ? Ok(new SuccessResponseDto<NotificationDto>
                 {
