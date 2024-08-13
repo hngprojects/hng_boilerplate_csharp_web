@@ -364,6 +364,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Industry")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
