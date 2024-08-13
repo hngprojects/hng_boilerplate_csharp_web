@@ -9,6 +9,7 @@ namespace Hng.Application.Features.Faq.Dtos
 {
     public class FaqResponseDto
     {
+        [JsonPropertyName("id")]
         public Guid Id { get; set; }
         [JsonPropertyName("question")]
         public string Question { get; set; }
