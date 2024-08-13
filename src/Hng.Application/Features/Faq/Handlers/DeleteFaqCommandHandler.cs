@@ -26,6 +26,7 @@ public class DeleteFaqCommandHandler : IRequestHandler<DeleteFaqCommand, DeleteF
         }
 
         await _repository.DeleteAsync(faq);
+        await _repository.SaveChanges();
 
         return new DeleteFaqResponseDto
         {

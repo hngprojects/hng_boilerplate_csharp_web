@@ -25,7 +25,7 @@ public class FaqController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
-    [HttpPatch("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateFaq(Guid id, [FromBody] UpdateFaqRequestDto faqRequest)
     {
         var command = new UpdateFaqCommand(id, faqRequest);
@@ -33,7 +33,7 @@ public class FaqController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteFaq(Guid id)
     {
         var command = new DeleteFaqCommand(id);
