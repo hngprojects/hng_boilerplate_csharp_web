@@ -107,5 +107,79 @@ namespace Hng.Web.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Mark a single notification as read
+        /// </summary>
+        /// <param name="notification_id">The ID of the notification</param>
+        /// <param name="request">The request body containing is_read flag</param>
+        /// <returns>Response indicating the result of the operation</returns>
+        [HttpPatch("{notification_id}")]
+        [ProducesResponseType(typeof(SuccessResponseDto<NotificationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> MarkNotificationAsRead(Guid notification_id, [FromBody] UpdateNotificationDto request)
+        {
+            try
+            {
+                var command = new UpdateNotificationCommand(notification_id, request.IsRead);
+                var response = await _mediator.Send(command);
+                return response != null ? Ok(new SuccessResponseDto<NotificationDto>
+                {
+                    Message = "Notification updated successfully",
+                    Data = response
+                }) : NotFound(new FailureResponseDto<object>
+                {
+                    Error = "Not Found",
+                    Message = "Notification not found",
+                    Data = false
+                });
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(new FailureResponseDto<object>
+                {
+                    Error = "Bad Request",
+                    Message = ex.Message,
+                    Data = false
+                });
+            }
+        }
+
+        /// <summary>
+        /// Mark all notification as read
+        /// </summary>
+        /// <param name="request">The request body containing is_read flag</param>
+        /// <returns>Response indicating the result of the operation</returns>
+        [HttpPatch()]
+        [ProducesResponseType(typeof(SuccessResponseDto<NotificationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> MarkNotificationAsRead([FromBody] UpdateNotificationDto request)
+        {
+            try
+            {
+                var command = new MarkAllCommand(request.IsRead);
+                var response = await _mediator.Send(command);
+                return Ok(new SuccessResponseDto<List<NotificationDto>>
+                {
+                    Message = "Notifications updated successfully",
+                    Data = response
+                });
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(new FailureResponseDto<object>
+                {
+                    Error = "Bad Request",
+                    Message = ex.Message,
+                    Data = false
+                });
+            }
+        }
     }
 }
