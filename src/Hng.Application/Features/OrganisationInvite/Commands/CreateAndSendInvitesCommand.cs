@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Hng.Application.Features.OrganisationInvite.Commands;
 
-public record CreateAndSendInvitesCommand(CreateAndSendInvitesDto Details) : IRequest<StatusCodeResponse<object>>;
+public record CreateAndSendInvitesCommand(CreateAndSendInvitesDto Details) : IRequest<StatusCodeResponse>;

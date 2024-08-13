@@ -2,7 +2,7 @@
 
 namespace Hng.Application.Shared.Dtos
 {
-    public class StatusCodeResponse<T>()
+    public class StatusCodeResponse
     {
         [JsonPropertyName("status_code")]
         public int StatusCode { get; set; }
@@ -16,3 +16,5 @@ namespace Hng.Application.Shared.Dtos
     }
 
 }
+
+
