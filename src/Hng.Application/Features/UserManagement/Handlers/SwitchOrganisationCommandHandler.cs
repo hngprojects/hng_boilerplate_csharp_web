@@ -14,7 +14,7 @@ public class SwitchOrganisationCommandHandler(IRepository<User> userRepository, 
     private readonly IRepository<User> _userRepository = userRepository;
     private readonly IRepository<Organization> _organisationRepository = organisationRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
-    
+
     public async Task<SwitchOrganisationResponseDto> Handle(SwitchOrganisationCommand request, CancellationToken cancellationToken)
     {
         var loggedInUserId = await _authenticationService.GetCurrentUserAsync();
@@ -31,7 +31,7 @@ public class SwitchOrganisationCommandHandler(IRepository<User> userRepository, 
         }
 
         var user = await _userRepository.GetBySpec(u => u.Id == loggedInUserId);
-        
+
         var currentActiveOrganisation = user.Organizations.FirstOrDefault(o => o.IsActive);
         if (currentActiveOrganisation != null && currentActiveOrganisation.Id == request.OrganisationId && request.IsActive)
         {

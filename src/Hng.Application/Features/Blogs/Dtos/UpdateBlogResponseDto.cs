@@ -25,5 +25,5 @@ public class UpdateBlogResponseDto
     public string Author { get; set; }
     [JsonPropertyName("created_date")]
     public DateTime PublishedDate { get; set; }
-    
+
 }

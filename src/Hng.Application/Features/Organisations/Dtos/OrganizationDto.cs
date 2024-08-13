@@ -43,7 +43,7 @@ public class OrganizationDto
 
     [JsonPropertyName("owner_id")]
     public Guid OwnerId { get; set; }
-    
+
     [JsonPropertyName("is_active")]
     public bool IsActive { get; set; }
 
