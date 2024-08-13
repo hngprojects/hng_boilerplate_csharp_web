@@ -38,7 +38,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return Ok(users);
     }
 
-    [HttpPut("/organisations/{organisationId:guid}")]
+    [HttpPut("organisations/{organisationId:guid}")]
     public async Task<IActionResult> SwitchUserOrganisation(
         Guid organisationId,
         [FromBody] SwitchOrganisationRequestDto request)
