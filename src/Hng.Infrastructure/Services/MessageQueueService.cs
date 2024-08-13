@@ -13,7 +13,7 @@ public class MessageQueueService(ILogger<MessageQueueService> logger, IRepositor
 
     private async Task<Message> QueueEmailAsync(Message message)
     {
-        logger.LogInformation("Now queuing email with recipient address : {mailAddress}", message.RecipientContact);
+        logger.LogInformation("Now queuing email with id : {emailId}", message.Id);
 
         await repository.AddAsync(message);
 
