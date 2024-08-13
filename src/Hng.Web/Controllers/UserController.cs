@@ -36,21 +36,5 @@ namespace Hng.Web.Controllers
             var users = await _mediator.Send(new GetUsersQuery());
             return Ok(users);
         }
-
-        [Authorize]
-        [HttpPut("{email}/profile")]
-        [ProducesResponseType(typeof(Result<ProfileDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto profileDto, string email)
-        {
-            profileDto.Email = email;
-            var response = await _mediator.Send(profileDto);
-
-            if (response.IsFailure)
-                return StatusCode(404, response.Error);
-
-            return Ok(response.Value);
-        }
-
     }
 }
