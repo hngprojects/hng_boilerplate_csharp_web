@@ -30,7 +30,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
         public async Task<UserLoginResponseDto<SignupResponseData>> Handle(CreateUserLoginCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepo.GetBySpec(u => u.Email == request.LoginRequestBody.Email);
+            var user = await _userRepo.GetBySpec(u => u.Email == request.LoginRequestBody.Email, u => u.Organizations);
             if (user == null || !_passwordService.IsPasswordEqual(request.LoginRequestBody.Password, user.PasswordSalt, user.Password))
             {
                 return new UserLoginResponseDto<SignupResponseData>
