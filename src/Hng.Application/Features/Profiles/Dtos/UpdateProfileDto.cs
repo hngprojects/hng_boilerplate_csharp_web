@@ -47,6 +47,7 @@ namespace Hng.Application.Features.Profiles.Dtos
         [JsonPropertyName("message")]
         public string Message { get; set; }
 
+        [JsonPropertyName("data")]
         public ProfileDto Data { get; set; }
 
         [JsonPropertyName("status_code")]

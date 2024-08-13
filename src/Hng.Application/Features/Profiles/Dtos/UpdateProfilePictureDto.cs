@@ -19,6 +19,7 @@ namespace Hng.Application.Features.Profiles.Dtos
         [JsonPropertyName("message")]
         public string Message { get; set; }
 
+        [JsonPropertyName("data")]
         public UpdateProfilePictureResponse Data { get; set; }
 
         [JsonPropertyName("status_code")]
