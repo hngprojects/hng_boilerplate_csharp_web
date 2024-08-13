@@ -1,0 +1,62 @@
+name: Production Deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t csharp_prod .
+
+      - name: Save and compress Docker image
+        run: docker save csharp_prod | gzip > csharp_prod.tar.gz
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v2
+        with:
+          name: csharp_prod
+          path: csharp_prod.tar.gz
+        
+  deploy:
+    needs: build
+    if: github.event.repository.fork == false
+    runs-on: ubuntu-latest
+
+    environment:
+      name: "production"
+      url: ${{ vars.URL }}
+
+    steps:
+      - name: Download Docker image
+        uses: actions/download-artifact@v2
+        with:
+          name: csharp_prod
+          path: .
+
+      - name: Copy image to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          source: csharp_prod.tar.gz
+          target: "/tmp"
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            gunzip -c /tmp/csharp_prod.tar.gz | docker load
+            rm -f /tmp/csharp_prod.tar.gz
+            cd ~/hng_boilerplate_csharp_web
+            docker compose -p csharp_prod up -d
