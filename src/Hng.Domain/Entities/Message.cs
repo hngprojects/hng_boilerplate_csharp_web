@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using System.Text;
 using Hng.Domain.Enums;
 
 namespace Hng.Domain.Entities;
