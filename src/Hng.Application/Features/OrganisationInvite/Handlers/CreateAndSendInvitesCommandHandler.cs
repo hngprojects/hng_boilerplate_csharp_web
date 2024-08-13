@@ -42,28 +42,37 @@ public class CreateAndSendInvitesCommandHandler(
 
         List<InviteDto> inviteList = [];
         User user = await userRepository.GetAsync(details.InviterId);
-        string inviterName = user.FirstName;
 
         Organization organization = validationResult.Value;
 
         foreach (string email in details.Emails)
         {
-            inviteList.Add(await GenerateInvite(email, details.InviterId, orgId, inviteRepository));
+            inviteList.Add(await CreateAndSendInvites(user, organization, email, inviteRepository));
         }
-        throw new NotImplementedException();
+
+        return new StatusCodeResponse<object>
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Message = "Invitation(s) processed successfully!",
+            Data = new CreateAndSendInvitesResponseDto(){Invitations = inviteList}
+        };
     }
 
-    private async Task<InviteDto> GenerateInvite(string email, Guid inviterId, Guid orgId, IRepository<OrganizationInvite> inviteRepository)
+    private async Task<InviteDto> CreateAndSendInvites(User inviter, Organization org, string inviteeEmail, IRepository<OrganizationInvite> inviteRepository)
     {
-        Result<OrganizationInvite> uniqueInviteCheck = await requestValidator.InviteDoesNotExistAsync(orgId, email, inviteRepository);
+        Result<OrganizationInvite> uniqueInviteCheck = await requestValidator.InviteDoesNotExistAsync(org.Id, inviteeEmail, inviteRepository);
 
         OrganizationInvite invite = null;
-        if (uniqueInviteCheck.IsSuccess) invite = await inviteService.CreateInvite(inviterId, orgId, email);
+        if (uniqueInviteCheck.IsSuccess)
+        {
+            invite = await inviteService.CreateInvite(inviter.Id, org.Id, inviteeEmail);
+            await queueService.SendInviteEmailAsync(inviter.FirstName, inviteeEmail, org.Name, invite.ExpiresAt, invite.InviteLink);
+        }
 
-        InviteDto inviteDto = new() { Email = email };
+        InviteDto inviteDto = new() { Email = inviteeEmail };
         if (invite is null)
         {
-            inviteDto.Error = InviteAlreadyExistsError.FromEmail(email).Message;
+            inviteDto.Error = InviteAlreadyExistsError.FromEmail(inviteeEmail).Message;
             return inviteDto;
         }
         inviteDto.InviteLink = invite.InviteLink.ToString();

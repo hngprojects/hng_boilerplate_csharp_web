@@ -4,7 +4,7 @@ using Hng.Infrastructure.Services.Interfaces;
 
 namespace Hng.Infrastructure.Services;
 
-public class OrganisationInviteService(IRepository<OrganizationInvite> repository, IMessageQueueService queueService) : IOrganisationInviteService
+public class OrganisationInviteService(IRepository<OrganizationInvite> repository) : IOrganisationInviteService
 {
     private readonly IRepository<OrganizationInvite> repository = repository;
     public async Task<OrganizationInvite> CreateInvite(Guid userId, Guid orgId, string email)

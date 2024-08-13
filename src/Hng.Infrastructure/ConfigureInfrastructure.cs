@@ -26,6 +26,7 @@ namespace Hng.Infrastructure
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IFacebookAuthService, FacebookAuthService>();
             services.AddScoped<IOrganisationInviteService, OrganisationInviteService>();
+            services.AddScoped<IEmailTemplateService, EmailTemplateService>();
             return services;
         }
     }

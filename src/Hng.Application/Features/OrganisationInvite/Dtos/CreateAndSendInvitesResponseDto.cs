@@ -14,7 +14,7 @@ public record InviteDto
     public string Email { get; init; }
 
     [JsonPropertyName("invite_link")]
-    public string InviteLink { get; set; }
+    public string InviteLink { get; set; } = string.Empty;
 
     [JsonPropertyName("error")]
 
