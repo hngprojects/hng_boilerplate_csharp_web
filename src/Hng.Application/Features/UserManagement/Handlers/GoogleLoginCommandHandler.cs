@@ -44,7 +44,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 };
             }
 
-            var dbUser = await _userRepo.GetBySpec(x => x.Email == payload.Email);
+            var dbUser = await _userRepo.GetBySpec(x => x.Email == payload.Email, u => u.Organizations);
 
             if (dbUser == null)
             {
