@@ -1,7 +1,9 @@
 using System.Reflection;
 using Hng.Application.Features.ExternalIntegrations.FilesUploadIntegrations.Cloudinary.Services;
 using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Services;
+using Hng.Application.Features.OrganisationInvite.Validators;
 using Hng.Application.Utils;
+using Hng.Infrastructure.EmailTemplates;
 using Hng.Infrastructure.Services;
 using Hng.Infrastructure.Utilities;
 using Hng.Infrastructure.Utilities.StringKeys;
@@ -45,7 +47,10 @@ namespace Hng.Application
 
             services.AddSingleton(configurations.GetSection("CloudinarySettings").Get<CloudinarySettings>());
 
+
+
             services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IRequestValidator, RequestValidator>();
 
             services.AddCors(options =>
             {
@@ -58,6 +63,8 @@ namespace Hng.Application
                     });
             });
             services.AddSingleton(configurations.GetSection("SmtpCredentials").Get<SmtpCredentials>());
+
+            services.AddSingleton(configurations.GetSection("EmailTemplateDirectory").Get<TemplateDir>());
 
             return services;
         }

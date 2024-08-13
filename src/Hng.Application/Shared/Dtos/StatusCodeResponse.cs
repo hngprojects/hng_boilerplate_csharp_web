@@ -12,5 +12,7 @@ namespace Hng.Application.Shared.Dtos
 
         [JsonPropertyName("data")]
         public object Data { get; set; } = new { };
+        //Workaround to prevent null data in the response when an object isn't passed
     }
+
 }
