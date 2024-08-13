@@ -68,7 +68,7 @@ namespace Hng.Application.Test.Features.BillingPlans
 
             // Assert
             Assert.NotNull(result);
-            Assert.Empty(result.Data); 
+            Assert.Empty(result.Data);
         }
     }
 }
