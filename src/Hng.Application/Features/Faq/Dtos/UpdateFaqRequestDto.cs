@@ -14,7 +14,7 @@ namespace Hng.Application.Features.Faq.Dtos
         [JsonPropertyName("answer")]
         public string Answer { get; set; }
         [JsonPropertyName("category")]
-        public string category { get; set; }
+        public string Category { get; set; }
     }
 
 }
