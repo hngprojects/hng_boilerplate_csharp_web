@@ -54,7 +54,7 @@ public class CreateAndSendInvitesCommandHandler(
         {
             StatusCode = StatusCodes.Status200OK,
             Message = "Invitation(s) processed successfully!",
-            Data = new CreateAndSendInvitesResponseDto(){Invitations = inviteList}
+            Data = new CreateAndSendInvitesResponseDto() { Invitations = inviteList }
         };
     }
 

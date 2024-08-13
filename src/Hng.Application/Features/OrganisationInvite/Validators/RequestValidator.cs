@@ -4,7 +4,7 @@ using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Utilities;
 namespace Hng.Application.Features.OrganisationInvite.Validators;
 
-public class RequestValidator: IRequestValidator
+public class RequestValidator : IRequestValidator
 {
     public async Task<Result<Organization>> OrganizationExistsAsync(Guid orgId, IRepository<Organization> repository)
     {
