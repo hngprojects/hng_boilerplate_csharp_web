@@ -25,7 +25,7 @@ public class FaqMappingProfile : AutoMapper.Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
             .ForMember(dest => dest.Answer, opt => opt.MapFrom(src => src.Answer))
-            .ForMember(dest => dest.category, opt => opt.MapFrom(src => src.category))
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.category))
             .ReverseMap();
 
         // Mapping from UpdateFaqRequestDto to Faq
