@@ -26,6 +26,8 @@ public class Organization : EntityBase
 
     public Guid OwnerId { get; set; }
 
+    public bool IsActive { get; set; }
+
     public ICollection<User> Users { get; set; } = new List<User>();
     public ICollection<UserRole> UsersRoles { get; set; } = new List<UserRole>();
 
