@@ -27,7 +27,7 @@ namespace Hng.Web.Controllers
         [HttpPost("login")]
         [ProducesResponseType(typeof(UserLoginResponseDto<SignupResponseData>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserLoginResponseDto<object>>> Login([FromBody] UserLoginRequestDto loginRequest)
+        public async Task<ActionResult<UserLoginResponseDto<SignupResponseData>>> Login([FromBody] UserLoginRequestDto loginRequest)
         {
             var command = new CreateUserLoginCommand(loginRequest);
             var response = await _mediator.Send(command);
