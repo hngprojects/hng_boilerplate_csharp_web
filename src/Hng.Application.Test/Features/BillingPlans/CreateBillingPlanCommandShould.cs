@@ -80,14 +80,14 @@ namespace Hng.Application.Test.Features.BillingPlans
             var command = new CreateBillingPlanCommand(billingPlanRequest);
 
             _repositoryMock.Setup(repo => repo.AddAsync(It.IsAny<BillingPlan>()))
-                .ReturnsAsync((BillingPlan)null); // Simulate a failure in creation
+                .ReturnsAsync((BillingPlan)null); 
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result); // Ensure the result is not null
-            Assert.Null(result.Data); // Check that Data is null
+            Assert.NotNull(result); 
+            Assert.Null(result.Data); 
             Assert.Equal("Failed to create billing plan.", result.Message);
         }
     }

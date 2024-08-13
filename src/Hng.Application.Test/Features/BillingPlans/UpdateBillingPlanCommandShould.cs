@@ -79,8 +79,8 @@ namespace Hng.Application.Test.Features.BillingPlans
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result); // Ensure the result is not null
-            Assert.Null(result.Data); // Check that Data is null
+            Assert.NotNull(result);
+            Assert.Null(result.Data);
             Assert.Equal("Billing plan not found.", result.Message);
         }
     }

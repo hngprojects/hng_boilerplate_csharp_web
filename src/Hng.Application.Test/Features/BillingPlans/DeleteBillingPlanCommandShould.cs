@@ -4,7 +4,6 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
 using Xunit;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Hng.Application.Test.Features.BillingPlans
 {
@@ -38,17 +37,9 @@ namespace Hng.Application.Test.Features.BillingPlans
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            //Assert.True(result);
-            // _repositoryMock.Verify(x => x.DeleteAsync(It.Is<BillingPlan>(bp => bp.Id == billingPlanId)), Times.Once);
-
-            //var result = await _handler.Handle(query, CancellationToken.None);
-
-            // Assert
             Assert.True(result.Data);
             Assert.NotNull(result);
             Assert.Equal("Billing plan deleted successfully.", result.Message);
-
-
         }
 
         [Fact]

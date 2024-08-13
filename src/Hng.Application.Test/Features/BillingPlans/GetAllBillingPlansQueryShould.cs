@@ -48,7 +48,7 @@ namespace Hng.Application.Test.Features.BillingPlans
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.Data.Count); // Assuming the result is a PaginatedResponseDto
+            Assert.Equal(2, result.Data.Count);
             Assert.Equal("Plan 1", result.Data[0].Name);
             Assert.Equal("Plan 2", result.Data[1].Name);
         }
@@ -68,7 +68,7 @@ namespace Hng.Application.Test.Features.BillingPlans
 
             // Assert
             Assert.NotNull(result);
-            Assert.Empty(result.Data); // Assuming the result is a PaginatedResponseDto
+            Assert.Empty(result.Data); 
         }
     }
 }
