@@ -1,5 +1,5 @@
-namespace Hng.Infrastructure.Utilities.Errors.OrganisationInvite;
 
+namespace Hng.Application.Features.OrganisationInvite.Validators.ValidationErrors;
 public class UserIsNotOwnerError : ImplicitErrorOperator
 {
     private UserIsNotOwnerError(string Message) : base(Message) { }

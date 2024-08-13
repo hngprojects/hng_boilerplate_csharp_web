@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Hng.Application.Features.OrganisationInvite.Commands;
 using Hng.Application.Features.OrganisationInvite.Dtos;
+using Hng.Application.Features.OrganisationInvite.Validators;
 using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Organisations.Queries;
@@ -18,9 +19,10 @@ namespace Hng.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/v1/organisations")]
-public class OrganizationController(IMediator mediator, IAuthenticationService authenticationService) : ControllerBase
+public class OrganizationController(IMediator mediator, IAuthenticationService authenticationService, IRequestValidator validator) : ControllerBase
 {
     private readonly IAuthenticationService authenticationService = authenticationService;
+    private readonly IRequestValidator validator = validator;
 
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status200OK)]
@@ -134,4 +136,23 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
 
         return StatusCode(result.StatusCode, result);
     }
+    /// <summary>
+    /// Create an invite link to join an organisation
+    /// </summary>
+    [HttpPost("send-invite")]
+    [ProducesResponseType(typeof(CreateOrganizationDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.Conflict)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.UnprocessableContent)]
+
+    public async Task<ActionResult<CreateOrganizationDto>> CreateOrganizationInvite([FromBody] CreateAndSendInvitesDto body)
+    {
+        body.InviterId = await authenticationService.GetCurrentUserAsync();
+        var command = new CreateAndSendInvitesCommand(body);
+        StatusCodeResponse<object> result = await mediator.Send(command);
+
+        return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
+    }
+
 }
