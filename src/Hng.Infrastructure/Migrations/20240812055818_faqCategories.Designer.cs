@@ -3,6 +3,7 @@ using System;
 using Hng.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240812055818_faqCategories")]
+    partial class faqCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,38 +24,6 @@ namespace Hng.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Hng.Domain.Entities.BillingPlan", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Frequency")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BillingPlans");
-                });
 
             modelBuilder.Entity("Hng.Domain.Entities.Blog", b =>
                 {
@@ -399,9 +370,6 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Industry")
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -638,9 +606,6 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid?>("BillingPlanId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -674,8 +639,6 @@ namespace Hng.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BillingPlanId");
 
                     b.HasIndex("OrganizationId");
 
@@ -958,10 +921,6 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.Subscription", b =>
                 {
-                    b.HasOne("Hng.Domain.Entities.BillingPlan", "BillingPlan")
-                        .WithMany()
-                        .HasForeignKey("BillingPlanId");
-
                     b.HasOne("Hng.Domain.Entities.Organization", "Organization")
                         .WithMany("Subscriptions")
                         .HasForeignKey("OrganizationId");
@@ -973,8 +932,6 @@ namespace Hng.Infrastructure.Migrations
                     b.HasOne("Hng.Domain.Entities.User", "User")
                         .WithMany("Subscriptions")
                         .HasForeignKey("UserId");
-
-                    b.Navigation("BillingPlan");
 
                     b.Navigation("Organization");
 
