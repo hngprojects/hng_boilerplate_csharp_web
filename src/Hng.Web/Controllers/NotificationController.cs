@@ -181,5 +181,87 @@ namespace Hng.Web.Controllers
                 });
             }
         }
+
+        /// <summary>
+        /// Clear all user's notifications (Read or Unread) 
+        /// </summary>
+        [HttpDelete("clear-all")]
+        [ProducesResponseType(typeof(SuccessResponseDto<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteAllNotifications()
+        {
+            try
+            {
+                var command = new DeleteAllNotificationsCommand();
+                var response = await _mediator.Send(command);
+
+                if (response)
+                {
+                    return Ok(new SuccessResponseDto<object>
+                    {
+                        Message = "Notifications cleared successfully",
+                        Data = true
+                    });
+                }
+
+                return NotFound(new FailureResponseDto<object>
+                {
+                    Error = "Not Found",
+                    Message = "Notification not found",
+                    Data = false
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new FailureResponseDto<object>
+                {
+                    Error = "Bad Request",
+                    Message = ex.Message,
+                    Data = false
+                });
+            }
+        }
+
+        /// <summary>
+        /// Clear notification (Read or Unread) 
+        /// </summary>
+        [HttpDelete("{notification_id}")]
+        [ProducesResponseType(typeof(SuccessResponseDto<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteNotificationById(Guid notification_id)
+        {
+            try
+            {
+                var command = new DeleteNotificationByIdCommand(notification_id);
+                var result = await _mediator.Send(command);
+
+                if (result)
+                {
+                    return Ok(new SuccessResponseDto<object>
+                    {
+                        Message = "Notification cleared successfully",
+                        Data = true
+                    });
+                }
+                return NotFound(new FailureResponseDto<object>
+                {
+                    Error = "Not Found",
+                    Message = "Notification not found",
+                    Data = false
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new FailureResponseDto<object>
+                {
+                    Error = "Bad Request",
+                    Message = ex.Message,
+                    Data = false
+                });
+            }
+        }
     }
 }
