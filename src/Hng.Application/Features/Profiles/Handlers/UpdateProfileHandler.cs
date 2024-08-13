@@ -5,11 +5,12 @@ using Hng.Application.Features.Profiles.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Profile = Hng.Domain.Entities.Profile;
 
 namespace Hng.Application.Features.Profiles.Handlers
 {
-    public class UpdateProfileHandler : IRequestHandler<UpdateProfileDto, Result<ProfileDto>>
+    public class UpdateProfileHandler : IRequestHandler<UpdateProfileDto, Result<UpdateProfileResponseDto>>
     {
         private readonly IRepository<User> _userRepo;
         private readonly IRepository<Profile> _profileRepo;
@@ -28,24 +29,12 @@ namespace Hng.Application.Features.Profiles.Handlers
             _mapper = mapper;
         }
 
-        public async Task<Result<ProfileDto>> Handle(UpdateProfileDto request, CancellationToken cancellationToken)
+        public async Task<Result<UpdateProfileResponseDto>> Handle(UpdateProfileDto request, CancellationToken cancellationToken)
         {
             var user = await _userRepo.GetBySpec(u => u.Email == request.Email, u => u.Profile);
 
             if (user == null)
-                return Result.Failure<ProfileDto>("User with Email does not Exist!");
-
-            if (request.DisplayPhoto != null)
-            {
-                if (!string.IsNullOrWhiteSpace(user.Profile?.AvatarUrl))
-                    await _imageService.DeleteImageAsync(user.Profile?.AvatarUrl);
-
-                request.AvatarUrl = await _imageService.UploadImageAsync(request.DisplayPhoto);
-            }
-
-            if (request.DisplayPhoto == null && string.IsNullOrWhiteSpace(request.AvatarUrl))
-                if (!string.IsNullOrWhiteSpace(user.Profile?.AvatarUrl))
-                    await _imageService.DeleteImageAsync(user.Profile?.AvatarUrl);
+                return Result.Failure<UpdateProfileResponseDto>("User with Email does not Exist!");
 
             if (user.Profile == null)
             {
@@ -67,7 +56,12 @@ namespace Hng.Application.Features.Profiles.Handlers
 
             var profileDto = _mapper.Map<ProfileDto>(user.Profile);
 
-            return Result.Success(profileDto);
+            return Result.Success(new UpdateProfileResponseDto()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Message = "Successful",
+                Data = profileDto
+            });
         }
 
         private static User UpdateUser(User user, UpdateProfileDto request)
@@ -83,7 +77,6 @@ namespace Hng.Application.Features.Profiles.Handlers
         {
             user.Profile.FirstName = !string.IsNullOrWhiteSpace(request.FirstName) ? request.FirstName : "";
             user.Profile.LastName = !string.IsNullOrWhiteSpace(request.LastName) ? request.LastName : "";
-            user.Profile.AvatarUrl = !string.IsNullOrWhiteSpace(request.AvatarUrl) ? request.AvatarUrl : "";
             user.Profile.Bio = !string.IsNullOrWhiteSpace(request.Bio) ? request.Bio : "";
             user.Profile.FacebookLink = !string.IsNullOrWhiteSpace(request.FacebookLink) ? request.FacebookLink : "";
             user.Profile.JobTitle = !string.IsNullOrWhiteSpace(request.JobTitle) ? request.JobTitle : "";
@@ -102,7 +95,6 @@ namespace Hng.Application.Features.Profiles.Handlers
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                AvatarUrl = request.AvatarUrl,
                 Bio = request.Bio,
                 FacebookLink = request.FacebookLink,
                 JobTitle = request.JobTitle,
