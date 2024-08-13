@@ -1,8 +1,7 @@
-﻿using Hng.Application.Features.Organisations.Dtos;
-using Hng.Application.Features.UserManagement.Dtos;
+﻿using Hng.Application.Features.UserManagement.Dtos;
 using MediatR;
 
-namespace Hng.Application.Features.Organisations.Commands;
+namespace Hng.Application.Features.UserManagement.Commands;
 
 public class SwitchOrganisationCommand : IRequest<SwitchOrganisationResponseDto>
 {

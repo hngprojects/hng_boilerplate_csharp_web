@@ -1,13 +1,13 @@
-﻿using AutoMapper;
-using Hng.Application.Features.Organisations.Commands;
+﻿using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
+using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 
-namespace Hng.Application.Features.Organisations.Handlers;
+namespace Hng.Application.Features.UserManagement.Handlers;
 
 public class SwitchOrganisationCommandHandler(IRepository<User> userRepository, IRepository<Organization> organisationRepository, IAuthenticationService authenticationService) : IRequestHandler<SwitchOrganisationCommand, SwitchOrganisationResponseDto>
 {

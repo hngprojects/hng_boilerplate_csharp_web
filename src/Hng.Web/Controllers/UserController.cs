@@ -1,6 +1,3 @@
-using CSharpFunctionalExtensions;
-using Hng.Application.Features.Organisations.Commands;
-using Hng.Application.Features.Profiles.Dtos;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.UserManagement.Queries;
@@ -23,12 +20,14 @@ public class UserController(IMediator mediator) : ControllerBase
     {
         var query = new GetUserByIdQuery(id);
         var response = await _mediator.Send(query);
-        return response is null ? NotFound(new
-        {
-            message = "User not found",
-            is_successful = false,
-            status_code = 404
-        }) : Ok(response);
+        return response is null
+            ? NotFound(new
+            {
+                message = "User not found",
+                is_successful = false,
+                status_code = 404
+            })
+            : Ok(response);
     }
 
     [HttpGet("")]
@@ -39,23 +38,8 @@ public class UserController(IMediator mediator) : ControllerBase
         return Ok(users);
     }
 
-    [Authorize]
-    [HttpPut("{email}/profile")]
-    [ProducesResponseType(typeof(Result<ProfileDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto profileDto, string email)
-    {
-        profileDto.Email = email;
-        var response = await _mediator.Send(profileDto);
-
-        if (response.IsFailure)
-            return StatusCode(404, response.Error);
-
-        return Ok(response.Value);
-    }
-
     [HttpPut("/organisations/{organisationId:guid}")]
-    public async Task<IActionResult> SwitchOrganisation(
+    public async Task<IActionResult> SwitchUserOrganisation(
         Guid organisationId,
         [FromBody] SwitchOrganisationRequestDto request)
     {
@@ -69,5 +53,4 @@ public class UserController(IMediator mediator) : ControllerBase
         return Ok(response);
 
     }
-
 }

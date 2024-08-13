@@ -22,6 +22,38 @@ namespace Hng.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Hng.Domain.Entities.BillingPlan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Frequency")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BillingPlans");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Blog", b =>
                 {
                     b.Property<Guid>("Id")
@@ -603,6 +635,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
+                    b.Property<Guid?>("BillingPlanId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -636,6 +671,8 @@ namespace Hng.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BillingPlanId");
 
                     b.HasIndex("OrganizationId");
 
@@ -918,6 +955,10 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.Subscription", b =>
                 {
+                    b.HasOne("Hng.Domain.Entities.BillingPlan", "BillingPlan")
+                        .WithMany()
+                        .HasForeignKey("BillingPlanId");
+
                     b.HasOne("Hng.Domain.Entities.Organization", "Organization")
                         .WithMany("Subscriptions")
                         .HasForeignKey("OrganizationId");
@@ -929,6 +970,8 @@ namespace Hng.Infrastructure.Migrations
                     b.HasOne("Hng.Domain.Entities.User", "User")
                         .WithMany("Subscriptions")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("BillingPlan");
 
                     b.Navigation("Organization");
 

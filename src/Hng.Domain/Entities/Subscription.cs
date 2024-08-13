@@ -20,6 +20,11 @@ namespace Hng.Domain.Entities
         [ForeignKey("TransactionId")]
         public Transaction Transaction { get; set; }
 
+        public Guid? BillingPlanId { get; set; }
+
+        [ForeignKey("BillingPlanId")]
+        public BillingPlan BillingPlan { get; set; }
+
         public SubscriptionPlan Plan { get; set; }
 
         public SubscriptionFrequency Frequency { get; set; }

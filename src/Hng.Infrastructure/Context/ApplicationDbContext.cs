@@ -46,5 +46,6 @@ namespace Hng.Infrastructure.Context
         public DbSet<Timezone> Timezones { get; set; }
         public DbSet<HelpCenterTopic> HelpCenterTopic { get; set; }
         public DbSet<OrganizationInvite> OrganizationInvites { get; set; }
+        public DbSet<BillingPlan> BillingPlans { get; set; }
     }
 }
