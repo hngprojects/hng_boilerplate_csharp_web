@@ -2,11 +2,6 @@
 using Hng.Application.Features.HelpCenter.Handler;
 using Hng.Domain.Entities;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Hng.Application.Test.Features.HelpCenter
