@@ -27,9 +27,11 @@ public class MessageQueueService(ILogger<MessageQueueService> logger, IRepositor
         string inviteeEmail,
         string organizationName,
         DateTimeOffset expiryDate,
-        Guid inviteLink)
+        string inviteLink)
     {
         string rawTemplate = await templateService.GetOrganizationInviteTemplate();
+        organizationName = organizationName[0].ToString().ToUpper()+organizationName[1..];
+        inviterName = inviterName[0].ToString().ToUpper()+inviterName[1..];
         string replacedTemplate = rawTemplate
         .Replace("{{INVITER_NAME}}", inviterName)
         .Replace("{{ORGANIZATION_NAME}}", organizationName)
