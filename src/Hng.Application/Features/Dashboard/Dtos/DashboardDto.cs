@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Dashboard.Dtos
 {
-	public class DashboardDto
-	{
-		[JsonPropertyName("revenue")]
+    public class DashboardDto
+    {
+        [JsonPropertyName("revenue")]
 
-		public decimal Revenue { get; set; }
+        public decimal Revenue { get; set; }
 
-		[JsonPropertyName("subscriptions")]
-		public int Subscriptions { get; set; }
+        [JsonPropertyName("subscriptions")]
+        public int Subscriptions { get; set; }
 
-		[JsonPropertyName("sales")]
-		public int Sales { get; set; }
+        [JsonPropertyName("sales")]
+        public int Sales { get; set; }
 
-		[JsonPropertyName("activeSubscription")]
-		public int ActiveSubscription { get; set; }
+        [JsonPropertyName("activeSubscription")]
+        public int ActiveSubscription { get; set; }
 
-		[JsonPropertyName("monthSales")]
-		public IEnumerable<TransactionDto> MonthSales { get; set; }
-	}
+        [JsonPropertyName("monthSales")]
+        public IEnumerable<TransactionDto> MonthSales { get; set; }
+    }
 }
