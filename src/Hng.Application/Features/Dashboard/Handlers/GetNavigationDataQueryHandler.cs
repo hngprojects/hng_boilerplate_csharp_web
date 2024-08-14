@@ -37,15 +37,15 @@ namespace Hng.Application.Features.Dashboard.Handlers
 
             if (transactions.Count() == 0) return null;
 
-			List<ReportDataDto> result = transactions
-	            .GroupBy(l => l.CreatedAt.Month)
-	            .Select(cl => new ReportDataDto
-				{
-		            Month = cl.First().CreatedAt.Month,
-		            Revenue = cl.Sum(c => c.Amount),
-	            }).ToList();
+            List<ReportDataDto> result = transactions
+                .GroupBy(l => l.CreatedAt.Month)
+                .Select(cl => new ReportDataDto
+                {
+                    Month = cl.First().CreatedAt.Month,
+                    Revenue = cl.Sum(c => c.Amount),
+                }).ToList();
 
-            return new NavigationDataDto { Overview = result};
+            return new NavigationDataDto { Overview = result };
         }
     }
 }

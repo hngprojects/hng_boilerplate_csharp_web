@@ -13,7 +13,7 @@ using Xunit;
 namespace Hng.Application.Test.Features.Dashboard
 {
     public class GetNavigationDataQueryShould
-	{
+    {
         private readonly Mock<IRepository<Transaction>> _transactionRepositoryMock;
         private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<IAuthenticationService> _authenticationServiceMock;
@@ -65,7 +65,7 @@ namespace Hng.Application.Test.Features.Dashboard
                     Amount = 100,
                     PaidAt = DateTime.Now,
                     CreatedAt =DateTime.Now
-				}
+                }
             };
 
             var transactionDto = new List<TransactionDto>
@@ -82,7 +82,7 @@ namespace Hng.Application.Test.Features.Dashboard
                     Amount = 100,
                     PaidAt = DateTime.Now.AddDays(-2),
                     CreatedAt = DateTime.Now.AddMonths(-2)
-				},
+                },
                 new()
                 {
                     Id = Guid.NewGuid(),
@@ -95,7 +95,7 @@ namespace Hng.Application.Test.Features.Dashboard
                     Amount = 100,
                     PaidAt = DateTime.Now.AddDays(-2),
                     CreatedAt = DateTime.Now
-				}
+                }
             };
 
             _authenticationServiceMock.Setup(s => s.GetCurrentUserAsync()).ReturnsAsync(userId);
