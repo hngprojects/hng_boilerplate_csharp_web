@@ -1,5 +1,4 @@
-﻿using Hng.Application.Features.Organisations.Dtos;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.UserManagement.Dtos
 {

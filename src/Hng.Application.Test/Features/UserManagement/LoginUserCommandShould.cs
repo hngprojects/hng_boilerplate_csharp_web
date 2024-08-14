@@ -6,12 +6,7 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Hng.Application.Test.Features.UserManagement
@@ -52,7 +47,7 @@ namespace Hng.Application.Test.Features.UserManagement
         public async Task ReturnLoginResponseDtoForValidCredentials()
         {
             // Arrange
-            _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+            _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                 .ReturnsAsync(_user);
 
             _passwordServiceMock.Setup(service => service.IsPasswordEqual("password", _user.PasswordSalt, _user.Password))
@@ -77,7 +72,7 @@ namespace Hng.Application.Test.Features.UserManagement
             Assert.Equal("Login successful", result.Message);
             Assert.Equal("token", result.AccessToken);
             Assert.NotNull(result.Data);
-            //Assert.Equal(_user.Email, result.Data.Email);
+            Assert.Equal(_user.Email, result.Data.User.Email);
         }
 
         [Fact]
