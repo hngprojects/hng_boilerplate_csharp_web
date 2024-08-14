@@ -41,7 +41,7 @@ public class FaqController : ControllerBase
     /// <returns>A response with the update result or an error message.</returns>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(UpdateFaqResponseDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(FailureResponseDto<string>),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateFaq(Guid id, [FromBody] UpdateFaqRequestDto faqRequest)
     {
         var command = new UpdateFaqCommand(id, faqRequest);
