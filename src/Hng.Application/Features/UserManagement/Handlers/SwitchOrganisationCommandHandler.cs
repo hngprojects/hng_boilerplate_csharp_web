@@ -60,7 +60,7 @@ public class SwitchOrganisationCommandHandler(IRepository<User> userRepository, 
 
         return new SwitchOrganisationResponseDto
         {
-            Message = "Organisation successfully updated",
+            Message = "Organisation successfully switched",
             OrganisationDto = new OrganizationDto { Id = request.OrganisationId, IsActive = request.IsActive },
             StatusCode = StatusCodes.Status200OK
         };
