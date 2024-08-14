@@ -8,11 +8,15 @@ using MediatR;
 
 namespace Hng.Application.Features.Blogs.Handlers;
 
-public class CreateBlogCommandHandler : IRequestHandler<CreateBlogCommand, BlogDto>
+public class CreateBlogCommandHandler(
+    IMapper mapper,
+    IRepository<Blog> blogRepository,
+    IAuthenticationService authenticationService)
+    : IRequestHandler<CreateBlogCommand, CreateBlogResponseDto>
 {
-    private readonly IMapper _mapper;
-    private readonly IRepository<Blog> _blogRepository;
-    private readonly IAuthenticationService _authenticationService;
+    private readonly IMapper _mapper = mapper;
+    private readonly IRepository<Blog> _blogRepository = blogRepository;
+    private readonly IAuthenticationService _authenticationService = authenticationService;
 
     public CreateBlogCommandHandler(IMapper mapper, IRepository<Blog> blogRepository, IAuthenticationService authenticationService)
     {
