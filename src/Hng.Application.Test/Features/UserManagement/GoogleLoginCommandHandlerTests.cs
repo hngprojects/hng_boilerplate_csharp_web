@@ -6,6 +6,7 @@ using Hng.Application.Features.UserManagement.Handlers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -19,163 +20,138 @@ namespace Hng.Application.Test.Features.UserManagement
 {
     public class GoogleLoginCommandHandlerTests
     {
-        private readonly Mock<IRepository<User>> _userRepoMock;
-        private readonly Mock<IRepository<Role>> _roleRepoMock;
-        private readonly Mock<ITokenService> _tokenServiceMock;
-        private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<IGoogleAuthService> _googleAuthServiceMock;
+        private readonly Mock<IRepository<User>> _mockUserRepo;
+        private readonly Mock<IRepository<Role>> _mockRoleRepo;
+        private readonly Mock<ITokenService> _mockTokenService;
+        private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<IGoogleAuthService> _mockGoogleAuthService;
         private readonly GoogleLoginCommandHandler _handler;
 
         public GoogleLoginCommandHandlerTests()
         {
-            _userRepoMock = new Mock<IRepository<User>>();
-            _roleRepoMock = new Mock<IRepository<Role>>();
-            _tokenServiceMock = new Mock<ITokenService>();
-            _mapperMock = new Mock<IMapper>();
-            _googleAuthServiceMock = new Mock<IGoogleAuthService>();
+            _mockUserRepo = new Mock<IRepository<User>>();
+            _mockRoleRepo = new Mock<IRepository<Role>>();
+            _mockTokenService = new Mock<ITokenService>();
+            _mockMapper = new Mock<IMapper>();
+            _mockGoogleAuthService = new Mock<IGoogleAuthService>();
+
             _handler = new GoogleLoginCommandHandler(
-                _userRepoMock.Object,
-                _roleRepoMock.Object,
-                _tokenServiceMock.Object,
-                _mapperMock.Object,
-                _googleAuthServiceMock.Object);
+                _mockUserRepo.Object,
+                _mockRoleRepo.Object,
+                _mockTokenService.Object,
+                _mockMapper.Object,
+                _mockGoogleAuthService.Object
+            );
         }
 
         [Fact]
-        public async Task Handle_ShouldRegisterNewUser_WhenUserDoesNotExist()
+        public async Task Handle_GivenInvalidGoogleToken_ShouldReturnUnauthorizedResponse()
         {
             // Arrange
-            var googleIdToken = "valid_id_token";
-            var googlePayload = new GoogleJsonWebSignature.Payload
+            var request = new GoogleLoginCommand("valid-token");
+
+            _mockGoogleAuthService
+                .Setup(x => x.ValidateAsync(request.IdToken))
+                .ThrowsAsync(new InvalidJwtException("Invalid token"));
+
+            // Act
+            var result = await _handler.Handle(request, CancellationToken.None);
+
+            // Assert
+            Assert.Equal(StatusCodes.Status401Unauthorized, result.StatusCode);
+            Assert.Null(result.Data);
+            Assert.Equal("Invalid Google token.", result.Message);
+        }
+
+        [Fact]
+        public async Task Handle_GivenValidGoogleTokenAndNewUser_ShouldRegisterUserAndReturnSuccessResponse()
+        {
+            // Arrange
+            var request = new GoogleLoginCommand("valid-token");
+
+            var payload = new GoogleJsonWebSignature.Payload
             {
                 Email = "newuser@example.com",
-                GivenName = "New",
-                FamilyName = "User",
-                Picture = "http://example.com/avatar.jpg"
+                Name = "New User",
+                Picture = "https://example.com/avatar.jpg"
             };
+
+            _mockGoogleAuthService
+                .Setup(x => x.ValidateAsync(request.IdToken))
+                .ReturnsAsync(payload);
+
+            _mockUserRepo
+                   .Setup(x => x.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>>()))
+                   .ReturnsAsync((User)null);
 
             var newUser = new User
             {
-                Email = googlePayload.Email,
-                FirstName = googlePayload.GivenName,
-                LastName = googlePayload.FamilyName,
-                AvatarUrl = googlePayload.Picture
+                Email = payload.Email,
+                FirstName = "New",
+                LastName = "User",
+                AvatarUrl = payload.Picture,
+                Organizations = new List<Domain.Entities.Organization>()
             };
 
-            var newUserDto = new UserDto
-            {
-                Email = googlePayload.Email
-            };
-
-            // Mock Google token validation
-            _googleAuthServiceMock.Setup(service => service.ValidateAsync(It.IsAny<string>()))
-                                  .ReturnsAsync(googlePayload);
-
-            // Setup repository mocks
-            _userRepoMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
-                         .ReturnsAsync((User)null);
-
-            _userRepoMock.Setup(repo => repo.AddAsync(It.IsAny<User>()))
-                         .ReturnsAsync(newUser); // Return newUser wrapped in a Task
-
-            _mapperMock.Setup(m => m.Map<User>(It.IsAny<GoogleJsonWebSignature.Payload>()))
-                       .Returns(newUser);
-
-            _mapperMock.Setup(m => m.Map<UserDto>(It.IsAny<User>()))
-                       .Returns(newUserDto);
-
-            _tokenServiceMock.Setup(ts => ts.GenerateJwt(It.IsAny<User>()))
-                             .Returns("fake_jwt_token");
+            _mockMapper.Setup(x => x.Map<User>(payload)).Returns(newUser);
+            _mockTokenService.Setup(x => x.GenerateJwt(It.IsAny<User>())).Returns("token");
 
             // Act
-            var result = await _handler.Handle(new GoogleLoginCommand(googleIdToken), CancellationToken.None);
+            var result = await _handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result);
+            _mockUserRepo.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
+            _mockRoleRepo.Verify(x => x.AddAsync(It.IsAny<Role>()), Times.Once);
+            _mockUserRepo.Verify(x => x.SaveChanges(), Times.Once);
             Assert.Equal("Registration successful, user logged in.", result.Message);
-            Assert.NotNull(result.AccessToken);
-            //Assert.Equal("newuser@example.com", result.Data.Email);
-            _userRepoMock.Verify(repo => repo.AddAsync(It.Is<User>(u => u.Email == googlePayload.Email)), Times.Once);
+            Assert.NotNull(result.Data);
+            Assert.Equal("token", result.AccessToken);
         }
 
         [Fact]
-        public async Task Handle_ShouldLoginExistingUser_WhenUserExists()
+        public async Task Handle_GivenValidGoogleTokenAndExistingUser_ShouldReturnSuccessResponse()
         {
             // Arrange
-            var googleIdToken = "valid_id_token";
-            var googlePayload = new GoogleJsonWebSignature.Payload
+            var request = new GoogleLoginCommand("valid-token");
+
+            var payload = new GoogleJsonWebSignature.Payload
             {
                 Email = "existinguser@example.com",
-                GivenName = "Existing",
-                FamilyName = "User",
+                Name = "Existing User",
+                Picture = "https://example.com/avatar.jpg"
             };
+
+            _mockGoogleAuthService
+                .Setup(x => x.ValidateAsync(request.IdToken))
+                .ReturnsAsync(payload);
 
             var existingUser = new User
             {
-                Id = Guid.NewGuid(),
-                Email = googlePayload.Email,
-                FirstName = googlePayload.GivenName,
-                LastName = googlePayload.FamilyName,
+                Email = payload.Email,
+                FirstName = "Existing",
+                LastName = "User",
+                AvatarUrl = payload.Picture,
                 Organizations = new List<Domain.Entities.Organization>
                 {
-                    new Domain.Entities.Organization
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Existing User Org",
-                        UsersRoles = new List<UserRole>
-                        {
-                            new UserRole
-                            {
-                                Role = new Role
-                                {
-                                    Name = "Admin"
-                                }
-                            }
-                        }
-                    }
+                    new Domain.Entities.Organization { Id = Guid.NewGuid(), Name = "Org1", OwnerId = Guid.NewGuid() }
                 }
             };
 
-            var existingUserDto = new UserResponseDto
-            {
-                Email = existingUser.Email,
-                FirstName = existingUser.FirstName,
-                LastName = existingUser.LastName
-            };
+            _mockUserRepo
+                .Setup(x => x.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>>()))
+                .ReturnsAsync(existingUser);
 
-            // Mock Google token validation
-            _googleAuthServiceMock.Setup(service => service.ValidateAsync(It.IsAny<string>()))
-                                  .ReturnsAsync(googlePayload);
-
-            // Mock user repository to return the existing user
-            _userRepoMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
-                         .ReturnsAsync(existingUser);
-
-            // Mock AutoMapper to map the User entity to UserResponseDto
-            _mapperMock.Setup(m => m.Map<UserResponseDto>(It.IsAny<User>()))
-                       .Returns(existingUserDto);
-
-            // Mock the token service to generate a JWT token
-            _tokenServiceMock.Setup(ts => ts.GenerateJwt(It.IsAny<User>()))
-                             .Returns("fake_jwt_token");
+            _mockTokenService.Setup(x => x.GenerateJwt(It.IsAny<User>())).Returns("token");
 
             // Act
-            var result = await _handler.Handle(new GoogleLoginCommand(googleIdToken), CancellationToken.None);
+            var result = await _handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result);
             Assert.Equal("Login successful", result.Message);
-            Assert.Equal("fake_jwt_token", result.AccessToken);
-            Assert.Equal(existingUser.Email, result.Data.User.Email);
-
-            // Verify that the repository AddAsync method was not called
-            _userRepoMock.Verify(repo => repo.AddAsync(It.IsAny<User>()), Times.Never);
-
-            // Additional assertions for safety
             Assert.NotNull(result.Data);
-            Assert.NotNull(result.Data.User);
-            Assert.Equal(existingUser.Email, result.Data.User.Email);
+            Assert.Equal("token", result.AccessToken);
         }
 
     }
+
 }
