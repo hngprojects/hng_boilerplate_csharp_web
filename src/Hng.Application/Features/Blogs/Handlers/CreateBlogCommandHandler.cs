@@ -5,6 +5,7 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Hng.Application.Features.Blogs.Handlers;
 
@@ -18,14 +19,7 @@ public class CreateBlogCommandHandler(
     private readonly IRepository<Blog> _blogRepository = blogRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
 
-    public CreateBlogCommandHandler(IMapper mapper, IRepository<Blog> blogRepository, IAuthenticationService authenticationService)
-    {
-        _mapper = mapper;
-        _blogRepository = blogRepository;
-        _authenticationService = authenticationService;
-    }
-
-    public async Task<BlogDto> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
+    public async Task<CreateBlogResponseDto> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
     {
         var userId = await _authenticationService.GetCurrentUserAsync();
         var blog = _mapper.Map<Blog>(request.BlogBody);
@@ -36,7 +30,14 @@ public class CreateBlogCommandHandler(
         await _blogRepository.AddAsync(blog);
         await _blogRepository.SaveChanges();
 
-        return _mapper.Map<BlogDto>(blog);
+        var blogDto = _mapper.Map<BlogDto>(blog);
+
+        return new CreateBlogResponseDto
+        {
+            StatusCode = StatusCodes.Status201Created,
+            Message = "Blog created successfully",
+            Data = blogDto
+        };
     }
 
 }
