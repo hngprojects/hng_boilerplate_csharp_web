@@ -6,6 +6,7 @@ using Hng.Application.Features.Blogs.Handlers;
 using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;
 
@@ -103,7 +104,13 @@ namespace Hng.Application.Test.Features.Blog
 
             // Act & Assert
             var command = new UpdateBlogCommand(new UpdateBlogDto(), blogId);
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _handler.Handle(command, CancellationToken.None));
+            var result = await _handler.Handle(command, CancellationToken.None);
+
+            Assert.NotNull(result);
+            Assert.Equal(StatusCodes.Status403Forbidden, result.StatusCode);
+            Assert.Equal("You do not have permission to update this blog.", result.Message);
+            _blogRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<Domain.Entities.Blog>()), Times.Never);
+            _blogRepositoryMock.Verify(repo => repo.SaveChanges(), Times.Never);
         }
 
     }
