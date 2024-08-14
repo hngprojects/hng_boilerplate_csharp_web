@@ -9,7 +9,7 @@ using Moq;
 using System.Linq.Expressions;
 using Xunit;
 
-namespace Hng.Application.Test.Features.UserManagement
+namespace Hng.Application.Test.Features.Profile
 {
     public class UpdateProfileHandlerShould
     {
@@ -50,7 +50,7 @@ namespace Hng.Application.Test.Features.UserManagement
             };
             var userProfile = user.Profile;
             var request = new UpdateProfileDto()
-            { AvatarUrl = "https://res.cloudinary.com/kenelight4u/image/upload/v1723026364/HNG Bioler Plate/bmdqybm8pb2hu4dr8es7.jpg", Bio = "Good test" };
+            { Bio = "Good test" };
 
             _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                 .ReturnsAsync(user);

@@ -1,60 +1,26 @@
-using System.Security.Cryptography;
-using System.Text;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
-using Hng.Infrastructure.Utilities;
-using Hng.Infrastructure.Utilities.Errors.OrganisationInvite;
 
 namespace Hng.Infrastructure.Services;
 
-public class OrganisationInviteService(IRepository<Organization> organizationRepository, IRepository<OrganizationInvite> repository) : IOrganisationInviteService
+public class OrganisationInviteService(IRepository<OrganizationInvite> repository) : IOrganisationInviteService
 {
-    private readonly IRepository<Organization> organizationRepository = organizationRepository;
     private readonly IRepository<OrganizationInvite> repository = repository;
-
-    public async Task<Result<OrganizationInvite>> CreateInvite(Guid userId, Guid orgId, string email)
+    public async Task<OrganizationInvite> CreateInvite(Guid userId, Guid orgId, string email)
     {
-        Organization org = await organizationRepository.GetAsync(orgId);
-
-        if (org == null)
-        {
-            return OrganisationDoesNotExistError.FromId(orgId);
-        }
-
-        if (org.OwnerId != userId) return UserIsNotOwnerError.FromIds(userId, org.Id);
-
-        if (await DoesInviteExist(email, orgId)) return InviteAlreadyExistsError.FromEmail(email);
-
         var organizationInvite = new OrganizationInvite()
         {
             OrganizationId = orgId,
             Email = email,
-            InviteLink = GenerateUniqueInviteLink(email)
+            InviteLink = Guid.NewGuid()
         };
 
         await repository.AddAsync(organizationInvite);
 
         await repository.SaveChanges();
 
-        return Result<OrganizationInvite>.Success(organizationInvite);
+        return organizationInvite;
     }
-
-    private static string GenerateUniqueInviteLink(string email)
-    {
-        return Guid.NewGuid().ToString();
-
-    }
-
-    private async Task<bool> DoesInviteExist(string email, Guid orgId)
-    {
-        var invite = await repository.GetBySpec(e => e.Email == email && e.OrganizationId == orgId);
-        if (invite == null)
-        {
-            return false;
-        }
-        return true;
-    }
-
 
 }

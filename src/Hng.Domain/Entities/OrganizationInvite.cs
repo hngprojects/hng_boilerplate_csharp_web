@@ -15,7 +15,7 @@ public class OrganizationInvite : EntityBase
     public OrganizationInviteStatus Status { get; set; } = OrganizationInviteStatus.Pending;
 
     [Required]
-    public string InviteLink { get; set; }
+    public Guid InviteLink { get; set; }
 
     [Required]
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;

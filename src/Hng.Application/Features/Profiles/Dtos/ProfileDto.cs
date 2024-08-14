@@ -19,6 +19,7 @@ namespace Hng.Application.Features.Profiles.Dtos
         public string Pronoun { get; set; }
         [JsonPropertyName("job_title")]
         public string JobTitle { get; set; }
+        [JsonPropertyName("bio")]
         public string Bio { get; set; }
         [JsonPropertyName("facebook_link")]
         public string FacebookLink { get; set; }
