@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CSharpFunctionalExtensions;
-using Hng.Application.Features.ExternalIntegrations.FilesUploadIntegrations.Cloudinary.Services;
 using Hng.Application.Features.Profiles.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
@@ -14,18 +13,15 @@ namespace Hng.Application.Features.Profiles.Handlers
     {
         private readonly IRepository<User> _userRepo;
         private readonly IRepository<Profile> _profileRepo;
-        private readonly IImageService _imageService;
         private readonly IMapper _mapper;
 
         public UpdateProfileHandler(
             IRepository<User> userRepo,
             IRepository<Profile> profileRepo,
-            IImageService imageService,
             IMapper mapper)
         {
             _userRepo = userRepo;
             _profileRepo = profileRepo;
-            _imageService = imageService;
             _mapper = mapper;
         }
 
@@ -51,7 +47,6 @@ namespace Hng.Application.Features.Profiles.Handlers
 
                 await _userRepo.UpdateAsync(user);
             }
-
             await _userRepo.SaveChanges();
 
             var profileDto = _mapper.Map<ProfileDto>(user.Profile);

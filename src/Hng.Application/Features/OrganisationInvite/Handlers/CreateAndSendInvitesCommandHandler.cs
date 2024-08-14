@@ -7,6 +7,7 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using Hng.Infrastructure.Utilities;
+using Hng.Infrastructure.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
@@ -21,7 +22,7 @@ public class CreateAndSendInvitesCommandHandler(
     , IRequestValidator requestValidator) :
 
     IRequestHandler<CreateAndSendInvitesCommand,
-    StatusCodeResponse<object>>
+    StatusCodeResponse>
 {
     private readonly IOrganisationInviteService inviteService = inviteService;
     private readonly IMessageQueueService queueService = queueService;
@@ -30,7 +31,7 @@ public class CreateAndSendInvitesCommandHandler(
     private readonly IRepository<OrganizationInvite> inviteRepository = inviteRepository;
     private readonly IRequestValidator requestValidator = requestValidator;
 
-    public async Task<StatusCodeResponse<object>> Handle(CreateAndSendInvitesCommand request, CancellationToken cancellationToken)
+    public async Task<StatusCodeResponse> Handle(CreateAndSendInvitesCommand request, CancellationToken cancellationToken)
     {
         Guid orgId = Guid.Parse(request.Details.OrgId);
 
@@ -50,7 +51,7 @@ public class CreateAndSendInvitesCommandHandler(
             inviteList.Add(await CreateAndSendInvites(user, organization, email, inviteRepository));
         }
 
-        return new StatusCodeResponse<object>
+        return new StatusCodeResponse
         {
             StatusCode = StatusCodes.Status200OK,
             Message = "Invitation(s) processed successfully!",
@@ -89,9 +90,9 @@ public class CreateAndSendInvitesCommandHandler(
         return validationResult;
     }
 
-    private static StatusCodeResponse<object> ErrorResponse(Result<Organization> errorResult)
+    private static StatusCodeResponse ErrorResponse(Result<Organization> errorResult)
     {
-        return new StatusCodeResponse<object>()
+        return new StatusCodeResponse()
         {
             Message = errorResult.Error.Message,
             StatusCode = errorResult.Error switch

@@ -1,11 +1,11 @@
-﻿using Hng.Application.Features.Organisations.Commands;
-using Hng.Application.Features.Organisations.Dtos;
+﻿using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Hng.Application.Features.UserManagement.Handlers;
 
@@ -21,12 +21,22 @@ public class SwitchOrganisationCommandHandler(IRepository<User> userRepository, 
         var organisation = await _organisationRepository.GetBySpec(
             o => o.Id == request.OrganisationId);
 
+        if (organisation is null)
+        {
+            return new SwitchOrganisationResponseDto
+            {
+                Message = "Organization not found.",
+                StatusCode = StatusCodes.Status404NotFound
+            };
+        }
+
         var isMember = organisation.Users.Any(user => user.Id == loggedInUserId);
         if (!isMember)
         {
             return new SwitchOrganisationResponseDto
             {
-                Message = "Unauthorized request"
+                Message = "Unauthorized request. You are not a member of this organisation.",
+                StatusCode = StatusCodes.Status403Forbidden
             };
         }
 
@@ -37,7 +47,8 @@ public class SwitchOrganisationCommandHandler(IRepository<User> userRepository, 
         {
             return new SwitchOrganisationResponseDto
             {
-                Message = "No change required. The organization is already active."
+                Message = "No change required. The organization is already active.",
+                StatusCode = StatusCodes.Status304NotModified
             };
         }
 
@@ -50,7 +61,8 @@ public class SwitchOrganisationCommandHandler(IRepository<User> userRepository, 
         return new SwitchOrganisationResponseDto
         {
             Message = "Organisation successfully updated",
-            OrganisationDto = new OrganizationDto { Id = request.OrganisationId, IsActive = request.IsActive }
+            OrganisationDto = new OrganizationDto { Id = request.OrganisationId, IsActive = request.IsActive },
+            StatusCode = StatusCodes.Status200OK
         };
     }
 }

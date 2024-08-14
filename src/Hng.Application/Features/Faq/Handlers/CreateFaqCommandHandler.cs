@@ -23,19 +23,31 @@ public class CreateFaqCommandHandler : IRequestHandler<CreateFaqCommand, CreateF
         {
             return new CreateFaqResponseDto
             {
-                StatusCode = 500,
-                Message = "Failed to create FAQ"
+                StatusCode = 400,
+                Message = "Failed to create FAQ",
+                Data = null
+
             };
         }
 
         await _repository.AddAsync(faq);
         await _repository.SaveChanges();
 
-        var responseDto = _mapper.Map<CreateFaqResponseDto>(faq);
-        responseDto.StatusCode = 201;
-        responseDto.Message = "FAQ created successfully";
-
-        return responseDto;
+        return new CreateFaqResponseDto
+        {
+            StatusCode = 201,
+            Message = "FAQ created successfully",
+            Data = new FaqData
+            {
+                Id = faq.Id,
+                Question = faq.Question,
+                Answer = faq.Answer,
+                Category = faq.Category,
+                CreatedAt = faq.CreatedAt,
+                UpdatedAt = faq.UpdatedAt,
+                CreatedBy = faq.CreatedBy
+            }
+        };
     }
 }
 

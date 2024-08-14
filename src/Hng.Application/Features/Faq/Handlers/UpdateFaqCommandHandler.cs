@@ -26,7 +26,7 @@ public class UpdateFaqCommandHandler : IRequestHandler<UpdateFaqCommand, UpdateF
             {
                 StatusCode = 404,
                 Message = "FAQ not found",
-                CreatedBy = null
+                Data = null
             };
         }
 
@@ -34,11 +34,22 @@ public class UpdateFaqCommandHandler : IRequestHandler<UpdateFaqCommand, UpdateF
         await _repository.UpdateAsync(faq);
         await _repository.SaveChanges();
 
-        var responseDto = _mapper.Map<UpdateFaqResponseDto>(faq);
-        responseDto.StatusCode = 200;
-        responseDto.Message = "FAQ updated successfully";
-
-        return responseDto;
+        return new UpdateFaqResponseDto
+        {
+            StatusCode = 200,
+            Message = "FAQ updated successfully",
+            Data = new UpdateFaqResponseDto.FaqData
+            {
+                Id = faq.Id,
+                Question = faq.Question,
+                Answer = faq.Answer,
+                Category = faq.Category,
+                CreatedAt = faq.CreatedAt,
+                UpdatedAt = faq.UpdatedAt,
+                CreatedBy = faq.CreatedBy
+            }
+        };
     }
+
 }
 

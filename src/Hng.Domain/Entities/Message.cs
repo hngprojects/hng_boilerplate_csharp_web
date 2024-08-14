@@ -7,6 +7,7 @@ public class Message : EntityBase
 {
     private Message(MessageType type, string recipientContact, string recipientName, string subject, string content)
     {
+        Id = Guid.NewGuid();
         Type = type;
         RecipientName = recipientName;
         RecipientContact = recipientContact;

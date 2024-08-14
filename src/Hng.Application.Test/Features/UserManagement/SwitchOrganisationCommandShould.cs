@@ -4,6 +4,7 @@ using Hng.Application.Features.UserManagement.Handlers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;
 
@@ -47,7 +48,8 @@ public class SwitchOrganisationCommandShould
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal("Unauthorized request", result.Message);
+        Assert.Equal("Unauthorized request. You are not a member of this organisation.", result.Message);
+        Assert.Equal(StatusCodes.Status403Forbidden, result.StatusCode);
     }
 
     [Fact]
