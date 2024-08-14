@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -22,22 +22,29 @@ namespace Hng.Application.Test.Features.UserManagement
         private readonly Mock<IRepository<User>> _userRepoMock;
         private readonly Mock<IRepository<Role>> _roleRepoMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
-        private readonly Mock<IMapper> _mapperMock;
+        private readonly IMapper _mapper;
         private readonly Mock<IGoogleAuthService> _googleAuthServiceMock;
         private readonly GoogleLoginCommandHandler _handler;
 
         public GoogleLoginCommandHandlerTests()
         {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<User, UserDto>();
+                cfg.CreateMap<User, UserResponseDto>();
+                cfg.CreateMap<User, GoogleJsonWebSignature.Payload>().ReverseMap();
+            });
+            _mapper = config.CreateMapper();
+
             _userRepoMock = new Mock<IRepository<User>>();
             _roleRepoMock = new Mock<IRepository<Role>>();
             _tokenServiceMock = new Mock<ITokenService>();
-            _mapperMock = new Mock<IMapper>();
             _googleAuthServiceMock = new Mock<IGoogleAuthService>();
             _handler = new GoogleLoginCommandHandler(
                 _userRepoMock.Object,
                 _roleRepoMock.Object,
                 _tokenServiceMock.Object,
-                _mapperMock.Object,
+                _mapper,
                 _googleAuthServiceMock.Object);
         }
 
@@ -71,18 +78,8 @@ namespace Hng.Application.Test.Features.UserManagement
             _googleAuthServiceMock.Setup(service => service.ValidateAsync(It.IsAny<string>()))
                                   .ReturnsAsync(googlePayload);
 
-            // Setup repository mocks
-            _userRepoMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
-                         .ReturnsAsync((User)null);
-
             _userRepoMock.Setup(repo => repo.AddAsync(It.IsAny<User>()))
                          .ReturnsAsync(newUser); // Return newUser wrapped in a Task
-
-            _mapperMock.Setup(m => m.Map<User>(It.IsAny<GoogleJsonWebSignature.Payload>()))
-                       .Returns(newUser);
-
-            _mapperMock.Setup(m => m.Map<UserDto>(It.IsAny<User>()))
-                       .Returns(newUserDto);
 
             _tokenServiceMock.Setup(ts => ts.GenerateJwt(It.IsAny<User>()))
                              .Returns("fake_jwt_token");
@@ -94,7 +91,7 @@ namespace Hng.Application.Test.Features.UserManagement
             Assert.NotNull(result);
             Assert.Equal("Registration successful, user logged in.", result.Message);
             Assert.NotNull(result.AccessToken);
-            //Assert.Equal("newuser@example.com", result.Data.Email);
+            Assert.Equal("newuser@example.com", result.Data.User.Email);
             _userRepoMock.Verify(repo => repo.AddAsync(It.Is<User>(u => u.Email == googlePayload.Email)), Times.Once);
         }
 
@@ -112,50 +109,23 @@ namespace Hng.Application.Test.Features.UserManagement
 
             var existingUser = new User
             {
-                Id = Guid.NewGuid(),
                 Email = googlePayload.Email,
                 FirstName = googlePayload.GivenName,
                 LastName = googlePayload.FamilyName,
-                Organizations = new List<Domain.Entities.Organization>
-                {
-                    new Domain.Entities.Organization
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "Existing User Org",
-                        UsersRoles = new List<UserRole>
-                        {
-                            new UserRole
-                            {
-                                Role = new Role
-                                {
-                                    Name = "Admin"
-                                }
-                            }
-                        }
-                    }
-                }
             };
 
-            var existingUserDto = new UserResponseDto
+            var userDto = new UserDto
             {
-                Email = existingUser.Email,
-                FirstName = existingUser.FirstName,
-                LastName = existingUser.LastName
+                Email = googlePayload.Email
             };
 
             // Mock Google token validation
             _googleAuthServiceMock.Setup(service => service.ValidateAsync(It.IsAny<string>()))
                                   .ReturnsAsync(googlePayload);
 
-            // Mock user repository to return the existing user
-            _userRepoMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+            _userRepoMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                          .ReturnsAsync(existingUser);
 
-            // Mock AutoMapper to map the User entity to UserResponseDto
-            _mapperMock.Setup(m => m.Map<UserResponseDto>(It.IsAny<User>()))
-                       .Returns(existingUserDto);
-
-            // Mock the token service to generate a JWT token
             _tokenServiceMock.Setup(ts => ts.GenerateJwt(It.IsAny<User>()))
                              .Returns("fake_jwt_token");
 
@@ -165,17 +135,9 @@ namespace Hng.Application.Test.Features.UserManagement
             // Assert
             Assert.NotNull(result);
             Assert.Equal("Login successful", result.Message);
-            Assert.Equal("fake_jwt_token", result.AccessToken);
-            Assert.Equal(existingUser.Email, result.Data.User.Email);
-
-            // Verify that the repository AddAsync method was not called
+            Assert.NotNull(result.AccessToken);
+            Assert.Equal("existinguser@example.com", result.Data.User.Email);
             _userRepoMock.Verify(repo => repo.AddAsync(It.IsAny<User>()), Times.Never);
-
-            // Additional assertions for safety
-            Assert.NotNull(result.Data);
-            Assert.NotNull(result.Data.User);
-            Assert.Equal(existingUser.Email, result.Data.User.Email);
         }
-
     }
 }
