@@ -66,9 +66,10 @@ namespace Hng.Application
 
             services.AddSingleton(configurations.GetSection("EmailTemplateDirectory").Get<TemplateDir>());
 
-            services.AddOptionsWithValidateOnStart<FrontendUrl>()
-                .Bind(configurations.GetSection("FrontendUrl"));
-            // .ValidateDataAnnotations();
+            services.AddOptions<FrontendUrl>()
+                .Bind(configurations.GetSection("FrontendUrl"))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
 
             return services;
         }
