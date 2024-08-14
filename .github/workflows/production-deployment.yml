@@ -1,30 +1,28 @@
-name: Staging Deployment
+name: Production Deployment
 
 on:
-  push:
-    branches:
-      - staging
-
+  push: 
+    branches: 
+        - main
 jobs:
-  deploy_to_staging:
-    if: github.event.repository.fork == false
+  deploy:
     runs-on: ubuntu-latest
 
     environment:
-      name: "staging"
-      url: ${{ env.URL }}
+      name: "production"
+      url: ${{env.URL}}
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
-    - name: Deploy To Staging Server
-      uses: appleboy/ssh-action@v1.0.3
+    - name: Deploy To Prod Server
+      uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          cd staging/scripts
-          ./staging-deploy.sh
+          cd production/scripts
+          ./prod-deploy.sh
