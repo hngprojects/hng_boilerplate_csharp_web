@@ -13,15 +13,18 @@ namespace Hng.Application.Test.Features.Profile
     {
         private readonly Mock<IRepository<User>> _userRepositoryMock;
         private readonly Mock<IImageService> _imageServiceMock;
+        private readonly Mock<IRepository<Domain.Entities.Profile>> _profileRepositoryMock;
         private readonly UpdateProfilePictureHandler _handler;
 
         public UpdateProfilePictureHandlerShould()
         {
             _userRepositoryMock = new Mock<IRepository<User>>();
             _imageServiceMock = new Mock<IImageService>();
+            _profileRepositoryMock = new Mock<IRepository<Domain.Entities.Profile>>();
             _handler = new UpdateProfilePictureHandler(
                 _userRepositoryMock.Object,
-                _imageServiceMock.Object);
+                _imageServiceMock.Object,
+                _profileRepositoryMock.Object);
         }
 
         [Fact]
