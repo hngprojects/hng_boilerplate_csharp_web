@@ -22,7 +22,22 @@ namespace Hng.Web.Controllers
         public async Task<ActionResult> GetUserProduct([FromQuery] Guid userId)
         {
             var response = await _mediator.Send(new GetDashboardQuery(userId));
-            return Ok(response);
+			if (response != null)
+			{
+				return Ok(new
+				{
+					data = response,
+					message = "Retrieved successfully",
+                    status_code = 200
+				});
+
+			}
+			return NotFound(new
+			{
+				error = "No record found for this user",
+				message = "Request failed",
+				status_code = 404
+			});
         }
     }
 }
