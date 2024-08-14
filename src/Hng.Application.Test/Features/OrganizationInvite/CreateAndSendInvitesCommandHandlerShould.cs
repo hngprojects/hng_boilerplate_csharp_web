@@ -65,7 +65,7 @@ namespace Hng.Application.Tests.Features.OrganisationInvite.Handlers
             _mockRequestValidator.Setup(v => v.InviteDoesNotExistAsync(orgId, email, _mockInviteRepository.Object))
                 .ReturnsAsync(Result<OrganizationInvite>.Success(null));
             _mockInviteService.Setup(s => s.CreateInvite(userId, orgId, email))
-                .ReturnsAsync(new OrganizationInvite { InviteLink = Guid.NewGuid() });
+                .ReturnsAsync(new OrganizationInvite { InviteLink = $"https://example.com/invite?{Guid.NewGuid()}" });
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -156,7 +156,7 @@ namespace Hng.Application.Tests.Features.OrganisationInvite.Handlers
                 .ReturnsAsync(Result<OrganizationInvite>.Success(null));
 
             _mockInviteService.Setup(s => s.CreateInvite(userId, orgId, newEmail))
-                .ReturnsAsync(new OrganizationInvite { InviteLink = Guid.NewGuid() });
+                .ReturnsAsync(new OrganizationInvite { InviteLink = $"https://example.com/invite?{Guid.NewGuid()}" });
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
