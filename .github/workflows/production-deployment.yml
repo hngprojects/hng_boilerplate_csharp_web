@@ -1,43 +1,24 @@
-name: Production Deployment
+name: Staging Deployment
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - main
+      - staging
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build Docker image
-        run: docker build -t csharp_prod .
-
-      - name: Save and compress Docker image
-        run: docker save csharp_prod | gzip > csharp_prod.tar.gz
-
-      - name: Upload Docker image
-        uses: actions/upload-artifact@v2
-        with:
-          name: csharp_prod
-          path: csharp_prod.tar.gz
-        
-  deploy:
-    needs: build
+  deploy_to_staging:
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
 
     environment:
-      name: "production"
-      url: ${{ vars.URL }}
+      name: "staging"
+      url: ${{ env.URL }}
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Deploy To Prod Server
+    - name: Deploy To Staging Server
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
@@ -45,5 +26,5 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          cd production/scripts
-          ./prod-deploy.sh
+          cd staging/scripts
+          ./staging-deploy.sh
