@@ -114,5 +114,4 @@ namespace Hng.Application.Features.UserManagement.Handlers
             return signUpResponseData;
         }
     }
-
 }

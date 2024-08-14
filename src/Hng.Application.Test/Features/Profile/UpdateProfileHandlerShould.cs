@@ -15,7 +15,6 @@ namespace Hng.Application.Test.Features.Profile
     {
         private readonly Mock<IRepository<User>> _userRepositoryMock;
         private readonly Mock<IRepository<Domain.Entities.Profile>> _profileRepositoryMock;
-        private readonly Mock<IImageService> _imageServiceMock;
         private readonly IMapper _mapper;
         private readonly UpdateProfileHandler _handler;
 
@@ -27,11 +26,9 @@ namespace Hng.Application.Test.Features.Profile
 
             _userRepositoryMock = new Mock<IRepository<User>>();
             _profileRepositoryMock = new Mock<IRepository<Domain.Entities.Profile>>();
-            _imageServiceMock = new Mock<IImageService>();
             _handler = new UpdateProfileHandler(
                 _userRepositoryMock.Object,
                 _profileRepositoryMock.Object,
-                _imageServiceMock.Object,
                 _mapper);
         }
 
