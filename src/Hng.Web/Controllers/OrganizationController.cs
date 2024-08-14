@@ -116,36 +116,17 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         return StatusCode(response.StatusCode, response);
     }
 
-    // /// <summary>
-    // /// Create an invite link to join an organisation
-    // /// </summary>
-    // [HttpPost("{id}/invite")]
-    // [ProducesResponseType(typeof(CreateOrganizationDto), StatusCodes.Status201Created)]
-    // [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.Conflict)]
-    // [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.NotFound)]
-    // [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.Unauthorized)]
-    // [ProducesResponseType(typeof(FailureResponseDto<string>), (int)HttpStatusCode.UnprocessableContent)]
-
-    // public async Task<ActionResult<CreateOrganizationDto>> CreateOrganizationInvite([FromBody] CreateOrganizationInviteDto body, string id)
-    // {
-    //     var inviterId = await authenticationService.GetCurrentUserAsync();
-    //     body.UserId = inviterId;
-    //     body.OrganizationId = id;
-    //     var command = new CreateOrganizationInviteCommand(body);
-    //     StatusCodeResponse result = await mediator.Send(command);
-
-    //     return StatusCode(result.StatusCode, result);
-    // }
     /// <summary>
-    /// Create and send invite links to join an organisation
+    /// Create and send invite links to join an organisatiozn
     /// </summary>
-    [HttpPost("send-invite")]
+    [HttpPost("send-invites")]
     [ProducesResponseType(typeof(ControllerStatusResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.UnprocessableContent)]
 
-    public async Task<ActionResult<CreateOrganizationDto>> CreateOrganizationInvite([FromBody] CreateAndSendInvitesDto body)
+    public async Task<ActionResult<CreateOrganizationDto>> CreateAndSendOrganizationInvites([FromBody] CreateAndSendInvitesDto body)
     {
         body.InviterId = await authenticationService.GetCurrentUserAsync();
         var command = new CreateAndSendInvitesCommand(body);

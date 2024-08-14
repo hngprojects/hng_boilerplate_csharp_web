@@ -1,4 +1,4 @@
-namespace Hng.Infrastructure.Utilities;
+namespace Hng.Infrastructure.Utilities.Results;
 
 public class Result<T>
 {
