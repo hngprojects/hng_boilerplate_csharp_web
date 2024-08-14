@@ -20,13 +20,21 @@ public class SwitchOrganisationCommandHandler(IRepository<User> userRepository, 
         var loggedInUserId = await _authenticationService.GetCurrentUserAsync();
         var organisation = await _organisationRepository.GetBySpec(
             o => o.Id == request.OrganisationId);
+        
+        if (organisation is null)
+        {
+            return new SwitchOrganisationResponseDto
+            {
+                Message = "Organization not found."
+            };
+        }
 
         var isMember = organisation.Users.Any(user => user.Id == loggedInUserId);
         if (!isMember)
         {
             return new SwitchOrganisationResponseDto
             {
-                Message = "Unauthorized request"
+                Message = "Unauthorized request. You are not a member of this organisation."
             };
         }
 
