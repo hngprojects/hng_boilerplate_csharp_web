@@ -18,4 +18,3 @@ dotnet publish -c Release
 
 # restart the systemd service
 sudo systemctl restart hng-web-staging
-

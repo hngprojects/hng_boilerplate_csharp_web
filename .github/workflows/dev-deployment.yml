@@ -1,4 +1,5 @@
 name: Dev Deployment
+
 on:
   push:
     branches:
@@ -17,24 +18,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Build Docker Image
-      run: |
-        docker build -t csharp:dev -f Dockerfile .
-
-    - name: Save Docker Image to Tar File
-      run: |
-        docker save csharp:dev -o csharp_dev.tar
-
-    - name: Copy Docker Image to Server
-      uses: appleboy/scp-action@v0.1.1
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
-        source: "csharp_dev.tar"
-        target: "/home/${{ secrets.USERNAME }}/csharp_dev.tar"
-
     - name: Deploy To Dev Server
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -43,5 +26,5 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          cd /home/${{ secrets.USERNAME }}/development/scripts
+          cd development/scripts
           ./dev-deploy.sh

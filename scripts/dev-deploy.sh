@@ -1,17 +1,20 @@
 #!/bin/bash
 set -e
 
-# Load the Docker image
-docker load -i /home/${USER}/csharp_dev.tar
+# navigate to repo root and fetch latest changes
+cd "$(git rev-parse --show-toplevel)"
 
-# Navigate to the project directory
-cd ~/development
 git checkout dev
 git pull origin dev
 
-docker compose down
-# Use Docker Compose to start the containers
-docker compose up -d
+# install dependencies
+dotnet restore ./Hng.Csharp.Web.sln
 
-# Cleanup: Remove the tar file if no longer needed
-rm -f /home/${USER}/csharp_dev.tar
+# build app
+dotnet build --no-restore -c Debug
+
+# publish app
+dotnet publish ./src/Hng.Web/Hng.Web.csproj --no-build -c Debug
+
+# restart the systemd service
+sudo systemctl restart hng-web-dev
