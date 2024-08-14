@@ -9,9 +9,13 @@ public class FaqMappingProfile : AutoMapper.Profile
         CreateMap<Faq, FaqResponseDto>();
         // Mapping from Faq to CreateFaqResponseDto
         CreateMap<Faq, CreateFaqResponseDto>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
-            .ForMember(dest => dest.Answer, opt => opt.MapFrom(src => src.Answer))
+            .ForPath(dest => dest.Data.Id, opt => opt.MapFrom(src => src.Id))
+            .ForPath(dest => dest.Data.Question, opt => opt.MapFrom(src => src.Question))
+            .ForPath(dest => dest.Data.Answer, opt => opt.MapFrom(src => src.Answer))
+            .ForPath(dest => dest.Data.Category, opt => opt.MapFrom(src => src.Category))
+            .ForPath(dest => dest.Data.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
+            .ForPath(dest => dest.Data.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
+            .ForPath(dest => dest.Data.CreatedBy, opt => opt.MapFrom(src => src.CreatedBy))
             .ReverseMap();
 
         // Mapping from CreateFaqRequestDto to Faq
@@ -22,10 +26,10 @@ public class FaqMappingProfile : AutoMapper.Profile
 
         // Mapping from Faq to UpdateFaqResponseDto
         CreateMap<Faq, UpdateFaqResponseDto>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))
-            .ForMember(dest => dest.Answer, opt => opt.MapFrom(src => src.Answer))
-            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.category))
+            .ForPath(dest => dest.Data.Id, opt => opt.MapFrom(src => src.Id))
+            .ForPath(dest => dest.Data.Question, opt => opt.MapFrom(src => src.Question))
+            .ForPath(dest => dest.Data.Answer, opt => opt.MapFrom(src => src.Answer))
+            .ForPath(dest => dest.Data.Category, opt => opt.MapFrom(src => src.Category))
             .ReverseMap();
 
         // Mapping from UpdateFaqRequestDto to Faq
