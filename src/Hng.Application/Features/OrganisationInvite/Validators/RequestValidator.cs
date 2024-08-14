@@ -1,7 +1,7 @@
 using Hng.Application.Features.OrganisationInvite.Validators.ValidationErrors;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
-using Hng.Infrastructure.Utilities;
+using Hng.Infrastructure.Utilities.Results;
 namespace Hng.Application.Features.OrganisationInvite.Validators;
 
 public class RequestValidator : IRequestValidator

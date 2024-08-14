@@ -7,9 +7,9 @@ using Hng.Application.Features.OrganisationInvite.Validators;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
-using Hng.Infrastructure.Utilities;
 using Microsoft.AspNetCore.Http;
 using Hng.Application.Features.OrganisationInvite.Validators.ValidationErrors;
+using Hng.Infrastructure.Utilities.Results;
 
 namespace Hng.Application.Tests.Features.OrganisationInvite.Handlers
 {

@@ -1,4 +1,4 @@
-namespace Hng.Infrastructure.Utilities;
+namespace Hng.Infrastructure.Utilities.StringKeys;
 
 public static class EmailConstants
 {

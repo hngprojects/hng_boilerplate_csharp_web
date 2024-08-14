@@ -1,5 +1,5 @@
 using Hng.Domain.Entities;
-using Hng.Infrastructure.Utilities;
+using Hng.Infrastructure.Utilities.Results;
 
 namespace Hng.Infrastructure.Services.Interfaces;
 
