@@ -1,6 +1,8 @@
 ﻿using Hng.Application.Features.Faq.Commands;
 using Hng.Application.Features.Faq.Dtos;
 using Hng.Application.Features.Faq.Queries;
+using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,9 +25,7 @@ public class FaqController : ControllerBase
     /// <returns>A response with the creation result or an error message.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(CreateFaqResponseDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [HttpPost]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateFaq([FromBody] CreateFaqRequestDto faqRequest)
     {
         var command = new CreateFaqCommand(faqRequest);
@@ -41,9 +41,7 @@ public class FaqController : ControllerBase
     /// <returns>A response with the update result or an error message.</returns>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(UpdateFaqResponseDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>),StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateFaq(Guid id, [FromBody] UpdateFaqRequestDto faqRequest)
     {
         var command = new UpdateFaqCommand(id, faqRequest);
@@ -58,9 +56,8 @@ public class FaqController : ControllerBase
     /// <param name="id">The ID of the FAQ to delete.</param>
     /// <returns>A response with the deletion result or an error message.</returns>
     [HttpDelete("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(SuccessResponseDto<object>), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteFaq(Guid id)
     {
         var command = new DeleteFaqCommand(id);
@@ -73,7 +70,7 @@ public class FaqController : ControllerBase
     /// <returns>A list of all FAQs with a success message.</returns>
     [HttpGet]
     [ProducesResponseType(typeof(FaqResponseDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllFaqs()
     {
         var query = new GetAllFaqsQuery();
