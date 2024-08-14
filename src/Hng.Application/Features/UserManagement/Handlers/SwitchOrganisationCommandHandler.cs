@@ -36,7 +36,7 @@ public class SwitchOrganisationCommandHandler(IRepository<User> userRepository, 
             return new SwitchOrganisationResponseDto
             {
                 Message = "Unauthorized request. You are not a member of this organisation.",
-                StatusCode = StatusCodes.Status401Unauthorized
+                StatusCode = StatusCodes.Status403Forbidden
             };
         }
 
