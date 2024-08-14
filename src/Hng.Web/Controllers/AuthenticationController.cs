@@ -25,9 +25,9 @@ namespace Hng.Web.Controllers
         /// <param name="loginRequest"></param>
         /// <returns></returns>
         [HttpPost("login")]
-        [ProducesResponseType(typeof(UserLoginResponseDto<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserLoginResponseDto<SignupResponseData>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserLoginResponseDto<object>>> Login([FromBody] UserLoginRequestDto loginRequest)
+        public async Task<ActionResult<UserLoginResponseDto<SignupResponseData>>> Login([FromBody] UserLoginRequestDto loginRequest)
         {
             var command = new CreateUserLoginCommand(loginRequest);
             var response = await _mediator.Send(command);
@@ -74,9 +74,9 @@ namespace Hng.Web.Controllers
         /// <param name="googleLoginRequest"></param>
         /// <returns></returns>
         [HttpPost("google")]
-        [ProducesResponseType(typeof(UserLoginResponseDto<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserLoginResponseDto<SignupResponseData>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<UserLoginResponseDto<object>>> GoogleLogin([FromBody] GoogleLoginRequestDto googleLoginRequest)
+        public async Task<ActionResult<UserLoginResponseDto<SignupResponseData>>> GoogleLogin([FromBody] GoogleLoginRequestDto googleLoginRequest)
         {
             var command = new GoogleLoginCommand(googleLoginRequest.IdToken);
             var response = await _mediator.Send(command);

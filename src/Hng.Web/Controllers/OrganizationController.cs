@@ -1,10 +1,15 @@
-﻿using Hng.Application.Features.Organisations.Commands;
+﻿using System.Net;
+using Hng.Application.Features.OrganisationInvite.Commands;
+using Hng.Application.Features.OrganisationInvite.Dtos;
+using Hng.Application.Features.OrganisationInvite.Validators;
+using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Organisations.Queries;
 using Hng.Application.Features.Roles.Command;
 using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
 using Hng.Application.Shared.Dtos;
+using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +18,11 @@ namespace Hng.Web.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/v1/organizations")]
-public class OrganizationController(IMediator mediator) : ControllerBase
+[Route("api/v1/organisations")]
+public class OrganizationController(IMediator mediator, IAuthenticationService authenticationService, IRequestValidator validator) : ControllerBase
 {
+    private readonly IAuthenticationService authenticationService = authenticationService;
+    private readonly IRequestValidator validator = validator;
 
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status200OK)]
@@ -108,4 +115,24 @@ public class OrganizationController(IMediator mediator) : ControllerBase
         var response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
     }
+
+    /// <summary>
+    /// Create and send invite links to join an organisatiozn
+    /// </summary>
+    [HttpPost("send-invites")]
+    [ProducesResponseType(typeof(ControllerStatusResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.UnprocessableContent)]
+
+    public async Task<ActionResult<CreateOrganizationDto>> CreateAndSendOrganizationInvites([FromBody] CreateAndSendInvitesDto body)
+    {
+        body.InviterId = await authenticationService.GetCurrentUserAsync();
+        var command = new CreateAndSendInvitesCommand(body);
+        StatusCodeResponse result = await mediator.Send(command);
+
+        return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
+    }
+
 }

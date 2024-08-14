@@ -1,18 +1,37 @@
 name: Staging Deployment
 
 on:
-  push:
-    branches:
-      - staging
+  workflow_dispatch:
+    push:
+      branches:
+        - staging
 
 jobs:
-  deploy_to_staging:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t csharp_staging .
+
+      - name: Save and compress Docker image
+        run: docker save csharp_staging | gzip > csharp_staging.tar.gz
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v2
+        with:
+          name: csharp_staging
+          path: csharp_staging.tar.gz
+
+  deploy:
+    needs: build
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
 
     environment:
       name: "staging"
-      url: ${{ env.URL }}
+      url: ${{ vars.URL }}
 
     steps:
     - name: Checkout repository

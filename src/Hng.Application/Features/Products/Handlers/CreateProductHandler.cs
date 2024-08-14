@@ -2,36 +2,40 @@
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Domain.Entities;
+using Hng.Infrastructure.Services.Interfaces;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Products.Handlers
 {
-    public class CreateProductHandler : IRequestHandler<CreateProductCommand, ProductDto>
+    public class CreateProductHandler : IRequestHandler<CreateProductCommand, CreateProductResponseDto>
     {
-        private readonly IRepository<Product> _repository;
+        private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<Organization> _organizationRepository;
+        private readonly IAuthenticationService _authenticationService;
         private readonly IMapper _mapper;
 
-        public CreateProductHandler(IRepository<Product> productReposiotry, IMapper mapper)
+        public CreateProductHandler(IRepository<Product> productReposiotry, IRepository<Organization> organizationRepository, IAuthenticationService authenticationService, IMapper mapper)
         {
-            _repository = productReposiotry;
+            _productRepository = productReposiotry;
+            _organizationRepository = organizationRepository;
+            _authenticationService = authenticationService;
             _mapper = mapper;
         }
-        public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<CreateProductResponseDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var product = _mapper.Map<Product>(request.productBody);
-            product.Id = Guid.NewGuid();
-            product.UserId = Guid.Parse(request.UserId);
-            product.CreatedAt = DateTime.UtcNow;
-            product.UpdatedAt = DateTime.UtcNow;
-            await _repository.AddAsync(product);
-            await _repository.SaveChanges();
-            return _mapper.Map<ProductDto>(product);
+            var userId = await _authenticationService.GetCurrentUserAsync();
+            var organization = await _organizationRepository.GetBySpec(u => u.Id == request.OrgId);
+            if (organization != null)
+            {
+                var product = _mapper.Map<Product>(request.ProductDto);
+                product.OrganizationId = request.OrgId;
+                product.UserId = userId;
+                await _productRepository.AddAsync(product);
+                await _productRepository.SaveChanges();
+                return _mapper.Map<CreateProductResponseDto>(product);
+            }
+            return null;
         }
     }
 }

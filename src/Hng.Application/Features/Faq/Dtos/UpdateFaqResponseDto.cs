@@ -16,9 +16,15 @@ namespace Hng.Application.Features.Faq.Dtos
         public string Question { get; set; }
         [JsonPropertyName("answer")]
         public string Answer { get; set; }
-        [JsonPropertyName("error")]
-        public string Error { get; set; }
+        [JsonPropertyName("category")]
+        public string Category { get; set; }
         [JsonPropertyName("message")]
         public string Message { get; set; }
+        [JsonPropertyName("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [JsonPropertyName("updated_at")]
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        [JsonPropertyName("created_by")]
+        public string CreatedBy { get; set; } = "SuperAdmin";
     }
 }

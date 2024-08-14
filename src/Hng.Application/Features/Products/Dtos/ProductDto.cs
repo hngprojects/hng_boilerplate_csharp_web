@@ -25,4 +25,9 @@ namespace Hng.Application.Features.Products.Dtos
         [JsonPropertyName("updated_at")]
         public DateTime? UpdatedAt { get; set; }
     }
+
+    public class ProductsDto
+    {
+        public List<ProductDto> Products { get; set; }
+    }
 }

@@ -1,6 +1,7 @@
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Services.Interfaces;
 using Hng.Infrastructure.Utilities;
+using Hng.Infrastructure.Utilities.StringKeys;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ internal class EmailService(SmtpCredentials smtpCredentials, ILogger<EmailServic
     {
         logger.LogDebug("Sending the passed email message from the email service");
         MimeMessage emailMessage = new();
-        emailMessage.From.Add(new MailboxAddress("HNG Boilerplate", "boilerplate@email.com"));
+        emailMessage.From.Add(new MailboxAddress(EmailConstants.senderMailboxName, EmailConstants.senderMailboxAddress));
         emailMessage.To.Add(new MailboxAddress($"{message.RecipientName}", $"{message.RecipientContact}"));
         emailMessage.Subject = message.Subject;
 

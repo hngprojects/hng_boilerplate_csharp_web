@@ -4,6 +4,7 @@ using Hng.Application.Features.Faq.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 public class UpdateFaqCommandHandler : IRequestHandler<UpdateFaqCommand, UpdateFaqResponseDto>
 {
@@ -18,18 +19,20 @@ public class UpdateFaqCommandHandler : IRequestHandler<UpdateFaqCommand, UpdateF
 
     public async Task<UpdateFaqResponseDto> Handle(UpdateFaqCommand request, CancellationToken cancellationToken)
     {
-        var faq = await _repository.GetAsync(request.Id);
+        var faq = await _repository.GetBySpec(x => x.Id == request.Id);
         if (faq == null)
         {
             return new UpdateFaqResponseDto
             {
                 StatusCode = 404,
-                Message = "FAQ not found"
+                Message = "FAQ not found",
+                CreatedBy = null
             };
         }
 
         _mapper.Map(request.FaqRequestDto, faq);
         await _repository.UpdateAsync(faq);
+        await _repository.SaveChanges();
 
         var responseDto = _mapper.Map<UpdateFaqResponseDto>(faq);
         responseDto.StatusCode = 200;

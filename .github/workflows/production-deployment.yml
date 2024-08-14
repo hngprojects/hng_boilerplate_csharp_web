@@ -1,18 +1,37 @@
 name: Production Deployment
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
 
 jobs:
-  deploy_to_production:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t csharp_prod .
+
+      - name: Save and compress Docker image
+        run: docker save csharp_prod | gzip > csharp_prod.tar.gz
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v2
+        with:
+          name: csharp_prod
+          path: csharp_prod.tar.gz
+        
+  deploy:
+    needs: build
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
 
     environment:
       name: "production"
-      url: ${{ env.URL }}
+      url: ${{ vars.URL }}
 
     steps:
     - name: Checkout repository

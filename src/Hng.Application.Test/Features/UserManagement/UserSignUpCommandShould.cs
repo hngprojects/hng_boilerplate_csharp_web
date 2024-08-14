@@ -16,6 +16,7 @@ namespace Hng.Application.Test.Features.UserManagement
     {
         private readonly IMapper _mapper;
         private readonly Mock<IRepository<User>> _userRepositoryMock;
+        private readonly Mock<IRepository<Role>> _roleRepositoryMock;
         private readonly Mock<ILogger<UserSignUpCommandHandler>> _loggerMock;
         private readonly Mock<IPasswordService> _passwordServiceMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
@@ -30,6 +31,7 @@ namespace Hng.Application.Test.Features.UserManagement
             _mapper = config.CreateMapper();
 
             _userRepositoryMock = new Mock<IRepository<User>>();
+            _roleRepositoryMock = new Mock<IRepository<Role>>();
             _loggerMock = new Mock<ILogger<UserSignUpCommandHandler>>();
             _passwordServiceMock = new Mock<IPasswordService>();
             _tokenServiceMock = new Mock<ITokenService>();
@@ -50,6 +52,7 @@ namespace Hng.Application.Test.Features.UserManagement
 
             var handler = new UserSignUpCommandHandler(
             _userRepositoryMock.Object,
+            _roleRepositoryMock.Object,
             _mapper,
             _loggerMock.Object,
             _passwordServiceMock.Object,
@@ -62,7 +65,6 @@ namespace Hng.Application.Test.Features.UserManagement
                 Password = "password123",
                 FirstName = "John",
                 LastName = "Doe",
-                PhoneNumber = "+2340987654321"
             });
 
             // Act
@@ -72,7 +74,7 @@ namespace Hng.Application.Test.Features.UserManagement
             Assert.NotNull(result);
             Assert.Equal("User registered successfully", result.Message);
             Assert.NotNull(result.Data);
-            Assert.Equal("token", result.Data.Token);
+            Assert.Equal("token", result.Token);
             Assert.NotNull(result.Data.User);
             Assert.Equal("newuser@example.com", result.Data.User.Email);
 
@@ -90,6 +92,7 @@ namespace Hng.Application.Test.Features.UserManagement
 
             var handler = new UserSignUpCommandHandler(
             _userRepositoryMock.Object,
+            _roleRepositoryMock.Object,
             _mapper,
             _loggerMock.Object,
             _passwordServiceMock.Object,
@@ -101,7 +104,6 @@ namespace Hng.Application.Test.Features.UserManagement
                 Password = "password123",
                 FirstName = "John",
                 LastName = "Doe",
-                PhoneNumber = "+2340987654321"
             });
 
             // Act
@@ -125,6 +127,7 @@ namespace Hng.Application.Test.Features.UserManagement
 
             var handler = new UserSignUpCommandHandler(
             _userRepositoryMock.Object,
+            _roleRepositoryMock.Object,
             _mapper,
             _loggerMock.Object,
             _passwordServiceMock.Object,
@@ -136,7 +139,6 @@ namespace Hng.Application.Test.Features.UserManagement
                 Password = "password123",
                 FirstName = "John",
                 LastName = "Doe",
-                PhoneNumber = "+2340987654321"
             });
 
             // Act

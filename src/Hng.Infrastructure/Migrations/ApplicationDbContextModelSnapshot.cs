@@ -22,6 +22,38 @@ namespace Hng.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Hng.Domain.Entities.BillingPlan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Frequency")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BillingPlans");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Blog", b =>
                 {
                     b.Property<Guid>("Id")
@@ -47,6 +79,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -145,9 +180,32 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Question")
                         .HasColumnType("text");
 
+                    b.Property<string>("category")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("FAQ");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.HelpCenterTopic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Author")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HelpCenterTopic");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Job", b =>
@@ -341,6 +399,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Industry")
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -364,6 +425,40 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("Organizations");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.OrganizationInvite", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("AcceptedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("InviteLink")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrganizationInvites");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -382,11 +477,26 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -395,6 +505,8 @@ namespace Hng.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrganizationId");
 
                     b.HasIndex("UserId");
 
@@ -526,6 +638,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
+                    b.Property<Guid?>("BillingPlanId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -560,6 +675,8 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BillingPlanId");
+
                     b.HasIndex("OrganizationId");
 
                     b.HasIndex("TransactionId");
@@ -567,6 +684,26 @@ namespace Hng.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Subscriptions");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.Timezone", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GmtOffset")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TimezoneValue")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Timezones");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Transaction", b =>
@@ -643,6 +780,9 @@ namespace Hng.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsSuperAdmin")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -657,10 +797,15 @@ namespace Hng.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("TimezoneId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TimezoneId");
 
                     b.ToTable("Users");
                 });
@@ -761,11 +906,19 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
+                    b.HasOne("Hng.Domain.Entities.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Hng.Domain.Entities.User", "User")
                         .WithMany("Products")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Organization");
 
                     b.Navigation("User");
                 });
@@ -805,6 +958,10 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.Subscription", b =>
                 {
+                    b.HasOne("Hng.Domain.Entities.BillingPlan", "BillingPlan")
+                        .WithMany()
+                        .HasForeignKey("BillingPlanId");
+
                     b.HasOne("Hng.Domain.Entities.Organization", "Organization")
                         .WithMany("Subscriptions")
                         .HasForeignKey("OrganizationId");
@@ -816,6 +973,8 @@ namespace Hng.Infrastructure.Migrations
                     b.HasOne("Hng.Domain.Entities.User", "User")
                         .WithMany("Subscriptions")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("BillingPlan");
 
                     b.Navigation("Organization");
 
@@ -843,6 +1002,15 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("Subscription");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.User", b =>
+                {
+                    b.HasOne("Hng.Domain.Entities.Timezone", "Timezone")
+                        .WithMany()
+                        .HasForeignKey("TimezoneId");
+
+                    b.Navigation("Timezone");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.UserRole", b =>

@@ -1,12 +1,31 @@
 name: Dev Deployment
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
 
 jobs:
-  deploy_to_dev:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t csharp .
+
+      - name: Save and compress Docker image
+        run: docker save csharp | gzip > csharp.tar.gz
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v2
+        with:
+          name: csharp
+          path: csharp.tar.gz
+        
+  deploy:
+    needs: build
     if: github.event.repository.fork == false
     runs-on: ubuntu-latest
 

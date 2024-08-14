@@ -9,13 +9,12 @@ using Moq;
 using System.Linq.Expressions;
 using Xunit;
 
-namespace Hng.Application.Test.Features.UserManagement
+namespace Hng.Application.Test.Features.Profile
 {
     public class UpdateProfileHandlerShould
     {
         private readonly Mock<IRepository<User>> _userRepositoryMock;
         private readonly Mock<IRepository<Domain.Entities.Profile>> _profileRepositoryMock;
-        private readonly Mock<IImageService> _imageServiceMock;
         private readonly IMapper _mapper;
         private readonly UpdateProfileHandler _handler;
 
@@ -27,11 +26,9 @@ namespace Hng.Application.Test.Features.UserManagement
 
             _userRepositoryMock = new Mock<IRepository<User>>();
             _profileRepositoryMock = new Mock<IRepository<Domain.Entities.Profile>>();
-            _imageServiceMock = new Mock<IImageService>();
             _handler = new UpdateProfileHandler(
                 _userRepositoryMock.Object,
                 _profileRepositoryMock.Object,
-                _imageServiceMock.Object,
                 _mapper);
         }
 
@@ -50,7 +47,7 @@ namespace Hng.Application.Test.Features.UserManagement
             };
             var userProfile = user.Profile;
             var request = new UpdateProfileDto()
-            { AvatarUrl = "https://res.cloudinary.com/kenelight4u/image/upload/v1723026364/HNG Bioler Plate/bmdqybm8pb2hu4dr8es7.jpg", Bio = "Good test" };
+            { Bio = "Good test" };
 
             _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                 .ReturnsAsync(user);

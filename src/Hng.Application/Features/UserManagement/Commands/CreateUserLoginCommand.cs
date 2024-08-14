@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Hng.Application.Features.UserManagement.Commands
 {
-    public class CreateUserLoginCommand : IRequest<UserLoginResponseDto<object>>
+    public class CreateUserLoginCommand : IRequest<UserLoginResponseDto<SignupResponseData>>
     {
         public CreateUserLoginCommand(UserLoginRequestDto loginRequest)
         {
