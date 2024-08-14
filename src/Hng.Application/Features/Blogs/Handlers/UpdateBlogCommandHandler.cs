@@ -5,6 +5,7 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Hng.Application.Features.Blogs.Handlers;
 
@@ -12,20 +13,24 @@ public class UpdateBlogCommandHandler(
     IMapper mapper,
     IRepository<Blog> blogRepository,
     IAuthenticationService authenticationService)
-    : IRequestHandler<UpdateBlogCommand, BlogDto>
+    : IRequestHandler<UpdateBlogCommand, UpdateBlogResponseDto>
 {
     private readonly IMapper _mapper = mapper;
     private readonly IRepository<Blog> _blogRepository = blogRepository;
     private readonly IAuthenticationService _authenticationService = authenticationService;
 
-    public async Task<BlogDto> Handle(UpdateBlogCommand request, CancellationToken cancellationToken)
+    public async Task<UpdateBlogResponseDto> Handle(UpdateBlogCommand request, CancellationToken cancellationToken)
     {
         var blog = await _blogRepository.GetBySpec(b => b.Id == request.BlogId);
         var loggedInUserId = await _authenticationService.GetCurrentUserAsync();
 
         if (blog.AuthorId != loggedInUserId)
         {
-            throw new UnauthorizedAccessException("You do not have permission to update this blog.");
+            return new UpdateBlogResponseDto
+            {
+                StatusCode = StatusCodes.Status403Forbidden,
+                Message = "You do not have permission to update this blog.",
+            };
         }
 
         blog.Title = request.Blog.Title;
@@ -37,6 +42,13 @@ public class UpdateBlogCommandHandler(
         await _blogRepository.UpdateAsync(blog);
 
         await _blogRepository.SaveChanges();
-        return _mapper.Map<BlogDto>(blog);
+        var blogDto = _mapper.Map<BlogDto>(blog);
+
+        return new UpdateBlogResponseDto
+        {
+            StatusCode = 200,
+            Message = "Blog updated successfully",
+            Data = blogDto
+        };
     }
 }

@@ -127,7 +127,7 @@ public class SwitchOrganisationCommandShould
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        Assert.Equal("Organisation successfully updated", result.Message);
+        Assert.Equal("Organisation successfully switched", result.Message);
         Assert.NotNull(result.OrganisationDto);
         Assert.Equal(command.OrganisationId, result.OrganisationDto.Id);
         Assert.True(result.OrganisationDto.IsActive);
