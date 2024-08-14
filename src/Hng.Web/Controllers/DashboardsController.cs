@@ -41,28 +41,28 @@ namespace Hng.Web.Controllers
             });
         }
 
-		[HttpGet("sales-trend")]
-		[Authorize]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		public async Task<ActionResult> GetSalesTrend([FromQuery] SalesTrendQueryParameter parameter)
-		{
-			var response = await _mediator.Send(new GetSalesTrendQuery(parameter));
-			if (response != null)
-			{
-				return Ok(new
-				{
-					data = response,
-					message = "Retrieved successfully",
-					status_code = 200
-				});
+        [HttpGet("sales-trend")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetSalesTrend([FromQuery] SalesTrendQueryParameter parameter)
+        {
+            var response = await _mediator.Send(new GetSalesTrendQuery(parameter));
+            if (response != null)
+            {
+                return Ok(new
+                {
+                    data = response,
+                    message = "Retrieved successfully",
+                    status_code = 200
+                });
 
-			}
-			return NotFound(new
-			{
-				error = "No record found",
-				message = "Request failed",
-				status_code = 404
-			});
-		}
-	}
+            }
+            return NotFound(new
+            {
+                error = "No record found",
+                message = "Request failed",
+                status_code = 404
+            });
+        }
+    }
 }

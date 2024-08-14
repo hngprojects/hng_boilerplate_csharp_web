@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Dashboard.Queries
 {
-	public class GetSalesTrendQuery :IRequest<PagedListDto<TransactionDto>>
+    public class GetSalesTrendQuery : IRequest<PagedListDto<TransactionDto>>
     {
         public GetSalesTrendQuery(SalesTrendQueryParameter parameters)
-	{
-		productsQueryParameters = parameters;
-	}
+        {
+            productsQueryParameters = parameters;
+        }
 
-	public SalesTrendQueryParameter productsQueryParameters { get; set; }
-}
+        public SalesTrendQueryParameter productsQueryParameters { get; set; }
+    }
 }

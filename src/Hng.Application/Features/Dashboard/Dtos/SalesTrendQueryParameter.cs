@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Dashboard.Dtos
 {
-	public class SalesTrendQueryParameter
-	{
-		[JsonPropertyName("start_date")]
-		public DateTime StartDate { get; set; }
-		[JsonPropertyName("end_date")]
-		public DateTime EndDate { get; set; }
-	}
+    public class SalesTrendQueryParameter
+    {
+        [JsonPropertyName("start_date")]
+        public DateTime StartDate { get; set; }
+        [JsonPropertyName("end_date")]
+        public DateTime EndDate { get; set; }
+    }
 }
