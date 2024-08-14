@@ -16,7 +16,15 @@ public class FaqController : ControllerBase
     {
         _mediator = mediator;
     }
-
+    /// <summary>
+    /// Creates a new FAQ entry.
+    /// </summary>
+    /// <param name="faqRequest">The details of the FAQ to create.</param>
+    /// <returns>A response with the creation result or an error message.</returns>
+    [HttpPost]
+    [ProducesResponseType(typeof(CreateFaqResponseDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpPost]
     public async Task<IActionResult> CreateFaq([FromBody] CreateFaqRequestDto faqRequest)
     {
@@ -25,7 +33,17 @@ public class FaqController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
+    /// <summary>
+    /// Updates an existing FAQ entry.
+    /// </summary>
+    /// <param name="id">The ID of the FAQ to update.</param>
+    /// <param name="faqRequest">The updated FAQ details.</param>
+    /// <returns>A response with the update result or an error message.</returns>
     [HttpPut("{id:guid}")]
+    [ProducesResponseType(typeof(UpdateFaqResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateFaq(Guid id, [FromBody] UpdateFaqRequestDto faqRequest)
     {
         var command = new UpdateFaqCommand(id, faqRequest);
@@ -33,14 +51,29 @@ public class FaqController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
+
+    /// <summary>
+    /// Deletes an FAQ entry.
+    /// </summary>
+    /// <param name="id">The ID of the FAQ to delete.</param>
+    /// <returns>A response with the deletion result or an error message.</returns>
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteFaq(Guid id)
     {
         var command = new DeleteFaqCommand(id);
         var result = await _mediator.Send(command);
         return StatusCode(result.StatusCode, result);
     }
+    /// <summary>
+    /// Retrieves all FAQ entries.
+    /// </summary>
+    /// <returns>A list of all FAQs with a success message.</returns>
     [HttpGet]
+    [ProducesResponseType(typeof(FaqResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllFaqs()
     {
         var query = new GetAllFaqsQuery();
