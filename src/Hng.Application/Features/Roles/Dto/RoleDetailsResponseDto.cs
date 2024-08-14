@@ -2,9 +2,21 @@
 
 namespace Hng.Application.Features.Roles.Dto
 {
-    public class RoleDetailsDto
+    public class RoleDetailsResponseDto
     {
+        [JsonPropertyName("status_code")]
         public int StatusCode { get; set; }
+        [JsonPropertyName("data")]
+        public RoleDetails Data { get; set; }
+
+        [JsonPropertyName("error")]
+        public string Error { get; set; }
+        [JsonPropertyName("message")]
+        public string Message { get; set; }
+    }
+
+    public class RoleDetails
+    {
         [JsonPropertyName("id")]
         public string Id { get; set; }
         [JsonPropertyName("name")]
@@ -13,12 +25,7 @@ namespace Hng.Application.Features.Roles.Dto
         public string Description { get; set; }
         [JsonPropertyName("permissions")]
         public List<PermissionDto> Permissions { get; set; }
-        [JsonPropertyName("error")]
-        public string Error { get; set; }
-        [JsonPropertyName("message")]
-        public string Message { get; set; }
     }
-
     public class PermissionDto
     {
         [JsonPropertyName("id")]

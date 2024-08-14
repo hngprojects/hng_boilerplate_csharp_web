@@ -4,11 +4,6 @@ using Hng.Application.Features.Roles.Dto;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Roles.Handler
 {
@@ -16,12 +11,14 @@ namespace Hng.Application.Features.Roles.Handler
     {
         private readonly IRepository<Organization> _organizationRepository;
         private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<RolePermission> _permissionsRepository;
         private readonly IMapper _mapper;
 
-        public CreateRoleCommandHandler(IRepository<Organization> organizationRepository, IRepository<Role> roleRepository, IMapper mapper)
+        public CreateRoleCommandHandler(IRepository<Organization> organizationRepository, IRepository<Role> roleRepository, IRepository<RolePermission> permissionsRepository, IMapper mapper)
         {
             _organizationRepository = organizationRepository;
             _roleRepository = roleRepository;
+            _permissionsRepository = permissionsRepository;
             _mapper = mapper;
         }
 
@@ -34,7 +31,8 @@ namespace Hng.Application.Features.Roles.Handler
                 {
                     StatusCode = 404,
                     Error = "Organisation not found",
-                    Message = $"The organisation with ID {request.OrganizationId} does not exist"
+                    Message = $"The organisation with ID {request.OrganizationId} does not exist",
+                    Data = null
                 };
             }
 
@@ -45,10 +43,12 @@ namespace Hng.Application.Features.Roles.Handler
                 {
                     StatusCode = 409,
                     Error = "Conflict",
-                    Message = "A role with this name already exists in the organization"
+                    Message = "A role with this name already exists in the organization",
+                    Data = null
                 };
             }
 
+            var permissions = await _permissionsRepository.GetAllBySpec(p => request.RoleRequestBody.Permissions.Contains(p.Id));
             var role = _mapper.Map<Role>(request);
             role.Id = Guid.NewGuid();
             role.OrganizationId = request.OrganizationId;
@@ -56,6 +56,9 @@ namespace Hng.Application.Features.Roles.Handler
             role.CreatedAt = DateTime.UtcNow;
 
             await _roleRepository.AddAsync(role);
+            await _roleRepository.SaveChanges();
+            role.Permissions = (ICollection<RolePermission>)permissions;
+            await _roleRepository.UpdateAsync(role);
             await _roleRepository.SaveChanges();
 
             var response = _mapper.Map<CreateRoleResponseDto>(role);

@@ -15,6 +15,7 @@ namespace Hng.Application.Test.Features.Roles
     {
         private readonly Mock<IRepository<Domain.Entities.Organization>> _mockOrganizationRepository;
         private readonly Mock<IRepository<Role>> _mockRoleRepository;
+        private readonly Mock<IRepository<RolePermission>> _mockPermissionsRepository;
         private readonly IMapper _mapper;
         private readonly CreateRoleCommandHandler _handler;
 
@@ -22,12 +23,13 @@ namespace Hng.Application.Test.Features.Roles
         {
             _mockOrganizationRepository = new Mock<IRepository<Domain.Entities.Organization>>();
             _mockRoleRepository = new Mock<IRepository<Role>>();
+            _mockPermissionsRepository = new Mock<IRepository<RolePermission>>();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<RoleMappingProfile>();
             });
             _mapper = config.CreateMapper();
-            _handler = new CreateRoleCommandHandler(_mockOrganizationRepository.Object, _mockRoleRepository.Object, _mapper);
+            _handler = new CreateRoleCommandHandler(_mockOrganizationRepository.Object, _mockRoleRepository.Object, _mockPermissionsRepository.Object, _mapper);
         }
 
         [Fact]
@@ -100,8 +102,8 @@ namespace Hng.Application.Test.Features.Roles
             // Assert
             Assert.Equal(201, result.StatusCode);
             Assert.Equal("Role created successfully", result.Message);
-            Assert.Equal(role.Name, result.Name);
-            Assert.Equal(role.Description, result.Description);
+            Assert.Equal(role.Name, result.Data.Name);
+            Assert.Equal(role.Description, result.Data.Description);
         }
 
     }

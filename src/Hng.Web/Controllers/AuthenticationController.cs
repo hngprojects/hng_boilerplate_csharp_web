@@ -26,7 +26,7 @@ namespace Hng.Web.Controllers
         /// <returns></returns>
         [HttpPost("login")]
         [ProducesResponseType(typeof(UserLoginResponseDto<SignupResponseData>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(UserLoginResponseDto<object>), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserLoginResponseDto<SignupResponseData>>> Login([FromBody] UserLoginRequestDto loginRequest)
         {
             var command = new CreateUserLoginCommand(loginRequest);
@@ -52,9 +52,9 @@ namespace Hng.Web.Controllers
         /// <returns></returns>
         [HttpPost("register")]
         [ProducesResponseType(typeof(SignUpResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(SignUpResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(SignUpResponse), StatusCodes.Status422UnprocessableEntity)]
-        [ProducesResponseType(typeof(SignUpResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<SignUpResponse>> UserSignUp([FromBody] UserSignUpDto body)
         {
             var command = new UserSignUpCommand(body);
