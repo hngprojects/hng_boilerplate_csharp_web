@@ -45,8 +45,8 @@ namespace Hng.Application.Test.Features.Profile
                 Profile = new Domain.Entities.Profile() { UserId = userid, Id = Guid.NewGuid() }
             };
             var userProfile = user.Profile;
-            var profile = new UpdateProfile() { Bio = "Good test" };
-            var request = new UpdateProfileDto(user.Email, profile);
+            var profile = new UpdateProfileDto() { Bio = "Good test" };
+            var request = new UpdateProfile(user.Email, profile);
 
             _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                 .ReturnsAsync(user);

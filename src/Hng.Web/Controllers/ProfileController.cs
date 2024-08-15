@@ -23,9 +23,9 @@ namespace Hng.Web.Controllers
         [HttpPut("{email}")]
         [ProducesResponseType(typeof(UpdateProfileResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UpdateProfileResponseDto), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfile profileDto, string email)
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto profileDto, string email)
         {
-            var response = await _mediator.Send(new UpdateProfileDto(email, profileDto));
+            var response = await _mediator.Send(new UpdateProfile(email, profileDto));
 
             if (response.IsFailure)
                 return StatusCode(StatusCodes.Status404NotFound,

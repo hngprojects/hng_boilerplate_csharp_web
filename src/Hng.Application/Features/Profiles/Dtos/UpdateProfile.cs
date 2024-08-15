@@ -5,20 +5,20 @@ using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.Profiles.Dtos
 {
-    public record UpdateProfileDto : IRequest<Result<UpdateProfileResponseDto>>
+    public record UpdateProfile : IRequest<Result<UpdateProfileResponseDto>>
     {
-        public UpdateProfileDto(string email, UpdateProfile updateProfile)
+        public UpdateProfile(string email, UpdateProfileDto updateProfile)
         {
             Email = email;
-            UpdateProfile = updateProfile;
+            UpdateProfileDto = updateProfile;
         }
 
         public string Email { get; set; }
 
-        public UpdateProfile UpdateProfile { get; set; }
+        public UpdateProfileDto UpdateProfileDto { get; set; }
     }
 
-    public record UpdateProfile
+    public record UpdateProfileDto
     {
         [JsonPropertyName("first_name")]
         public string FirstName { get; set; }
