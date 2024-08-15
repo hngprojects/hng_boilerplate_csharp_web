@@ -11,6 +11,9 @@ namespace Hng.Application.Features.Organisations.Mappers
                 .ReverseMap();
 
             CreateMap<CreateOrganizationDto, Organization>();
+
+            CreateMap<Organization, OrganizationUserDto>()
+               .ReverseMap();
         }
     }
 }
