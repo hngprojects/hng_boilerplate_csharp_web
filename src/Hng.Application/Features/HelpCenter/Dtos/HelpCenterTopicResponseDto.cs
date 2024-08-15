@@ -15,6 +15,6 @@ namespace Hng.Application.Features.HelpCenter.Dtos
         [JsonPropertyName("content")]
         public string Content { get; set; }
         [JsonPropertyName("author")]
-        public string Author { get; set; } =  "Admin";
+        public string Author { get; set; } = "Admin";
     }
 }
