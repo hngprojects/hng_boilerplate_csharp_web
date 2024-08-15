@@ -28,7 +28,7 @@ public class GetOrganizationByIdQueryHandler(IRepository<Organization> organizat
                 Message = "Organisation Not Found",
             };
         }
-        
+
         if (organization.OwnerId != loggedInUserId)
         {
             return new GetOrganisationResponseDto()
@@ -37,7 +37,7 @@ public class GetOrganizationByIdQueryHandler(IRepository<Organization> organizat
                 Message = "You are not authorised to view this organisation",
             };
         }
-        
+
         var organisationDto = mapper.Map<OrganizationDto>(organization);
 
         return new GetOrganisationResponseDto()
