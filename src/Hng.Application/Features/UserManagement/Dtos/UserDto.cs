@@ -22,8 +22,7 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonPropertyName("avatar_url")]
         public string AvatarUrl { get; set; }
 
-        [JsonIgnore]
-        [JsonPropertyName("organisation")]
+        [JsonPropertyName("organisations")]
         public IEnumerable<OrganizationDto> Organizations { get; set; }
 
         [JsonIgnore]

@@ -118,22 +118,23 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
-    /// Create and send invite links to join an organisatiozn
+    /// Assign Or Update Users Role in An Organisation
     /// </summary>
-    [HttpPost("invites/send")]
-    [ProducesResponseType(typeof(ControllerStatusResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
-    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
-
-    public async Task<ActionResult<CreateOrganizationDto>> CreateAndSendOrganizationInvites([FromBody] CreateAndSendInvitesDto body)
+    [HttpPost("{orgId:guid}/roles/{roleId}/assign")]
+    [ProducesResponseType(typeof(SuccessResponseDto<object>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<SuccessResponseDto<object>>> AssignRole(Guid orgId, Guid roleId, AssignRoleDto assignRoleDto)
     {
-        body.InviterId = await authenticationService.GetCurrentUserAsync();
-        var command = new CreateAndSendInvitesCommand(body);
-        StatusCodeResponse result = await mediator.Send(command);
-
-        return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
+        var command = new AssignRoleCommand(orgId, roleId, assignRoleDto.Id);
+        var response = await mediator.Send(command);
+        if (response is null)
+            return UnprocessableEntity(new FailureResponseDto<object>()
+            {
+                Message = "Resource does not exist",
+                Data = { },
+                StatusCode = StatusCodes.Status422UnprocessableEntity
+            });
+        return StatusCode(response.StatusCode, response);
     }
 
     /// <summary>
@@ -170,5 +171,23 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         }
 
         return Ok(new { status_code = 200, data = organization });
+    }
+
+    /// Create and send invite links to join an organisatiozn
+    /// </summary>
+    [HttpPost("invites/send")]
+    [ProducesResponseType(typeof(ControllerStatusResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
+
+    public async Task<ActionResult<CreateOrganizationDto>> CreateAndSendOrganizationInvites([FromBody] CreateAndSendInvitesDto body)
+    {
+        body.InviterId = await authenticationService.GetCurrentUserAsync();
+        var command = new CreateAndSendInvitesCommand(body);
+        StatusCodeResponse result = await mediator.Send(command);
+
+        return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
     }
 }
