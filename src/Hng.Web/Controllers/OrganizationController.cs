@@ -122,11 +122,11 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     /// Create and send invite links to join an organisatiozn
     /// </summary>
     [HttpPost("invites/send")]
-    [ProducesResponseType(typeof(ControllerStatusResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
-    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
+    [ProducesResponseType(typeof(ControllerResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
 
     public async Task<ActionResult<CreateOrganizationDto>> CreateAndSendOrganizationInvites([FromBody] CreateAndSendInvitesDto body)
     {
