@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Hng.Application.Features.Organisations.Queries;
 
-public class GetOrganizationByIdQuery(Guid id) : IRequest<OrganizationDto>
+public class GetOrganizationByIdQuery(Guid id) : IRequest<GetOrganisationResponseDto>
 {
     public Guid OrganizationId { get; } = id;
 }
