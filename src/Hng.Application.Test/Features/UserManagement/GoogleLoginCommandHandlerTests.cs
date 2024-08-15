@@ -93,54 +93,54 @@ namespace Hng.Application.Test.Features.UserManagement
         //    Assert.NotNull(result.AccessToken);
         //    Assert.Equal("newuser@example.com", result.Data.User.Email);
         //    _userRepoMock.Verify(repo => repo.AddAsync(It.Is<User>(u => u.Email == googlePayload.Email)), Times.Once);
-        }
-
-        //[Fact]
-        //public async Task Handle_ShouldLoginExistingUser_WhenUserExists()
-        //{
-        //    // Arrange
-        //    var googleIdToken = "valid_id_token";
-        //    var googlePayload = new GoogleJsonWebSignature.Payload
-        //    {
-        //        Email = "existinguser@example.com",
-        //        GivenName = "Existing",
-        //        FamilyName = "User",
-        //    };
-
-        //    var existingUser = new User
-        //    {
-        //        Email = googlePayload.Email,
-        //        FirstName = googlePayload.GivenName,
-        //        LastName = googlePayload.FamilyName,
-        //    };
-
-        //    var userDto = new UserDto
-        //    {
-        //        Email = googlePayload.Email
-        //    };
-
-        //    // Mock Google token validation
-        //    _googleAuthServiceMock.Setup(service => service.ValidateAsync(It.IsAny<string>()))
-        //                          .ReturnsAsync(googlePayload);
-
-        //    var dbUserQueryable = new List<User>().AsQueryable();
-
-        //    _userRepoMock.Setup(x => x.GetQueryableBySpec(It.IsAny<Expression<Func<User, bool>>>()))
-        //        .Returns(dbUserQueryable);
-
-
-        //    _tokenServiceMock.Setup(ts => ts.GenerateJwt(It.IsAny<User>()))
-        //                     .Returns("fake_jwt_token");
-
-        //    // Act
-        //    var result = await _handler.Handle(new GoogleLoginCommand(googleIdToken), CancellationToken.None);
-
-        //    // Assert
-        //    Assert.NotNull(result);
-        //    Assert.Equal("Login successful", result.Message);
-        //    Assert.NotNull(result.AccessToken);
-        //    Assert.Equal("existinguser@example.com", result.Data.User.Email);
-        //    _userRepoMock.Verify(repo => repo.AddAsync(It.IsAny<User>()), Times.Never);
-        //}
     }
+
+    //[Fact]
+    //public async Task Handle_ShouldLoginExistingUser_WhenUserExists()
+    //{
+    //    // Arrange
+    //    var googleIdToken = "valid_id_token";
+    //    var googlePayload = new GoogleJsonWebSignature.Payload
+    //    {
+    //        Email = "existinguser@example.com",
+    //        GivenName = "Existing",
+    //        FamilyName = "User",
+    //    };
+
+    //    var existingUser = new User
+    //    {
+    //        Email = googlePayload.Email,
+    //        FirstName = googlePayload.GivenName,
+    //        LastName = googlePayload.FamilyName,
+    //    };
+
+    //    var userDto = new UserDto
+    //    {
+    //        Email = googlePayload.Email
+    //    };
+
+    //    // Mock Google token validation
+    //    _googleAuthServiceMock.Setup(service => service.ValidateAsync(It.IsAny<string>()))
+    //                          .ReturnsAsync(googlePayload);
+
+    //    var dbUserQueryable = new List<User>().AsQueryable();
+
+    //    _userRepoMock.Setup(x => x.GetQueryableBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+    //        .Returns(dbUserQueryable);
+
+
+    //    _tokenServiceMock.Setup(ts => ts.GenerateJwt(It.IsAny<User>()))
+    //                     .Returns("fake_jwt_token");
+
+    //    // Act
+    //    var result = await _handler.Handle(new GoogleLoginCommand(googleIdToken), CancellationToken.None);
+
+    //    // Assert
+    //    Assert.NotNull(result);
+    //    Assert.Equal("Login successful", result.Message);
+    //    Assert.NotNull(result.AccessToken);
+    //    Assert.Equal("existinguser@example.com", result.Data.User.Email);
+    //    _userRepoMock.Verify(repo => repo.AddAsync(It.IsAny<User>()), Times.Never);
+    //}
+}
 }

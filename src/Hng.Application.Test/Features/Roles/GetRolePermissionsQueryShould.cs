@@ -17,13 +17,13 @@ namespace Hng.Application.Test.Features.Roles
         private readonly IMapper _mapper;
         public GetRolePermissionsQueryShould()
         {
-            var config = new MapperConfiguration(opt=>
+            var config = new MapperConfiguration(opt =>
             {
                 opt.AddProfile<RoleMappingProfile>();
             });
-            _permissionsRepoMock=new Mock<IRepository<RolePermission>>();
-            _mapper=config.CreateMapper();
-            _getRolePermissionsQueryHandler = new GetRolePermissionsQueryHandler(_permissionsRepoMock.Object,_mapper);
+            _permissionsRepoMock = new Mock<IRepository<RolePermission>>();
+            _mapper = config.CreateMapper();
+            _getRolePermissionsQueryHandler = new GetRolePermissionsQueryHandler(_permissionsRepoMock.Object, _mapper);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace Hng.Application.Test.Features.Roles
             };
             _permissionsRepoMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(permissions);
 
-            var result = await _getRolePermissionsQueryHandler.Handle(query,CancellationToken.None);
+            var result = await _getRolePermissionsQueryHandler.Handle(query, CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.Equal(typeof(List<PermissionDto>), result.GetType());
