@@ -135,8 +135,8 @@ namespace Hng.Application.Test.Features.Dashboard
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
-            // Assert
-            Assert.Empty(result);
-        }
+			// Assert
+			Assert.Equal(null, result);
+		}
     }
 }
