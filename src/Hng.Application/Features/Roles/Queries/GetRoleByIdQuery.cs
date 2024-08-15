@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Roles.Queries
 {
-    public class GetRoleByIdQuery : IRequest<RoleDetailsDto>
+    public class GetRoleByIdQuery : IRequest<RoleDetailsResponseDto>
     {
         public GetRoleByIdQuery(Guid id, Guid orgId)
         {

@@ -7,6 +7,7 @@ using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hng.Application.Features.UserManagement.Handlers
 {
@@ -44,7 +45,11 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 };
             }
 
-            var dbUser = await _userRepo.GetBySpec(x => x.Email == payload.Email, u => u.Organizations);
+            var dbUser = await _userRepo.GetQueryableBySpec(u => u.Email == payload.Email)
+                .Include(u => u.Organizations)
+                .ThenInclude(o => o.UsersRoles)
+                .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync();
 
             if (dbUser == null)
             {

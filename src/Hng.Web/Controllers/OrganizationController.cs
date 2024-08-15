@@ -84,12 +84,12 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     /// Get Organizations Role By Id
     /// </summary>
     [HttpGet("{orgId:guid}/roles/{roleId}")]
-    [ProducesResponseType(typeof(RoleDetailsDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RoleDetailsResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRole(Guid orgId, Guid roleId)
     {
-        var query = new GetRoleByIdQuery(orgId, roleId);
+        var query = new GetRoleByIdQuery(roleId, orgId);
         var roleDetails = await mediator.Send(query);
-        return StatusCode(roleDetails.StatusCode, new { roleDetails.StatusCode, roleDetails.Id, roleDetails.Name, roleDetails.Description, roleDetails.Permissions });
+        return StatusCode(roleDetails.StatusCode, roleDetails);
     }
 
     /// <summary>
@@ -133,6 +133,23 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         StatusCodeResponse result = await mediator.Send(command);
 
         return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
+    }
+
+    /// <summary>
+    /// Get All Permissions Used For Roles In All Organizations
+    /// </summary>
+    [HttpGet("permissions")]
+    [ProducesResponseType(typeof(SuccessResponseDto<IEnumerable<PermissionDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    public async Task<ActionResult<SuccessResponseDto<IEnumerable<PermissionDto>>>> GetAllPermissions()
+    {
+        var query = new GetRolePermissionsQuery();
+        IEnumerable<PermissionDto> result = await mediator.Send(query);
+        return new SuccessResponseDto<IEnumerable<PermissionDto>>
+        {
+            Data = result,
+            Message = "Success"
+        };
     }
 
 }

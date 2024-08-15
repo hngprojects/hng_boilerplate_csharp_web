@@ -34,7 +34,17 @@ public class SeederService
 
     public async Task SeedUsers()
     {
-        if (await _dataContext.Users.AnyAsync()) return;
+        if (await _dataContext.Users.AnyAsync())
+        {
+            var admin = _dataContext.Users.FirstOrDefault(u => u.Email == "test@email.com");
+            if (admin is not null && admin.IsSuperAdmin == false)
+            {
+                admin.IsSuperAdmin = true;
+                _dataContext.Users.Update(admin);
+                await _dataContext.SaveChangesAsync();
+            }
+            return;
+        };
 
         _logger.LogDebug("Inserting seed users");
         try
@@ -115,6 +125,27 @@ public class SeederService
             _logger.LogError("Error inserting seed organisations, {ex}", ex);
         }
     }
+
+    public async Task SeedPermissions()
+    {
+        if (await _dataContext.RolePermissions.AnyAsync()) return;
+
+        _logger.LogDebug("Seeding Role Permissions");
+
+        try
+        {
+            List<RolePermission> permissions = GeneratePermissions();
+
+            await _dataContext.AddRangeAsync(permissions);
+            await _dataContext.SaveChangesAsync();
+        }
+
+        catch (Exception ex)
+        {
+            _logger.LogError("Error inserting seed products, {ex}", ex);
+        }
+    }
+
 
     public async Task SeedProducts()
     {
@@ -237,5 +268,49 @@ public class SeederService
         .RuleFor(o => o.Description, f => f.Company.CatchPhrase()).Generate();
 
         return category;
+    }
+    private static List<RolePermission> GeneratePermissions()
+    {
+        return [
+            new()
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Name = "Can View Transactions"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Name = "Can View Refunds"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Name = "Can View Users",
+                Description = "Allows viewing all users in platform"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Name = "Can Create Users"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Name = "Can Edit Users",
+                Description = "Allows Edit another Users Profile"
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                IsActive = true,
+                Name = "Can Blacklist/Whitelist Users",
+                Description = "Allows ban or unban a user"
+            }
+        ];
     }
 }

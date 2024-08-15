@@ -6,6 +6,7 @@ using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hng.Application.Features.UserManagement.Handlers
 {
@@ -30,7 +31,13 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
         public async Task<UserLoginResponseDto<SignupResponseData>> Handle(CreateUserLoginCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepo.GetBySpec(u => u.Email == request.LoginRequestBody.Email, u => u.Organizations);
+            var user = await _userRepo
+                .GetQueryableBySpec(u => u.Email == request.LoginRequestBody.Email)
+                .Include(u => u.Organizations)
+                .ThenInclude(o => o.UsersRoles)
+                .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync();
+
             if (user == null || !_passwordService.IsPasswordEqual(request.LoginRequestBody.Password, user.PasswordSalt, user.Password))
             {
                 return new UserLoginResponseDto<SignupResponseData>
@@ -59,7 +66,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             {
                 Id = o.Id,
                 Name = o.Name,
-                Role = o.UsersRoles.Where(x => x.User == user && x.Orgainzation == o).FirstOrDefault()?.Role.Name,
+                Role = o.UsersRoles.FirstOrDefault()?.Role.Name,
                 IsOwner = o.OwnerId == user.Id,
             }).ToList();
             var signUpResponseData = new SignupResponseData { User = userResponse, Organization = orgs };

@@ -85,9 +85,10 @@ namespace Hng.Infrastructure.Repository
             return await entities.ToListAsync();
         }
 
+
         public IQueryable<T> GetQueryableBySpec(Expression<Func<T, bool>> predicate)
         {
-            return _context.Set<T>().AsNoTracking();
+            return _context.Set<T>().AsNoTracking().Where(predicate);
         }
         public async Task<T> GetBySpec(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
