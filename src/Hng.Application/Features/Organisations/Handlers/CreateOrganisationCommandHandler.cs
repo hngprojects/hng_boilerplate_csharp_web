@@ -28,9 +28,9 @@ public class CreateOrganisationCommandHandler(IRepository<Organization> organiza
 
         await _organizationRepository.AddAsync(organisation);
         await _organizationRepository.SaveChanges();
-        
+
         var organisationDto = _mapper.Map<OrganizationDto>(organisation);
-        
+
         return new CreateOrganisationResponseDto
         {
             StatusCode = StatusCodes.Status201Created,
