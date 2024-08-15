@@ -15,7 +15,7 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
 
     public void Dispose()
     {
-        timer.Dispose();
+        timer?.Dispose();
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

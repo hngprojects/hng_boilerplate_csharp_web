@@ -9,7 +9,7 @@ using Profile = Hng.Domain.Entities.Profile;
 
 namespace Hng.Application.Features.Profiles.Handlers
 {
-    public class UpdateProfileHandler : IRequestHandler<UpdateProfileDto, Result<UpdateProfileResponseDto>>
+    public class UpdateProfileHandler : IRequestHandler<UpdateProfile, Result<UpdateProfileResponseDto>>
     {
         private readonly IRepository<User> _userRepo;
         private readonly IRepository<Profile> _profileRepo;
@@ -25,7 +25,7 @@ namespace Hng.Application.Features.Profiles.Handlers
             _mapper = mapper;
         }
 
-        public async Task<Result<UpdateProfileResponseDto>> Handle(UpdateProfileDto request, CancellationToken cancellationToken)
+        public async Task<Result<UpdateProfileResponseDto>> Handle(UpdateProfile request, CancellationToken cancellationToken)
         {
             var user = await _userRepo.GetBySpec(u => u.Email == request.Email, u => u.Profile);
 
@@ -34,16 +34,16 @@ namespace Hng.Application.Features.Profiles.Handlers
 
             if (user.Profile == null)
             {
-                user.Profile = BuildProfile(request, user.Id);
-                user = UpdateUser(user, request);
+                user.Profile = BuildProfile(request.UpdateProfileDto, user.Id);
+                user = UpdateUser(user, request.UpdateProfileDto);
 
                 await _profileRepo.AddAsync(user.Profile);
                 await _userRepo.UpdateAsync(user);
             }
             else
             {
-                user.Profile = UpdateProfile(user, request);
-                user = UpdateUser(user, request);
+                user.Profile = UpdateProfile(user, request.UpdateProfileDto);
+                user = UpdateUser(user, request.UpdateProfileDto);
 
                 await _userRepo.UpdateAsync(user);
             }
@@ -73,6 +73,7 @@ namespace Hng.Application.Features.Profiles.Handlers
             user.Profile.FirstName = !string.IsNullOrWhiteSpace(request.FirstName) ? request.FirstName : "";
             user.Profile.LastName = !string.IsNullOrWhiteSpace(request.LastName) ? request.LastName : "";
             user.Profile.Bio = !string.IsNullOrWhiteSpace(request.Bio) ? request.Bio : "";
+            user.Profile.Department = !string.IsNullOrWhiteSpace(request.Department) ? request.Department : "";
             user.Profile.FacebookLink = !string.IsNullOrWhiteSpace(request.FacebookLink) ? request.FacebookLink : "";
             user.Profile.JobTitle = !string.IsNullOrWhiteSpace(request.JobTitle) ? request.JobTitle : "";
             user.Profile.LinkedinLink = !string.IsNullOrWhiteSpace(request.LinkedinLink) ? request.LinkedinLink : "";
@@ -84,7 +85,7 @@ namespace Hng.Application.Features.Profiles.Handlers
             return user.Profile;
         }
 
-        private static Profile BuildProfile(UpdateProfileDto request, Guid userid)
+        private static Profile BuildProfile(UpdateProfileDto request, Guid userId)
         {
             return new Profile()
             {
@@ -98,7 +99,8 @@ namespace Hng.Application.Features.Profiles.Handlers
                 Pronoun = request.Pronoun,
                 TwitterLink = request.TwitterLink,
                 Username = request.Username,
-                UserId = userid
+                Department = request.Department,
+                UserId = userId
             };
         }
     }

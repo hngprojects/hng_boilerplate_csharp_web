@@ -5,16 +5,26 @@ using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.Profiles.Dtos
 {
-    public record UpdateProfileDto : IRequest<Result<UpdateProfileResponseDto>>
+    public record UpdateProfile : IRequest<Result<UpdateProfileResponseDto>>
+    {
+        public UpdateProfile(string email, UpdateProfileDto updateProfile)
+        {
+            Email = email;
+            UpdateProfileDto = updateProfile;
+        }
+
+        public string Email { get; set; }
+
+        public UpdateProfileDto UpdateProfileDto { get; set; }
+    }
+
+    public record UpdateProfileDto
     {
         [JsonPropertyName("first_name")]
         public string FirstName { get; set; }
 
         [JsonPropertyName("last_name")]
         public string LastName { get; set; }
-
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
 
         [Phone(ErrorMessage = "Invalid phone number")]
         [JsonPropertyName("phone_number")]
@@ -31,6 +41,9 @@ namespace Hng.Application.Features.Profiles.Dtos
 
         [JsonPropertyName("bio")]
         public string Bio { get; set; }
+
+        [JsonPropertyName("department")]
+        public string Department { get; set; }
 
         [JsonPropertyName("facebook_link")]
         public string FacebookLink { get; set; }

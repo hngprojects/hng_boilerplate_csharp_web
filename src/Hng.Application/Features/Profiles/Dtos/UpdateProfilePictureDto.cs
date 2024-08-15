@@ -5,11 +5,19 @@ using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.Profiles.Dtos
 {
-    public record UpdateProfilePictureDto : IRequest<Result<UpdateProfilePictureResponseDto>>
+    public record UpdateProfilePictureDto : UpdateProfilePicture, IRequest<Result<UpdateProfilePictureResponseDto>>
     {
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
+        public UpdateProfilePictureDto(string email, IFormFile photo)
+        {
+            Email = email;
+            DisplayPhoto = photo;
+        }
 
+        public string Email { get; set; }
+    }
+
+    public record UpdateProfilePicture
+    {
         [JsonPropertyName("display_photo")]
         public IFormFile DisplayPhoto { get; set; }
     }

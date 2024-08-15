@@ -25,8 +25,7 @@ namespace Hng.Web.Controllers
         [ProducesResponseType(typeof(UpdateProfileResponseDto), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto profileDto, string email)
         {
-            profileDto.Email = email;
-            var response = await _mediator.Send(profileDto);
+            var response = await _mediator.Send(new UpdateProfile(email, profileDto));
 
             if (response.IsFailure)
                 return StatusCode(StatusCodes.Status404NotFound,
@@ -48,10 +47,9 @@ namespace Hng.Web.Controllers
         [HttpPut("{email}/picture")]
         [ProducesResponseType(typeof(UpdateProfilePictureResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UpdateProfilePictureResponseDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateProfilePicture([FromForm] UpdateProfilePictureDto profileDto, string email)
+        public async Task<IActionResult> UpdateProfilePicture([FromForm] UpdateProfilePicture profileDto, string email)
         {
-            profileDto.Email = email;
-            var response = await _mediator.Send(profileDto);
+            var response = await _mediator.Send(new UpdateProfilePictureDto(email, profileDto.DisplayPhoto));
 
             if (response.IsFailure)
                 return StatusCode(StatusCodes.Status400BadRequest,
