@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hng.Application.Features.Roles.Command
+namespace Hng.Application.Features.Roles.Queries
 {
     public class GetRolePermissionsQuery : IRequest<IEnumerable<PermissionDto>>
     {
