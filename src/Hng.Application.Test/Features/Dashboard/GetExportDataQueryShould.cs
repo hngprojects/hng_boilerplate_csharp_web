@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FluentAssertions;
 using Hng.Application.Features.Dashboard.Handlers;
 using Hng.Application.Features.Dashboard.Queries;
 using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Responses;
@@ -7,19 +6,25 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection.Metadata;
+using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Hng.Application.Test.Features.Dashboard
 {
-    public class GetSalesTrendQueryShould
+    public class GetExportDataQueryShould
     {
         private readonly Mock<IRepository<Transaction>> _transactionRepositoryMock;
         private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<IAuthenticationService> _authenticationServiceMock;
-        private readonly GetSalesTrendQueryHandler _handler;
+        private readonly GetExportDataQueryHandler _handler;
 
-        public GetSalesTrendQueryShould()
+        public GetExportDataQueryShould()
         {
             _transactionRepositoryMock = new Mock<IRepository<Transaction>>();
 
@@ -29,11 +34,11 @@ namespace Hng.Application.Test.Features.Dashboard
             });
             _authenticationServiceMock = new Mock<IAuthenticationService>();
             _mockMapper = new Mock<IMapper>();
-            _handler = new GetSalesTrendQueryHandler(_transactionRepositoryMock.Object, _mockMapper.Object, _authenticationServiceMock.Object);
+            _handler = new GetExportDataQueryHandler(_transactionRepositoryMock.Object, _mockMapper.Object, _authenticationServiceMock.Object);
         }
 
         [Fact]
-        public async Task Handle_SalesTrendsExist()
+        public async Task Handle_ExportDataExist()
         {
             // Arrange
             var userId = Guid.NewGuid();
@@ -104,7 +109,7 @@ namespace Hng.Application.Test.Features.Dashboard
 
             _mockMapper.Setup(m => m.Map<IEnumerable<TransactionDto>>(It.IsAny<IEnumerable<Transaction>>()))
                 .Returns(transactionDto);
-            var query = new GetSalesTrendQuery(new Application.Features.Dashboard.Dtos.SalesTrendQueryParameter
+            var query = new GetExportDataQuery(new Application.Features.Dashboard.Dtos.SalesTrendQueryParameter
             {
                 StartDate = DateTime.Now.AddDays(-4),
                 EndDate = DateTime.Now.AddDays(-1),
@@ -114,8 +119,7 @@ namespace Hng.Application.Test.Features.Dashboard
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.Should().NotBeNull();
-            result.Should().HaveCount(2);
+            Assert.Equal(2, result.Count);
         }
 
         [Fact]
@@ -126,13 +130,13 @@ namespace Hng.Application.Test.Features.Dashboard
             _authenticationServiceMock.Setup(s => s.GetCurrentUserAsync()).ReturnsAsync(userId);
             _transactionRepositoryMock.Setup(repo => repo.GetAllBySpec(x => x.UserId == userId))
                .ReturnsAsync(new List<Transaction>());
-            var query = new GetSalesTrendQuery(new Application.Features.Dashboard.Dtos.SalesTrendQueryParameter { });
+            var query = new GetExportDataQuery(new Application.Features.Dashboard.Dtos.SalesTrendQueryParameter { });
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.Should().BeNull();
+            Assert.Null(result);
         }
     }
 }
