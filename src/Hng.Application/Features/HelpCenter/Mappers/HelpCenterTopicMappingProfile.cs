@@ -35,6 +35,11 @@ namespace Hng.Application.Features.HelpCenter.Mappers
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
                 .ReverseMap();
+
+            CreateMap<UpdateHelpCenterTopicRequestDto, HelpCenterTopic>()
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+            .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author));
         }
     }
 }
