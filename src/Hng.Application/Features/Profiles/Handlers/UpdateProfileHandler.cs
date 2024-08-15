@@ -85,7 +85,7 @@ namespace Hng.Application.Features.Profiles.Handlers
             return user.Profile;
         }
 
-        private static Profile BuildProfile(UpdateProfileDto request, Guid userid)
+        private static Profile BuildProfile(UpdateProfileDto request, Guid userId)
         {
             return new Profile()
             {
@@ -100,7 +100,7 @@ namespace Hng.Application.Features.Profiles.Handlers
                 TwitterLink = request.TwitterLink,
                 Username = request.Username,
                 Department = request.Department,
-                UserId = userid
+                UserId = userId
             };
         }
     }
