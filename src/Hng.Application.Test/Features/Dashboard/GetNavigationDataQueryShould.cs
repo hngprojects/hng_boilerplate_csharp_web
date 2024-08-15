@@ -12,14 +12,14 @@ using Xunit;
 
 namespace Hng.Application.Test.Features.Dashboard
 {
-    public class GetSalesTrendQueryShould
+    public class GetNavigationDataQueryShould
     {
         private readonly Mock<IRepository<Transaction>> _transactionRepositoryMock;
         private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<IAuthenticationService> _authenticationServiceMock;
-        private readonly GetSalesTrendQueryHandler _handler;
+        private readonly GetNavigationDataQueryHandler _handler;
 
-        public GetSalesTrendQueryShould()
+        public GetNavigationDataQueryShould()
         {
             _transactionRepositoryMock = new Mock<IRepository<Transaction>>();
 
@@ -29,11 +29,11 @@ namespace Hng.Application.Test.Features.Dashboard
             });
             _authenticationServiceMock = new Mock<IAuthenticationService>();
             _mockMapper = new Mock<IMapper>();
-            _handler = new GetSalesTrendQueryHandler(_transactionRepositoryMock.Object, _mockMapper.Object, _authenticationServiceMock.Object);
+            _handler = new GetNavigationDataQueryHandler(_transactionRepositoryMock.Object, _mockMapper.Object, _authenticationServiceMock.Object);
         }
 
         [Fact]
-        public async Task Handle_SalesTrendsExist()
+        public async Task Handle_NavigationRecordExist()
         {
             // Arrange
             var userId = Guid.NewGuid();
@@ -51,7 +51,7 @@ namespace Hng.Application.Test.Features.Dashboard
                     Partners = Domain.Enums.TransactionIntegrationPartners.Flutterwave,
                     Amount = 100,
                     PaidAt = DateTime.Now,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.Now.AddMonths(-2)
                 },
                 new()
                 {
@@ -64,7 +64,7 @@ namespace Hng.Application.Test.Features.Dashboard
                     Partners = Domain.Enums.TransactionIntegrationPartners.Flutterwave,
                     Amount = 100,
                     PaidAt = DateTime.Now,
-                    CreatedAt = DateTime.Now
+                    CreatedAt =DateTime.Now
                 }
             };
 
@@ -81,7 +81,7 @@ namespace Hng.Application.Test.Features.Dashboard
                     Partners = Domain.Enums.TransactionIntegrationPartners.Flutterwave,
                     Amount = 100,
                     PaidAt = DateTime.Now.AddDays(-2),
-                    CreatedAt = DateTime.Now.AddDays(-2)
+                    CreatedAt = DateTime.Now.AddMonths(-2)
                 },
                 new()
                 {
@@ -94,7 +94,7 @@ namespace Hng.Application.Test.Features.Dashboard
                     Partners = Domain.Enums.TransactionIntegrationPartners.Flutterwave,
                     Amount = 100,
                     PaidAt = DateTime.Now.AddDays(-2),
-                    CreatedAt = DateTime.Now.AddDays(-2)
+                    CreatedAt = DateTime.Now
                 }
             };
 
@@ -104,18 +104,13 @@ namespace Hng.Application.Test.Features.Dashboard
 
             _mockMapper.Setup(m => m.Map<IEnumerable<TransactionDto>>(It.IsAny<IEnumerable<Transaction>>()))
                 .Returns(transactionDto);
-            var query = new GetSalesTrendQuery(new Application.Features.Dashboard.Dtos.SalesTrendQueryParameter
-            {
-                StartDate = DateTime.Now.AddDays(-4),
-                EndDate = DateTime.Now.AddDays(-1),
-            });
+            var query = new GetNavigationDataQuery();
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().HaveCount(2);
         }
 
         [Fact]
@@ -126,7 +121,7 @@ namespace Hng.Application.Test.Features.Dashboard
             _authenticationServiceMock.Setup(s => s.GetCurrentUserAsync()).ReturnsAsync(userId);
             _transactionRepositoryMock.Setup(repo => repo.GetAllBySpec(x => x.UserId == userId))
                .ReturnsAsync(new List<Transaction>());
-            var query = new GetSalesTrendQuery(new Application.Features.Dashboard.Dtos.SalesTrendQueryParameter { });
+            var query = new GetNavigationDataQuery();
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
