@@ -1,19 +1,11 @@
 ﻿using AutoMapper;
 using Google.Apis.Auth;
-using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.UserManagement.Handlers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace Hng.Application.Test.Features.UserManagement
 {
@@ -143,4 +135,4 @@ namespace Hng.Application.Test.Features.UserManagement
     //    _userRepoMock.Verify(repo => repo.AddAsync(It.IsAny<User>()), Times.Never);
     //}
 }
-}
+
