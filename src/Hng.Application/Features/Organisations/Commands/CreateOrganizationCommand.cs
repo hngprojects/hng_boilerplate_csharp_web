@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Hng.Application.Features.Organisations.Commands;
 
-public class CreateOrganizationCommand : IRequest<OrganizationDto>
+public class CreateOrganizationCommand : IRequest<OrganizationDto>, IRequest<CreateOrganisationResponseDto>
 {
     public CreateOrganizationCommand(CreateOrganizationDto createOrganizationDto)
     {
