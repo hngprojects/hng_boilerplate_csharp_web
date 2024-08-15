@@ -8,7 +8,9 @@ using Hng.Application.Features.Organisations.Queries;
 using Hng.Application.Features.Roles.Command;
 using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
+using Hng.Application.Shared;
 using Hng.Application.Shared.Dtos;
+using Hng.Application.Shared.Validators;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -119,12 +121,12 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     /// <summary>
     /// Create and send invite links to join an organisatiozn
     /// </summary>
-    [HttpPost("send-invites")]
+    [HttpPost("invites/send")]
     [ProducesResponseType(typeof(ControllerStatusResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.NotFound)]
-    [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.Unauthorized)]
-    [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(StatusCodeResponse), (int)HttpStatusCode.UnprocessableContent)]
+    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
 
     public async Task<ActionResult<CreateOrganizationDto>> CreateAndSendOrganizationInvites([FromBody] CreateAndSendInvitesDto body)
     {
