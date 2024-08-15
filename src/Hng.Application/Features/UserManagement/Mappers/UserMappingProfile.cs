@@ -14,10 +14,13 @@ namespace Hng.Application.Features.UserManagement.Mappers
             CreateMap<GoogleJsonWebSignature.Payload, User>()
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.GivenName));
+
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember(dest => dest.Organizations, opt => opt.MapFrom(src => src.Organizations))
+                .ForMember(dest => dest.Profile, opt => opt.MapFrom(src => src.Profile))
                 .ReverseMap();
+
 
             CreateMap<UserSignUpDto, User>()
                 .ReverseMap();
