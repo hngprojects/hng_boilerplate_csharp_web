@@ -28,15 +28,14 @@ namespace Hng.Application.Features.HelpCenter.Handler
         {
 
             Expression<Func<HelpCenterTopic, bool>> predicate = topic =>
-                (string.IsNullOrEmpty(request.SearchRequest.Title) || topic.Title.Contains(request.SearchRequest.Title, StringComparison.OrdinalIgnoreCase)) &&
-                (string.IsNullOrEmpty(request.SearchRequest.Content) || topic.Content.Contains(request.SearchRequest.Content, StringComparison.OrdinalIgnoreCase));
+                (string.IsNullOrEmpty(request.SearchRequest.Title) || topic.Title.ToLower().Contains(request.SearchRequest.Title.ToLower())) &&
+                (string.IsNullOrEmpty(request.SearchRequest.Content) || topic.Content.ToLower().Contains(request.SearchRequest.Content.ToLower()));
 
 
             var topics = await _repository.GetAllBySpec(predicate);
 
 
             var responseDto = _mapper.Map<List<HelpCenterTopicResponseDto>>(topics);
-
 
             return new HelpCenterResponseDto<List<HelpCenterTopicResponseDto>>
             {
@@ -45,6 +44,7 @@ namespace Hng.Application.Features.HelpCenter.Handler
                 Data = responseDto
             };
         }
+
     }
 
 

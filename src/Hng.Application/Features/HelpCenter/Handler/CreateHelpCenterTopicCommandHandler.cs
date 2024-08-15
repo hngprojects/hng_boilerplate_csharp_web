@@ -36,6 +36,7 @@ namespace Hng.Application.Features.HelpCenter.Handler
                 };
             }
             await _repository.AddAsync(helpCenterTopic);
+            await _repository.SaveChanges();
 
             var responseDto = _mapper.Map<HelpCenterTopicResponseDto>(helpCenterTopic);
             return new HelpCenterResponseDto<HelpCenterTopicResponseDto>

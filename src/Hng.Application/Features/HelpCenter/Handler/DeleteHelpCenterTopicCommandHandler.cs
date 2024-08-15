@@ -33,6 +33,7 @@ namespace Hng.Application.Features.HelpCenter.Handler
             }
 
             await _repository.DeleteAsync(topic);
+            await _repository.SaveChanges();
             return new HelpCenterResponseDto<object>
             {
                 StatusCode = 200,
