@@ -7,14 +7,24 @@ namespace Hng.Application.Features.Profiles.Dtos
 {
     public record UpdateProfileDto : IRequest<Result<UpdateProfileResponseDto>>
     {
+        public UpdateProfileDto(string email, UpdateProfile updateProfile)
+        {
+            Email = email;
+            UpdateProfile = updateProfile;
+        }
+
+        public string Email { get; set; }
+
+        public UpdateProfile UpdateProfile { get; set; }
+    }
+
+    public record UpdateProfile
+    {
         [JsonPropertyName("first_name")]
         public string FirstName { get; set; }
 
         [JsonPropertyName("last_name")]
         public string LastName { get; set; }
-
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
 
         [Phone(ErrorMessage = "Invalid phone number")]
         [JsonPropertyName("phone_number")]
@@ -31,6 +41,9 @@ namespace Hng.Application.Features.Profiles.Dtos
 
         [JsonPropertyName("bio")]
         public string Bio { get; set; }
+
+        [JsonPropertyName("department")]
+        public string Department { get; set; }
 
         [JsonPropertyName("facebook_link")]
         public string FacebookLink { get; set; }
