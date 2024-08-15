@@ -121,7 +121,7 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     /// <summary>
     /// Create and send invite links to join an organisatiozn
     /// </summary>
-    [HttpPost("send-invites")]
+    [HttpPost("invites/send")]
     [ProducesResponseType(typeof(ControllerStatusResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.NotFound)]
     [ProducesResponseType(typeof(ControllerStatusResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
