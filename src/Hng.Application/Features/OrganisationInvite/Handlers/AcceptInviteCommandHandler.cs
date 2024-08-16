@@ -27,7 +27,7 @@ public class AcceptInviteCommandHandler(
         logger.LogInformation("CODE: {code}", JsonSerializer.Serialize(request));
         var invite = await repository.GetBySpec(e => true);
 
-        var invites = await repository.GetAllBySpec(e=>e.InviteLink != "string");
+        var invites = await repository.GetAllBySpec(e => e.InviteLink != "string");
         var existingInvite = invites.Where(e => e.InviteLink.Split(separator)[1].Equals(request.InviteCode.Token)).First();
         logger.LogInformation("Invite Request: {invite}", JsonSerializer.Serialize(request));
         if (existingInvite == null)
@@ -46,6 +46,6 @@ public class AcceptInviteCommandHandler(
 
         org.Users.Add(existingUser);
 
-        return new StatusCodeResponse { Message = $"You have been added to {org.Name}", StatusCode = StatusCodes.Status422UnprocessableEntity };
+        return new StatusCodeResponse { Message = $"You have been added to {org.Name}", StatusCode = StatusCodes.Status200OK };
     }
 }
