@@ -3,6 +3,7 @@ using System;
 using Hng.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240815235944_CategoryTable")]
+    partial class CategoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -250,31 +253,6 @@ namespace Hng.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Jobs");
-                });
-
-            modelBuilder.Entity("Hng.Domain.Entities.LastLogin", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("IPAddress")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("LoginTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("LogoutTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LastLogins");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Message", b =>
@@ -937,17 +915,6 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("Blog");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Entities.LastLogin", b =>
-                {
-                    b.HasOne("Hng.Domain.Entities.User", "User")
-                        .WithMany("LastLogins")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Hng.Domain.Entities.Notification", b =>
                 {
                     b.HasOne("Hng.Domain.Entities.User", "User")
@@ -1159,8 +1126,6 @@ namespace Hng.Infrastructure.Migrations
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>
                 {
                     b.Navigation("Blogs");
-
-                    b.Navigation("LastLogins");
 
                     b.Navigation("Products");
 
