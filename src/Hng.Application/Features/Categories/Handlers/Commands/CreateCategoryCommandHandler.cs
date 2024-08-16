@@ -31,6 +31,18 @@ namespace Hng.Application.Features.Categories.Handlers.Commands
                 };
             }
 
+            var existingCategory = await _categoryRepository.GetBySpec(c => c.Name.ToLower() == request.Name.ToLower());
+
+            if (existingCategory != null)
+            {
+                return new SuccessResponseDto<CategoryDto>
+                {
+                    Data = null,
+                    Message = "A category with this name already exists.",
+                    StatusCode = 400
+                };
+            }
+
             var category = new Category
             {
                 Name = request.Name,
