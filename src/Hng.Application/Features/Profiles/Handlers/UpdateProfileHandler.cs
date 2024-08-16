@@ -80,6 +80,7 @@ namespace Hng.Application.Features.Profiles.Handlers
             user.Profile.PhoneNumber = !string.IsNullOrWhiteSpace(request.PhoneNumber) ? request.PhoneNumber : "";
             user.Profile.Pronoun = !string.IsNullOrWhiteSpace(request.Pronoun) ? request.Pronoun : "";
             user.Profile.TwitterLink = !string.IsNullOrWhiteSpace(request.TwitterLink) ? request.TwitterLink : "";
+            user.Profile.InstagramLink = !string.IsNullOrWhiteSpace(request.InstagramLink) ? request.InstagramLink : "";
             user.Profile.Username = !string.IsNullOrWhiteSpace(request.Username) ? request.Username : "";
 
             return user.Profile;
@@ -98,6 +99,7 @@ namespace Hng.Application.Features.Profiles.Handlers
                 PhoneNumber = request.PhoneNumber,
                 Pronoun = request.Pronoun,
                 TwitterLink = request.TwitterLink,
+                InstagramLink = request.InstagramLink,
                 Username = request.Username,
                 Department = request.Department,
                 UserId = userId

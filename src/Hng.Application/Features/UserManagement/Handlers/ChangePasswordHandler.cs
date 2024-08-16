@@ -4,6 +4,7 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Hng.Application.Features.UserManagement.Handlers
 {
@@ -40,7 +41,15 @@ namespace Hng.Application.Features.UserManagement.Handlers
             await _userRepo.UpdateAsync(user);
             await _userRepo.SaveChanges();
 
-            return Result.Success<ChangePasswordResponse>(new ChangePasswordResponse() { Message = "successful" });
+            return Result.Success(new ChangePasswordResponse()
+            {
+                Message = "successful",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new ChangePasswordData()
+                {
+                    Message = "success"
+                }
+            });
         }
     }
 }

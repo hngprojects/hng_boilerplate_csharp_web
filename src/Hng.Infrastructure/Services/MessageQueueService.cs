@@ -44,4 +44,46 @@ public class MessageQueueService(ILogger<MessageQueueService> logger, IRepositor
 
         return Result<Message>.Success(result);
     }
+
+    public async Task<Result<Message>> SendForgotPasswordEmailAsync(
+        string firstname,
+        string email,
+        string companyname,
+        string resetlink,
+        string year)
+    {
+        string rawTemplate = await templateService.GetForgotPasswordEmailTemplate();
+        string replacedTemplate = rawTemplate
+        .Replace("{{firstname}}", firstname)
+        .Replace("{{resetlink}}", resetlink)
+        .Replace("{{year}}", year)
+        .Replace("{{companyname}}", companyname);
+
+        Message inviteEmail = Message.CreateEmail(email, $"Forgot Password", replacedTemplate);
+
+        Message result = await QueueEmailAsync(inviteEmail);
+
+        return Result<Message>.Success(result);
+    }
+
+    public async Task<Result<Message>> SendForgotPasswordEmailMobileAsync(
+        string firstname,
+        string email,
+        string companyname,
+        string resetCode,
+        string year)
+    {
+        string rawTemplate = await templateService.GetForgotPasswordMobileEmailTemplate();
+        string replacedTemplate = rawTemplate
+        .Replace("{{firstname}}", firstname)
+        .Replace("{{resetcode}}", resetCode)
+        .Replace("{{year}}", year)
+        .Replace("{{companyname}}", companyname);
+
+        Message inviteEmail = Message.CreateEmail(email, $"Forgot Password", replacedTemplate);
+
+        Message result = await QueueEmailAsync(inviteEmail);
+
+        return Result<Message>.Success(result);
+    }
 }
