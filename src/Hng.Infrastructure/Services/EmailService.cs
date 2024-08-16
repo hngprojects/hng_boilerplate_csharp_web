@@ -20,7 +20,7 @@ internal class EmailService(SmtpCredentials smtpCredentials, ILogger<EmailServic
         logger.LogDebug("Sending the passed email message from the email service");
 
         logger.LogDebug($"SMTP CREDENTIALS:\n{JsonSerializer.Serialize(smtpDetails)}");
-        
+
         MimeMessage emailMessage = new();
         emailMessage.From.Add(new MailboxAddress(EmailConstants.senderMailboxName, EmailConstants.senderMailboxAddress));
         emailMessage.To.Add(new MailboxAddress($"{message.RecipientName}", $"{message.RecipientContact}"));
