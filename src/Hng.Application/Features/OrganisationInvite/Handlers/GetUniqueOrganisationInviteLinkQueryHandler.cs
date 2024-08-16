@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Hng.Application.Features.OrganisationInvite.Queries;
 using Hng.Application.Features.OrganisationInvite.Validators;
 using Hng.Application.Features.OrganisationInvite.Validators.ValidationErrors;
@@ -8,22 +9,30 @@ using Hng.Infrastructure.Utilities;
 using Hng.Infrastructure.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Hng.Application.Features.OrganisationInvite.Handlers;
 
-public class GetUniqueOrganisationInviteLinkQueryHandler(IRequestValidator requestValidator, IRepository<Organization> orgRepository) : IRequestHandler<GetUniqueOrganizationLinkQuery, StatusCodeResponse>
+public class GetUniqueOrganisationInviteLinkQueryHandler(
+    IOptions<FrontendUrl> frontendUrl,
+    IRequestValidator requestValidator,
+    IRepository<Organization> orgRepository,
+    ILogger<GetUniqueOrganisationInviteLinkQueryHandler> logger) : IRequestHandler<GetUniqueOrganizationLinkQuery, StatusCodeResponse>
 {
     private readonly IRequestValidator requestValidator = requestValidator;
     private readonly IRepository<Organization> orgRepository = orgRepository;
-    
-    // private readonly FrontendUrl frontendUrl = frontendUrl;
+
+    private readonly ILogger<GetUniqueOrganisationInviteLinkQueryHandler> logger = logger;
+
+    private readonly FrontendUrl frontendUrl = frontendUrl.Value;
 
     public async Task<StatusCodeResponse> Handle(GetUniqueOrganizationLinkQuery request, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Called with {query}", JsonSerializer.Serialize(request));
 
         Guid orgId = Guid.Parse(request.Details.OrganizationId);
         Result<Organization> validationResult = await ValidateRequest(request, orgId);
-
 
         if (!validationResult.IsSuccess)
         {
@@ -31,18 +40,20 @@ public class GetUniqueOrganisationInviteLinkQueryHandler(IRequestValidator reque
         }
         Organization organization = validationResult.Value;
 
-        // if (organization.InviteToken == Guid.Empty)
-        // {
-        //     organization.InviteToken = Guid.NewGuid();
-        // }
+        if (organization.InviteToken == Guid.Empty)
+        {
+            logger.LogInformation("Generating an invite token for the organization {organization}", JsonSerializer.Serialize(organization));
+            organization.InviteToken = Guid.NewGuid();
+        }
 
+        await orgRepository.SaveChanges();
         return new StatusCodeResponse()
         {
             Message = "Invite link fetched successfully",
-            Data = organization,
-            // {
-            //     invite_link = $"{frontendUrl}invite?{organization.InviteToken}&org_id={organization.Id}"
-            // },
+            Data = new
+            {
+                invite_link = $"{frontendUrl.Path}invite?{organization.InviteToken}&org_id={organization.Id}"
+            },
             StatusCode = StatusCodes.Status200OK
         };
 
