@@ -181,6 +181,7 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     [AllowAnonymous]
     [HttpPost("invites/accept")]
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
     [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
 
