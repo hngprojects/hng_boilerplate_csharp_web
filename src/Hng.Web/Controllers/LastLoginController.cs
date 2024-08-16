@@ -48,7 +48,7 @@ namespace Hng.Web.Controllers
 
             return Ok(new SuccessResponseDto<List<LastLoginDto>>()
             {
-               Data=result,
+               Data=result.Data,
                Message="success"
             });
         }
