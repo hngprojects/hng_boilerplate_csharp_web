@@ -11,7 +11,7 @@ namespace Hng.Application.Features.LastLoginUser.Mapper
 {
     public class LastloginMapper : AutoMapper.Profile
     {
-        public LastloginMapper() 
+        public LastloginMapper()
         {
             CreateMap<LastLogin, LastLoginDto>()
               .ReverseMap();
