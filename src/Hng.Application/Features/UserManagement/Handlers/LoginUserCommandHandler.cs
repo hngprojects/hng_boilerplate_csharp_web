@@ -13,20 +13,27 @@ namespace Hng.Application.Features.UserManagement.Handlers
     public class LoginUserCommandHandler : IRequestHandler<CreateUserLoginCommand, UserLoginResponseDto<SignupResponseData>>
     {
         private readonly IRepository<User> _userRepo;
+        private readonly IRepository<LastLogin> _loginLast;
         private readonly IMapper _mapper;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public LoginUserCommandHandler(
             IRepository<User> userRepo,
-            IMapper mapper,
+            IRepository<LastLogin> loginLast,
+             IMapper mapper,
             IPasswordService passwordService,
-            ITokenService tokenService)
+            ITokenService tokenService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userRepo = userRepo;
+            _loginLast = loginLast;
             _mapper = mapper;
             _passwordService = passwordService;
             _tokenService = tokenService;
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public async Task<UserLoginResponseDto<SignupResponseData>> Handle(CreateUserLoginCommand request, CancellationToken cancellationToken)
@@ -50,6 +57,21 @@ namespace Hng.Application.Features.UserManagement.Handlers
             }
 
             var token = _tokenService.GenerateJwt(user);
+
+
+            var lastlogin = new LastLogin
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                LoginTime = DateTime.UtcNow,
+                IPAddress = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString()
+
+            };
+
+            await _loginLast.AddAsync(lastlogin);
+            await _loginLast.SaveChanges();
+
+
 
             return new UserLoginResponseDto<SignupResponseData>
             {

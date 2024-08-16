@@ -47,7 +47,7 @@ namespace Hng.Application
 
             services.AddSingleton(configurations.GetSection("CloudinarySettings").Get<CloudinarySettings>());
 
-
+            services.AddHttpContextAccessor();
 
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IRequestValidator, RequestValidator>();
