@@ -79,6 +79,7 @@ public class CreateAndSendInvitesCommandHandler(
         inviteDto.InviteLink = invite.InviteLink.ToString();
         return inviteDto;
     }
+
     private async Task<Result<Organization>> ValidateRequest(
         CreateAndSendInvitesCommand request,
         Guid orgId,

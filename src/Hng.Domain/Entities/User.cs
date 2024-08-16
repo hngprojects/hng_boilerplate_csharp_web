@@ -19,6 +19,8 @@ public class User : EntityBase
     public string PhoneNumber { get; set; } = "08027373922";
     public string Password { get; set; }
     public string PasswordSalt { get; set; }
+    public string PasswordResetToken { get; set; }
+    public DateTime? PasswordResetTokenTime { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public Profile Profile { get; set; }
