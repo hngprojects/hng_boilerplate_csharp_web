@@ -156,7 +156,7 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
-    /// Create and send invite links to join an organisatiozn
+    /// Create and send invite links to join an organisation
     /// </summary>
     [HttpPost("invites/send")]
     [ProducesResponseType(typeof(ControllerResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
@@ -171,6 +171,24 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         var command = new CreateAndSendInvitesCommand(body);
         StatusCodeResponse result = await mediator.Send(command);
 
+        return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
+    }
+
+
+    /// <summary>
+    /// Accept an invite to join an organisation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("invites/accept")]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.Redirect)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
+    [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
+
+    public async Task<ActionResult<CreateOrganizationDto>> AcceptInvite([FromBody] AcceptInviteDto body)
+    {
+        AcceptInviteCommand command = new(body);
+        StatusCodeResponse result = await mediator.Send(command);
         return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
     }
 
