@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Hng.Application.Features.OrganisationInvite.Commands;
 using Hng.Application.Features.OrganisationInvite.Dtos;
+using Hng.Application.Features.OrganisationInvite.Queries;
 using Hng.Application.Features.OrganisationInvite.Validators;
 using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
@@ -10,6 +11,7 @@ using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
 using Hng.Application.Shared;
 using Hng.Application.Shared.Dtos;
+using Hng.Application.Shared.Validators;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -155,7 +157,7 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
-    /// Create and send invite links to join an organisation
+    /// Create and send unique invite links for users to join an organisation
     /// </summary>
     [HttpPost("invites/send")]
     [ProducesResponseType(typeof(ControllerResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
@@ -180,10 +182,11 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     [AllowAnonymous]
     [HttpPost("invites/accept")]
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
     [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
 
-    public async Task<ActionResult<CreateOrganizationDto>> AcceptInvite([FromBody] AcceptInviteDto body)
+    public async Task<ActionResult> AcceptInvite([FromBody] AcceptInviteDto body)
     {
         AcceptInviteCommand command = new(body);
         StatusCodeResponse result = await mediator.Send(command);
@@ -210,5 +213,24 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
                       Message = "Organization not found",
                       Data = false
                   });
+    }
+    /// <summary>
+    /// Generate a unique link that allows anyone to join an organisation
+    /// </summary>
+
+    [HttpGet("{org_id}/invites/")]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
+
+    public async Task<ActionResult> GetUniqueOrganizationInviteLink([ValidGuid] string org_id)
+    {
+        Guid userId = await authenticationService.GetCurrentUserAsync();
+        var dto = new GetUniqueOrganizationInviteLinkDto() { OrganizationId = org_id, UserId = userId };
+        GetUniqueOrganizationLinkQuery command = new(dto);
+        StatusCodeResponse response = await mediator.Send(command);
+        return StatusCode(response.StatusCode, response);
     }
 }
