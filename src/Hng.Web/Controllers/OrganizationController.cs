@@ -10,7 +10,6 @@ using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
 using Hng.Application.Shared;
 using Hng.Application.Shared.Dtos;
-using Hng.Application.Shared.Validators;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -191,5 +190,25 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
     }
 
-
+    /// <summary>
+    /// Get All Users In Organisation
+    /// </summary>
+    [HttpGet("{orgId:guid}/users")]
+    [ProducesResponseType(typeof(SuccessResponseDto<OrganizationUserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUsers(Guid orgId)
+    {
+        var query = new GetAllUsersQuery(orgId);
+        var organization = await mediator.Send(query);
+        return organization != null
+                  ? Ok(new SuccessResponseDto<OrganizationUserDto> { Data = organization })
+                  : NotFound(new FailureResponseDto<object>
+                  {
+                      Error = "Not Found",
+                      Message = "Organization not found",
+                      Data = false
+                  });
+    }
 }
