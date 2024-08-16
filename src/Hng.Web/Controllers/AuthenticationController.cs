@@ -117,8 +117,8 @@ namespace Hng.Web.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpPut("password")]
-        [ProducesResponseType(typeof(Result<ChangePasswordResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result<ChangePasswordResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ChangePasswordResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ChangePasswordResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
         {
             var response = await _mediator.Send(command);
@@ -140,8 +140,8 @@ namespace Hng.Web.Controllers
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("{email}/forgot-password")]
-        [ProducesResponseType(typeof(Result<ForgotPasswordResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result<ForgotPasswordResponse>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ForgotPasswordResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ForgotPasswordResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ForgotPassword(string email)
         {
             var response = await _mediator.Send(new ForgotPasswordDto(email, false));
@@ -163,8 +163,8 @@ namespace Hng.Web.Controllers
         /// <param name="email"></param>
         /// <returns></returns>
         [HttpPost("{email}/forgot-password-mobile")]
-        [ProducesResponseType(typeof(Result<ForgotPasswordResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result<ForgotPasswordResponse>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ForgotPasswordResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ForgotPasswordResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ForgotPasswordMobile(string email)
         {
             var response = await _mediator.Send(new ForgotPasswordDto(email, true));
@@ -187,8 +187,8 @@ namespace Hng.Web.Controllers
         /// <param name="code"></param>
         /// <returns></returns>
         [HttpPost("{email}/{code}/verify-code")]
-        [ProducesResponseType(typeof(Result<VerifyForgotPasswordCodeResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result<VerifyForgotPasswordCodeResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(VerifyForgotPasswordCodeResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(VerifyForgotPasswordCodeResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> VerifyForgotPasswordCode(string email, string code)
         {
             var response = await _mediator.Send(new VerifyForgotPasswordCodeDto(email, code));
@@ -210,8 +210,8 @@ namespace Hng.Web.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPut("reset-password-mobile")]
-        [ProducesResponseType(typeof(Result<PasswordResetMobileResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result<PasswordResetMobileResponse>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PasswordResetMobileResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PasswordResetMobileResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PasswordResetMobile([FromBody] PasswordResetMobileDto request)
         {
             var response = await _mediator.Send(new PasswordResetMobileCommand(request));
@@ -233,8 +233,8 @@ namespace Hng.Web.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPut("reset-password")]
-        [ProducesResponseType(typeof(Result<PasswordResetResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result<PasswordResetResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(PasswordResetResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PasswordResetResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDto request)
         {
             var response = await _mediator.Send(request);
