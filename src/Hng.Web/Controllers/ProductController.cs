@@ -1,3 +1,5 @@
+using Hng.Application.Features.Categories.Dtos;
+using Hng.Application.Features.Categories.Queries;
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Queries;
