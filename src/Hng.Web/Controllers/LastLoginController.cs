@@ -46,7 +46,11 @@ namespace Hng.Web.Controllers
                 return NotFound();
             }
 
-            return Ok(result);
+            return Ok(new SuccessResponseDto<List<LastLoginDto>>()
+{
+Data=result,
+Message="success"
+});
         }
     }
 
