@@ -191,5 +191,22 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
     }
 
+    /// <summary>
+    /// Get All Users In Organisation
+    /// </summary>
+    [HttpGet("{orgId:guid}/users")]
+    [ProducesResponseType(typeof(OrganizationUserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUsers(Guid orgId)
+    {
+        var query = new GetAllUsersQuery(orgId);
+        var organization = await mediator.Send(query);
 
+        if (organization == null)
+        {
+            return NotFound(new { status_code = 404, message = "Organization not found" });
+        }
+
+        return Ok(new { status_code = 200, data = organization });
+    }
 }
