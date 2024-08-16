@@ -6,12 +6,15 @@ namespace Hng.Application.Features.UserManagement.Dtos
 {
     public record ForgotPasswordDto : IRequest<Result<ForgotPasswordResponse>>
     {
-        public ForgotPasswordDto(string email)
+        public ForgotPasswordDto(string email, bool isMobile)
         {
             Email = email;
+            IsMobile = isMobile;
         }
 
         public string Email { get; set; }
+
+        public bool IsMobile { get; set; }
     }
 
     public record ForgotPasswordResponse
