@@ -18,12 +18,6 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [JsonPropertyName("phone_number")]
         public string PhoneNumber { get; set; }
 
-        [JsonPropertyName("password")]
-        public string Password { get; set; }
-
-        [JsonPropertyName("password_salt")]
-        public string PasswordSalt { get; set; }
-
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
 
