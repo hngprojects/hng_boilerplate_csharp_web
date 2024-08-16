@@ -18,4 +18,11 @@ public interface IMessageQueueService
         string companyname,
         string resetlink,
         string year);
+
+    public Task<Result<Message>> SendForgotPasswordEmailMobileAsync(
+        string firstname,
+        string email,
+        string companyname,
+        string resetCode,
+        string year);
 }
