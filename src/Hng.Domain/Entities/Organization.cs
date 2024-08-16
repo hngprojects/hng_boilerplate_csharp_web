@@ -28,6 +28,8 @@ public class Organization : EntityBase
 
     public bool IsActive { get; set; }
 
+    // public Guid InviteToken { get; set; }
+
     public ICollection<User> Users { get; set; } = new List<User>();
     public ICollection<UserRole> UsersRoles { get; set; } = new List<UserRole>();
 

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Hng.Application.Features.OrganisationInvite.Commands;
 using Hng.Application.Features.OrganisationInvite.Dtos;
+using Hng.Application.Features.OrganisationInvite.Queries;
 using Hng.Application.Features.OrganisationInvite.Validators;
 using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
@@ -207,8 +208,8 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     {
         Guid userId = await authenticationService.GetCurrentUserAsync();
         var dto = new GetUniqueOrganizationInviteLinkDto() { OrganizationId = org_id, UserId = userId };
-        GetUniqueOrganisationLinkCommand command = new(dto);
+        GetUniqueOrganizationLinkQuery command = new(dto);
         StatusCodeResponse response = await mediator.Send(command);
-        return Ok(response);
+        return StatusCode(response.StatusCode, response);
     }
 }
