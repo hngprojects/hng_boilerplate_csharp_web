@@ -47,10 +47,10 @@ namespace Hng.Web.Controllers
             }
 
             return Ok(new SuccessResponseDto<List<LastLoginDto>>()
-{
-Data=result,
-Message="success"
-});
+            {
+               Data=result,
+               Message="success"
+            });
         }
     }
 
