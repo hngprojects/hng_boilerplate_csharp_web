@@ -178,10 +178,8 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     /// <summary>
     /// Accept an invite to join an organisation
     /// </summary>
-    [AllowAnonymous]
     [HttpPost("invites/accept")]
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.Redirect)]
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
     [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
 
