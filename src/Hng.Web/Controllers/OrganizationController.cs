@@ -156,7 +156,7 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
-    /// Create and send invite links to join an organisation
+    /// Create and send unique invite links for users to join an organisation
     /// </summary>
     [HttpPost("invites/send")]
     [ProducesResponseType(typeof(ControllerResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
@@ -185,12 +185,30 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
     [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
 
-    public async Task<ActionResult<CreateOrganizationDto>> AcceptInvite([FromBody] AcceptInviteDto body)
+    public async Task<ActionResult> AcceptInvite([FromBody] AcceptInviteDto body)
     {
         AcceptInviteCommand command = new(body);
         StatusCodeResponse result = await mediator.Send(command);
         return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
     }
 
+    /// <summary>
+    /// Generate a unique link that allows anyone to join an organisation
+    /// </summary>
 
+    [HttpGet("{org_id}/invites/")]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
+
+    public async Task<ActionResult> GetUniqueOrganizationInviteLink([ValidGuid] string org_id)
+    {
+        Guid userId = await authenticationService.GetCurrentUserAsync();
+        var dto = new GetUniqueOrganizationInviteLinkDto() { OrganizationId = org_id, UserId = userId };
+        GetUniqueOrganisationLinkCommand command = new(dto);
+        StatusCodeResponse response = await mediator.Send(command);
+        return Ok(response);
+    }
 }
