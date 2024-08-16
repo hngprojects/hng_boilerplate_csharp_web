@@ -34,7 +34,7 @@ namespace Hng.Web.Controllers
         /// <response code="404">If the last login information is not found.</response>
         /// <returns>Last login details of the user.</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(SuccessResponseDto<List<LastLoginDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(LastLoginResponseDto<List<LastLoginDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetLastLogin()
         {

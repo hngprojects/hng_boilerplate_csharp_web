@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hng.Application.Features.HelpCenter.Dtos;
 using Hng.Application.Features.LastLoginUser.Dto;
 using Hng.Application.Features.LastLoginUser.Queries;
 using Hng.Domain.Entities;
@@ -7,7 +8,7 @@ using MediatR;
 
 namespace Hng.Application.Features.LastLoginUser.Handlers
 {
-    public class GetLastLoginQueryHandler : IRequestHandler<GetLastLoginQuery, List<LastLoginDto>>
+    public class GetLastLoginQueryHandler : IRequestHandler<GetLastLoginQuery, LastLoginResponseDto<List<LastLoginDto>>>
     {
         private readonly IRepository<LastLogin> _lastLoginRepository;
         private readonly IMapper _mapper;
@@ -18,19 +19,30 @@ namespace Hng.Application.Features.LastLoginUser.Handlers
             _mapper = mapper;
         }
 
-        public async Task<List<LastLoginDto>> Handle(GetLastLoginQuery request, CancellationToken cancellationToken)
+        public async Task<LastLoginResponseDto<List<LastLoginDto>>> Handle(GetLastLoginQuery request, CancellationToken cancellationToken)
         {
             var lastLoginList = await _lastLoginRepository.GetAllBySpec(x => x.UserId == request.UserId);
 
             if (lastLoginList == null || !lastLoginList.Any())
             {
-                throw new FileNotFoundException("Last login not found.");
+                return new LastLoginResponseDto<List<LastLoginDto>>
+                {
+                    StatusCode = 404,
+                    Message = "Login not found"
+                };
             }
 
             var response = _mapper.Map<List<LastLoginDto>>(lastLoginList);
 
-            return response;
+            return new LastLoginResponseDto<List<LastLoginDto>>
+            {
+                StatusCode = 200,
+                Message = "User Login Details Found Successfull!!!",
+                Data = response
+            };
         }
+
+
     }
 
 }
