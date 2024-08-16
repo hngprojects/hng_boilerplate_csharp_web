@@ -18,5 +18,14 @@ public class EmailTemplateService(TemplateDir templateDir, ILogger<EmailTemplate
         string template = await File.ReadAllTextAsync(path, Encoding.UTF8);
         return template;
     }
+
+    public async Task<string> GetForgotPasswordEmailTemplate()
+    {
+        logger.LogInformation("Getting forgot password template");
+        string path = templateDir.Path;
+        path = Path.Combine(path, $"{EmailConstants.ForgotPasswordTemplate}");
+        string template = await File.ReadAllTextAsync(path, Encoding.UTF8);
+        return template;
+    }
 }
 

@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
-using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -100,15 +99,66 @@ namespace Hng.Web.Controllers
         /// <param name="command"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPut("update/password")]
+        [HttpPut("password")]
         [ProducesResponseType(typeof(Result<ChangePasswordResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Result<ChangePasswordResponse>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
         {
             var response = await _mediator.Send(command);
 
             if (response.IsFailure)
-                return BadRequest(response.Error);
+                return StatusCode(StatusCodes.Status400BadRequest,
+                new ChangePasswordResponse()
+                {
+                    Message = response.Error,
+                    StatusCode = StatusCodes.Status400BadRequest
+                });
+
+            return Ok(response.Value);
+        }
+
+        /// <summary>
+        /// forgot password
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        [HttpPost("{email}/forgot-password")]
+        [ProducesResponseType(typeof(Result<ForgotPasswordResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<ForgotPasswordResponse>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var response = await _mediator.Send(new ForgotPasswordDto(email));
+
+            if (response.IsFailure)
+                return StatusCode(StatusCodes.Status400BadRequest,
+                new ForgotPasswordResponse()
+                {
+                    Message = response.Error,
+                    StatusCode = StatusCodes.Status400BadRequest
+                });
+
+            return Ok(response.Value);
+        }
+
+        /// <summary>
+        /// resets password
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPut("reset-password")]
+        [ProducesResponseType(typeof(Result<PasswordResetResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<PasswordResetResponse>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PasswordReset([FromBody] PasswordResetDto request)
+        {
+            var response = await _mediator.Send(request);
+
+            if (response.IsFailure)
+                return StatusCode(StatusCodes.Status400BadRequest,
+                new PasswordResetResponse()
+                {
+                    Message = response.Error,
+                    StatusCode = StatusCodes.Status400BadRequest
+                });
 
             return Ok(response.Value);
         }
