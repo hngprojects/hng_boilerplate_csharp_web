@@ -11,6 +11,7 @@ using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
 using Hng.Application.Shared;
 using Hng.Application.Shared.Dtos;
+using Hng.Application.Shared.Validators;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -212,7 +213,8 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
                       Message = "Organization not found",
                       Data = false
                   });
-    }    /// <summary>
+    }
+    /// <summary>
     /// Generate a unique link that allows anyone to join an organisation
     /// </summary>
 
