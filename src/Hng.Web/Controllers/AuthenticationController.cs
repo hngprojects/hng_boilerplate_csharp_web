@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
-using Hng.Application.Features.UserManagement.Handlers;
 using Hng.Application.Features.UserManagement.Queries;
 using Hng.Application.Shared.Dtos;
 using MediatR;
