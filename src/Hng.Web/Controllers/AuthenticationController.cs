@@ -1,6 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Application.Features.UserManagement.Handlers;
+using Hng.Application.Features.UserManagement.Queries;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -17,6 +19,21 @@ namespace Hng.Web.Controllers
         public AuthenticationController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        /// <summary>
+        /// Gets Logged in User Details, Run This one, Server and Docs Response Differ
+        /// </summary>
+        [Authorize]
+        [HttpGet("@me")]
+        [ProducesResponseType(typeof(SuccessResponseDto<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<SuccessResponseDto<UserDto>>> GetLoggedInUsersDetails()
+        {
+            var query = new GetLoggedInUserDetailsQuery();
+            var response = await _mediator.Send(query);
+
+            return Ok(new SuccessResponseDto<UserDto> { Data = response, StatusCode = StatusCodes.Status200OK });
         }
 
         /// <summary>
