@@ -31,6 +31,7 @@ public class User : EntityBase
     public ICollection<Subscription> Subscriptions { get; set; } = [];
     public ICollection<Blog> Blogs { get; set; } = [];
     public ICollection<UserRole> UsersRoles { get; set; } = [];
+    public ICollection<LastLogin> LastLogins { get; set; } = [];
     public Guid? TimezoneId { get; set; }
     public Timezone Timezone { get; set; }
 }
