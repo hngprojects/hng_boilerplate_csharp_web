@@ -1,5 +1,6 @@
 ﻿using Hng.Application.Features.LastLoginUser.Dto;
 using Hng.Application.Features.LastLoginUser.Queries;
+using Hng.Application.Shared.Dtos;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -33,8 +34,8 @@ namespace Hng.Web.Controllers
         /// <response code="404">If the last login information is not found.</response>
         /// <returns>Last login details of the user.</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(List<LastLoginDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SuccessResponseDto<List<LastLoginDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetLastLogin()
         {
             var userId = await _authenticationService.GetCurrentUserAsync();
