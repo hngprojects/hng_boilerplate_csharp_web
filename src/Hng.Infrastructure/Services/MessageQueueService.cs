@@ -29,6 +29,7 @@ public class MessageQueueService(ILogger<MessageQueueService> logger, IRepositor
         DateTimeOffset expiryDate,
         string inviteLink)
     {
+
         string rawTemplate = await templateService.GetOrganizationInviteTemplate();
         organizationName = organizationName[0].ToString().ToUpper() + organizationName[1..];
         inviterName = inviterName[0].ToString().ToUpper() + inviterName[1..];

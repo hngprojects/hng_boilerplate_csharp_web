@@ -9,7 +9,7 @@ public class EmailCollectionAttribute : ValidationAttribute
     {
         if (value is not IEnumerable<string> emails)
         {
-            return new ValidationResult("Emails should not be null.");
+            return new ValidationResult("Emails should not be empty.");
         }
 
         var emailValidator = new EmailAddressAttribute();

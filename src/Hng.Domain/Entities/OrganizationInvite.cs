@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using Hng.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hng.Domain.Entities;
 
+[Index(nameof(InviteCode))]
 public class OrganizationInvite : EntityBase
 {
     [Required]
@@ -15,7 +17,7 @@ public class OrganizationInvite : EntityBase
     public OrganizationInviteStatus Status { get; set; } = OrganizationInviteStatus.Pending;
 
     [Required]
-    public string InviteLink { get; set; }
+    public Guid InviteCode { get; set; }
 
     [Required]
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
