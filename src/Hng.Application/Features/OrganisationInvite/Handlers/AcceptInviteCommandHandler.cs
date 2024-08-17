@@ -25,12 +25,14 @@ public class AcceptInviteCommandHandler(
     public async Task<StatusCodeResponse> Handle(AcceptInviteCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("CODE: {code}", JsonSerializer.Serialize(request));
+        logger.LogInformation("Invite Request: {invite}", JsonSerializer.Serialize(request));
         var invite = await repository.GetBySpec(e => true);
 
         var invites = await repository.GetAllBySpec(e => e.InviteLink != "string");
-        var existingInvite = invites.Where(e => e.InviteLink.Split(separator)[1].Equals(request.InviteCode.Token)).First();
-        logger.LogInformation("Invite Request: {invite}", JsonSerializer.Serialize(request));
-        if (existingInvite == null)
+        var existingInvite = invites.Where(e => e.InviteLink.Split(separator)[1].Equals(request.InviteCode.Token) && e.Status == Domain.Enums.OrganizationInviteStatus.Pending).First();
+        logger.LogInformation("Found the invite for the request {invite}", existingInvite);
+
+        if (existingInvite == null) 
         {
             return new StatusCodeResponse { Message = "Invalid invite code provided", StatusCode = StatusCodes.Status422UnprocessableEntity };
         }
@@ -43,6 +45,8 @@ public class AcceptInviteCommandHandler(
         }
 
         Organization org = await orgRepository.GetAsync(existingInvite.OrganizationId);
+
+        existingInvite.Status = Domain.Enums.OrganizationInviteStatus.Accepted;
 
         org.Users.Add(existingUser);
 

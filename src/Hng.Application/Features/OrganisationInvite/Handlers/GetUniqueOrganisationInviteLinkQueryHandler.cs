@@ -52,7 +52,7 @@ public class GetUniqueOrganisationInviteLinkQueryHandler(
             Message = "Invite link fetched successfully",
             Data = new
             {
-                invite_link = $"{frontendUrl.Path}invite?{organization.InviteToken}&org_id={organization.Id}"
+                invite_link = $"{frontendUrl.Path}/invite?{organization.InviteToken}&org_id={organization.Id}"
             },
             StatusCode = StatusCodes.Status200OK
         };

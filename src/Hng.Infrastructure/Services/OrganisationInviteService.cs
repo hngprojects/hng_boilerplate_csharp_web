@@ -20,7 +20,6 @@ public class OrganisationInviteService(IRepository<OrganizationInvite> repositor
             InviteLink = $"{options.Value.Path}/invite?{Guid.NewGuid()}"
         };
 
-        Console.WriteLine("\nInvite body here:\n{0}", organizationInvite.InviteLink);
         await repository.AddAsync(organizationInvite);
 
         await repository.SaveChanges();
