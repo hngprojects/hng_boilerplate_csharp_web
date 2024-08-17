@@ -16,7 +16,7 @@ public class AcceptInviteCommandHandler(
     IRepository<Organization> orgRepository,
     ILogger<AcceptInviteCommandHandler> logger) : IRequestHandler<AcceptInviteCommand, StatusCodeResponse>
 {
-    private readonly IRepository<OrganizationInvite> repository = repository;
+    private readonly IRepository<OrganizationInvite> inviteRepository = repository;
     private readonly IRepository<User> userRepository = userRepository;
     private readonly IRepository<Organization> orgRepository = orgRepository;
     private readonly ILogger<AcceptInviteCommandHandler> logger = logger;
@@ -24,12 +24,11 @@ public class AcceptInviteCommandHandler(
 
     public async Task<StatusCodeResponse> Handle(AcceptInviteCommand request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("CODE: {code}", JsonSerializer.Serialize(request));
-        var invite = await repository.GetBySpec(e => true);
-
-        var invites = await repository.GetAllBySpec(e => e.InviteLink != "string");
-        var existingInvite = invites.Where(e => e.InviteLink.Split(separator)[1].Equals(request.InviteCode.Token)).First();
         logger.LogInformation("Invite Request: {invite}", JsonSerializer.Serialize(request));
+
+        var existingInvite = await inviteRepository.GetBySpec(e => e.InviteCode == Guid.Parse(request.Invite.Token) && e.Status == Domain.Enums.OrganizationInviteStatus.Pending);
+        logger.LogInformation("Found {invite} for the request", existingInvite);
+
         if (existingInvite == null)
         {
             return new StatusCodeResponse { Message = "Invalid invite code provided", StatusCode = StatusCodes.Status422UnprocessableEntity };
@@ -37,14 +36,22 @@ public class AcceptInviteCommandHandler(
 
         var existingUser = await userRepository.GetBySpec(e => e.Email.Equals(existingInvite.Email));
 
+        existingInvite.Status = Domain.Enums.OrganizationInviteStatus.Accepted;
+        existingInvite.AcceptedAt = DateTimeOffset.UtcNow;
+
+        await inviteRepository.UpdateAsync(existingInvite);
+
         if (existingUser == null)
         {
+            await inviteRepository.SaveChanges();
             return new StatusCodeResponse { Message = "Success! Please create an account to be added to the organisation", StatusCode = StatusCodes.Status202Accepted };
         }
 
         Organization org = await orgRepository.GetAsync(existingInvite.OrganizationId);
 
         org.Users.Add(existingUser);
+
+        await inviteRepository.SaveChanges();
 
         return new StatusCodeResponse { Message = $"You have been added to {org.Name}", StatusCode = StatusCodes.Status200OK };
     }

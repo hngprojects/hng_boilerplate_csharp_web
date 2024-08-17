@@ -6,7 +6,6 @@ using Hng.Application.Shared.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
-using Hng.Infrastructure.Utilities;
 using Hng.Infrastructure.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -48,7 +47,7 @@ public class CreateAndSendInvitesCommandHandler(
 
         foreach (string email in details.Emails)
         {
-            inviteList.Add(await CreateAndSendInvites(user, organization, email, inviteRepository));
+            inviteList.Add(await CreateAndSendInvites(user, organization, email));
         }
 
         return new StatusCodeResponse
@@ -59,25 +58,26 @@ public class CreateAndSendInvitesCommandHandler(
         };
     }
 
-    private async Task<InviteDto> CreateAndSendInvites(User inviter, Organization org, string inviteeEmail, IRepository<OrganizationInvite> inviteRepository)
+    private async Task<InviteDto> CreateAndSendInvites(User inviter, Organization org, string inviteeEmail)
     {
         Result<OrganizationInvite> uniqueInviteCheck = await requestValidator.InviteDoesNotExistAsync(org.Id, inviteeEmail, inviteRepository);
 
-        OrganizationInvite invite = null;
-        if (uniqueInviteCheck.IsSuccess)
-        {
-            invite = await inviteService.CreateInvite(inviter.Id, org.Id, inviteeEmail);
-            await queueService.SendInviteEmailAsync(inviter.FirstName, inviteeEmail, org.Name, invite.ExpiresAt, invite.InviteLink);
-        }
-
         InviteDto inviteDto = new() { Email = inviteeEmail };
-        if (invite is null)
+
+        if (!uniqueInviteCheck.IsSuccess)
         {
             inviteDto.Error = InviteAlreadyExistsError.FromEmail(inviteeEmail).Message;
             return inviteDto;
         }
-        inviteDto.InviteLink = invite.InviteLink.ToString();
+
+        OrganizationInvite invite = await inviteService.CreateInvite(inviter.Id, org.Id, inviteeEmail);
+        string inviteLink = inviteService.GenerateInviteUrlFromToken(invite.InviteCode);
+        await queueService.SendInviteEmailAsync(inviter.FirstName, inviteeEmail, org.Name, invite.ExpiresAt, inviteLink);
+        await inviteRepository.SaveChanges();
+
+        inviteDto.InviteLink = inviteLink;
         return inviteDto;
+
     }
 
     private async Task<Result<Organization>> ValidateRequest(

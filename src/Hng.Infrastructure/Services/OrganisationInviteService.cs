@@ -9,7 +9,7 @@ namespace Hng.Infrastructure.Services;
 public class OrganisationInviteService(IRepository<OrganizationInvite> repository, IOptions<FrontendUrl> options) : IOrganisationInviteService
 {
     private readonly IRepository<OrganizationInvite> repository = repository;
-    private readonly IOptions<FrontendUrl> options = options;
+    private readonly FrontendUrl frontendUrl = options.Value;
 
     public async Task<OrganizationInvite> CreateInvite(Guid userId, Guid orgId, string email)
     {
@@ -17,15 +17,16 @@ public class OrganisationInviteService(IRepository<OrganizationInvite> repositor
         {
             OrganizationId = orgId,
             Email = email,
-            InviteLink = $"{options.Value.Path}/invite?{Guid.NewGuid()}"
+            InviteCode = Guid.NewGuid()
         };
 
-        Console.WriteLine("\nInvite body here:\n{0}", organizationInvite.InviteLink);
         await repository.AddAsync(organizationInvite);
-
-        await repository.SaveChanges();
 
         return organizationInvite;
     }
 
+    public string GenerateInviteUrlFromToken(Guid inviteToken)
+    {
+        return $"{frontendUrl.Path}/invite?{inviteToken}";
+    }
 }
