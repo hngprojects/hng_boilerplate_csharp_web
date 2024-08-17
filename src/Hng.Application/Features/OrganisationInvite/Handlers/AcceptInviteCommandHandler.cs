@@ -32,7 +32,7 @@ public class AcceptInviteCommandHandler(
         var existingInvite = invites.Where(e => e.InviteLink.Split(separator)[1].Equals(request.InviteCode.Token) && e.Status == Domain.Enums.OrganizationInviteStatus.Pending).First();
         logger.LogInformation("Found the invite for the request {invite}", existingInvite);
 
-        if (existingInvite == null) 
+        if (existingInvite == null)
         {
             return new StatusCodeResponse { Message = "Invalid invite code provided", StatusCode = StatusCodes.Status422UnprocessableEntity };
         }
