@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Hng.Application.Features.Categories.Dtos;
+using Hng.Application.Features.Categories.Handlers.Queries;
+using Hng.Application.Features.Categories.Queries;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Handlers;
 using Hng.Application.Features.Products.Queries;
@@ -35,9 +38,9 @@ namespace Hng.Application.Test.Features.Products
             var expectedCount = 3;
             var categories = new List<Category>
             {
-                new Category{ Id = Guid.NewGuid(), Name = "Cloths", Description = "Cloths description here", Slug = "cloths", ParentId ="somerandomid"},
-                new Category{ Id = Guid.NewGuid(), Name = "Electronics", Description = "Cloths description here", Slug = "electrical", ParentId ="somerandomid"},
-                new Category{ Id = Guid.NewGuid(), Name = "Films", Description = "Cloths description here", Slug = "films", ParentId ="somerandomid"}
+                new Category{ Id = Guid.NewGuid(), Name = "Cloths", Description = "Cloths description here", Slug = "cloths"},
+                new Category{ Id = Guid.NewGuid(), Name = "Electronics", Description = "Cloths description here", Slug = "electrical"},
+                new Category{ Id = Guid.NewGuid(), Name = "Films", Description = "Cloths description here", Slug = "films"}
             };
 
             var productId = Guid.NewGuid();

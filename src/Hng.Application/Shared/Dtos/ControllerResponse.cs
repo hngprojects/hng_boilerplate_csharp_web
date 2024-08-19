@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Hng.Application.Shared.Dtos;
 
 //useful for annotating methods for swagger
-public class ControllerStatusResponse<T>
+public class ControllerResponse<T>
 {
 
     [JsonPropertyName("status_code")]
