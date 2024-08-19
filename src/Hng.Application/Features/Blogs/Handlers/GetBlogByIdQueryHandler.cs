@@ -13,13 +13,7 @@ public class GetBlogByIdQueryHandler(IMapper mapper, IRepository<Blog> blogRepos
     private readonly IMapper _mapper = mapper;
     private readonly IRepository<Blog> _blogRepository = blogRepository;
 
-    public GetBlogByIdQueryHandler(IMapper mapper, IRepository<Blog> blogRepository)
-    {
-        _mapper = mapper;
-        _blogRepository = blogRepository;
-    }
-
-    public async Task<BlogDto> Handle(GetBlogByIdQuery request, CancellationToken cancellationToken)
+    public async Task<GetBlogResponseDto> Handle(GetBlogByIdQuery request, CancellationToken cancellationToken)
     {
         var blog = await _blogRepository.GetBySpec(b => b.Id == request.BlogId);
         return blog == null ? null : _mapper.Map<BlogDto>(blog);
