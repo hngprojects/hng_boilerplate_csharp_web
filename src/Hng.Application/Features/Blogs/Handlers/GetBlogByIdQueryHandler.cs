@@ -7,10 +7,11 @@ using MediatR;
 
 namespace Hng.Application.Features.Blogs.Handlers;
 
-public class GetBlogByIdQueryHandler : IRequestHandler<GetBlogByIdQuery, BlogDto>
+public class GetBlogByIdQueryHandler(IMapper mapper, IRepository<Blog> blogRepository)
+    : IRequestHandler<GetBlogByIdQuery, GetBlogResponseDto>
 {
-    private readonly IMapper _mapper;
-    private readonly IRepository<Blog> _blogRepository;
+    private readonly IMapper _mapper = mapper;
+    private readonly IRepository<Blog> _blogRepository = blogRepository;
 
     public GetBlogByIdQueryHandler(IMapper mapper, IRepository<Blog> blogRepository)
     {
