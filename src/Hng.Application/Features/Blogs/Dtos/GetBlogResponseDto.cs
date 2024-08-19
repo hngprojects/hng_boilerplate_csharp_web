@@ -2,7 +2,7 @@
 
 namespace Hng.Application.Features.Blogs.Dtos;
 
-public class GetOrganisationResponseDto
+public class GetBlogResponseDto
 {
     [JsonPropertyName("status_code")]
     public int StatusCode { get; set; }
