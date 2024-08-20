@@ -17,7 +17,7 @@ public class GetBlogByIdQueryHandler(IMapper mapper, IRepository<Blog> blogRepos
     public async Task<GetBlogResponseDto> Handle(GetBlogByIdQuery request, CancellationToken cancellationToken)
     {
         var blog = await _blogRepository.GetBySpec(b => b.Id == request.BlogId);
-        
+
         if (blog is null)
         {
             return new GetBlogResponseDto
@@ -26,7 +26,7 @@ public class GetBlogByIdQueryHandler(IMapper mapper, IRepository<Blog> blogRepos
                 Message = "Blog Not Found",
             };
         }
-        
+
         var blogDto = _mapper.Map<BlogDto>(blog);
 
         return new GetBlogResponseDto
