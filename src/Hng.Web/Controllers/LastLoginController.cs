@@ -13,7 +13,7 @@ namespace Hng.Web.Controllers
     /// Controller responsible for handling the user's last login data.
     /// </summary>
     [ApiController]
-    [Route("api/last-login")]
+    [Route("api/v1")]
     public class LastLoginController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -34,7 +34,7 @@ namespace Hng.Web.Controllers
         /// <response code="200">Successfully retrieved the last login information.</response>
         /// <response code="404">If the last login information is not found.</response>
         /// <returns>Last login details of the user.</returns>
-        [HttpGet]
+        [HttpGet("last-login")]
         [ProducesResponseType(typeof(LastLoginResponseDto<List<LastLoginDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetLastLogin()
@@ -63,7 +63,7 @@ namespace Hng.Web.Controllers
         /// <response code="200">Successfully updated the logout time.</response>
         /// <response code="404">If the active login session is not found.</response>
         /// <returns>Details of the last login session with the updated logout time.</returns>
-        [HttpPost("logout")]
+        [HttpPost("auth/logout")]
         [ProducesResponseType(typeof(LastLoginResponseDto<LastLoginDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Logout()

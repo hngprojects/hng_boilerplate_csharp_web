@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-# stop the systemd service
-sudo systemctl stop hng-web-dev
-
 # navigate to repo root and fetch latest changes
 cd "$(git rev-parse --show-toplevel)"
 
@@ -20,4 +17,4 @@ dotnet build --no-restore -c Debug
 dotnet publish ./src/Hng.Web/Hng.Web.csproj --no-build -c Debug
 
 # restart the systemd service
-sudo systemctl start hng-web-dev
+sudo systemctl restart hng-web-dev
