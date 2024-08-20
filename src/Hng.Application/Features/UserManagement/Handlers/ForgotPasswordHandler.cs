@@ -6,9 +6,7 @@ using Hng.Infrastructure.Services.Interfaces;
 using Hng.Infrastructure.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
-using System.Text;
 
 namespace Hng.Application.Features.UserManagement.Handlers
 {
@@ -17,15 +15,18 @@ namespace Hng.Application.Features.UserManagement.Handlers
         private readonly IRepository<User> _userRepo;
         private readonly IMessageQueueService _queueService;
         private readonly IOptions<FrontendUrl> _options;
+        private readonly ITokenService _tokenService;
 
         public ForgotPasswordHandler(
             IRepository<User> userRepo,
             IMessageQueueService queueService,
-            IOptions<FrontendUrl> options)
+            IOptions<FrontendUrl> options,
+            ITokenService tokenService)
         {
             _userRepo = userRepo;
             _queueService = queueService;
             _options = options;
+            _tokenService = tokenService;
         }
 
         public async Task<Result<ForgotPasswordResponse>> Handle(ForgotPasswordDto request, CancellationToken cancellationToken)
@@ -39,8 +40,9 @@ namespace Hng.Application.Features.UserManagement.Handlers
             if (!request.IsMobile)
             {
                 code = Guid.NewGuid().ToString().Replace("-", "");
-                var encodedUserId = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(user.Id.ToString()));
-                var pageLink = $"{_options.Value.Path}/reset-password/{encodedUserId}/{code}";
+
+                var accessToken = _tokenService.GenerateJwt(user, 4);
+                var pageLink = $"{_options.Value.Path}/reset-password/access_token?{accessToken}";
 
                 //send email
                 await _queueService.SendForgotPasswordEmailAsync(

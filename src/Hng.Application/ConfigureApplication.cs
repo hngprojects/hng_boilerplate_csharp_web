@@ -29,7 +29,7 @@ namespace Hng.Application
             })
             .AddJwtBearer(jwtOptions =>
             {
-                jwtOptions.TokenValidationParameters = TokenService.GetTokenValidationParameters(configurations);
+                jwtOptions.TokenValidationParameters = TokenService.GetTokenValidationParameters(configurations.GetSection("Jwt").Get<Jwt>().SecretKey);
             });
             //.AddGoogle(googleOptions =>
             //{
@@ -66,13 +66,14 @@ namespace Hng.Application
             services.AddSingleton(configurations.GetSection("SmtpCredentials").Get<SmtpCredentials>());
 
             services.AddSingleton(configurations.GetSection("EmailTemplateDirectory").Get<TemplateDir>());
+            services.AddSingleton(configurations.GetSection("Jwt").Get<Jwt>());
 
             services.AddOptions<FrontendUrl>()
                 .Bind(configurations.GetSection("FrontendUrl"))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 
-            Console.WriteLine($"JWT PARAMS: {JsonSerializer.Serialize(configurations["Jwt:ExpireInMinute"])}");
+            Console.WriteLine($"JWT PARAMS: {JsonSerializer.Serialize(configurations.GetSection("Jwt").Get<Jwt>().ExpireInMinute)}");
             return services;
         }
     }

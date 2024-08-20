@@ -4,7 +4,7 @@ namespace Hng.Infrastructure.Services.Interfaces
 {
     public interface ITokenService
     {
-        public string GenerateJwt(User userData);
+        public string GenerateJwt(User userData, int expireInMinutes = 0);
 
         public string GetCurrentUserEmail();
     }

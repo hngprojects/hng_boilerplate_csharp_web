@@ -232,6 +232,7 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("reset-password")]
         [ProducesResponseType(typeof(PasswordResetResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(PasswordResetResponse), StatusCodes.Status400BadRequest)]

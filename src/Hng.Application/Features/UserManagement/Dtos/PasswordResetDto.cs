@@ -18,14 +18,6 @@ namespace Hng.Application.Features.UserManagement.Dtos
         [Compare("NewPassword")]
         [JsonPropertyName("confirm_new_password")]
         public string ConfirmNewPassword { get; set; }
-
-        [Required(ErrorMessage = "Code is required")]
-        [JsonPropertyName("code")]
-        public string Code { get; set; }
-
-        [Required(ErrorMessage = "UserId is required")]
-        [JsonPropertyName("user_id")]
-        public string UserId { get; set; }
     }
 
     public record PasswordResetResponse

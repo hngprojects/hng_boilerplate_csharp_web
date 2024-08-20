@@ -3,29 +3,29 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Hng.Domain.Entities;
-using Microsoft.Extensions.Configuration;
 using Hng.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Hng.Infrastructure.Utilities;
 
 namespace Hng.Infrastructure.Services
 {
-    public class TokenService(IConfiguration config, IHttpContextAccessor context) : ITokenService
+    public class TokenService(IHttpContextAccessor context, Jwt jwtKeys) : ITokenService
     {
-        private readonly IConfiguration _config = config;
         private readonly IHttpContextAccessor _context = context;
+        private readonly Jwt _jwtKeys = jwtKeys;
 
-        public static TokenValidationParameters GetTokenValidationParameters(IConfiguration _config) => new TokenValidationParameters
+        public static TokenValidationParameters GetTokenValidationParameters(string secretKey) => new()
         {
             ValidateAudience = false,
             ValidateIssuer = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = GetSecurityKey(_config),
+            IssuerSigningKey = GetSecurityKey(secretKey),
         };
 
-        public string GenerateJwt(User userData)
+        public string GenerateJwt(User userData, int expireInMinutes = 0)
         {
-            SymmetricSecurityKey securityKey = GetSecurityKey(_config);
+            SymmetricSecurityKey securityKey = GetSecurityKey(_jwtKeys.SecretKey);
 
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -35,11 +35,11 @@ namespace Hng.Infrastructure.Services
                 new(ClaimTypes.Name, userData.FirstName)
                 ];
 
-            var expireInMinutes = Convert.ToInt32(_config["Jwt:ExpireInMinute"]);
+            expireInMinutes = expireInMinutes == 0 ? _jwtKeys.ExpireInMinute : expireInMinutes;
             var tokenObject = new JwtSecurityToken(
                 claims: claims,
                 signingCredentials: signingCredentials,
-                expires: DateTime.Now.AddMinutes(expireInMinutes)
+                expires: DateTime.UtcNow.AddMinutes(expireInMinutes)
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(tokenObject);
@@ -59,9 +59,8 @@ namespace Hng.Infrastructure.Services
             return loggedInUSerEmail;
         }
 
-        private static SymmetricSecurityKey GetSecurityKey(IConfiguration _config)
+        private static SymmetricSecurityKey GetSecurityKey(string secretKey)
         {
-            var secretKey = _config["Jwt:SecretKey"];
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
             return securityKey;
         }
