@@ -16,5 +16,6 @@ namespace Hng.Domain.Entities
         public string FacebookLink { get; set; }
         public string TwitterLink { get; set; }
         public string LinkedinLink { get; set; }
+        public string InstagramLink { get; set; }
     }
 }

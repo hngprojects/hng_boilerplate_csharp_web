@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 using Hng.Application.Features.ExternalIntegrations.FilesUploadIntegrations.Cloudinary.Services;
 using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Services;
 using Hng.Application.Features.OrganisationInvite.Validators;
@@ -47,7 +48,7 @@ namespace Hng.Application
 
             services.AddSingleton(configurations.GetSection("CloudinarySettings").Get<CloudinarySettings>());
 
-
+            services.AddHttpContextAccessor();
 
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IRequestValidator, RequestValidator>();
@@ -71,6 +72,7 @@ namespace Hng.Application
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 
+            Console.WriteLine($"JWT PARAMS: {JsonSerializer.Serialize(configurations["Jwt:ExpireInMinute"])}");
             return services;
         }
     }

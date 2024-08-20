@@ -48,6 +48,9 @@ namespace Hng.Application.Features.Profiles.Dtos
         [JsonPropertyName("facebook_link")]
         public string FacebookLink { get; set; }
 
+        [JsonPropertyName("instagram_link")]
+        public string InstagramLink { get; set; }
+
         [JsonPropertyName("twitter_link")]
         public string TwitterLink { get; set; }
 

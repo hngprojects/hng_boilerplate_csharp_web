@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using AutoMapper;
 using Hng.Application.Features.UserManagement.Handlers;
 using Hng.Application.Features.UserManagement.Mappers;
@@ -10,6 +5,7 @@ using Hng.Application.Features.UserManagement.Queries;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Moq;
+using System.Linq.Expressions;
 using Xunit;
 
 namespace Hng.Application.Test.Features.UserManagement
