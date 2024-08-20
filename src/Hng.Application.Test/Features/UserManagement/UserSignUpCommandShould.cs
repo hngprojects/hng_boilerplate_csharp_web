@@ -47,7 +47,7 @@ namespace Hng.Application.Test.Features.UserManagement
             _passwordServiceMock.Setup(service => service.GeneratePasswordSaltAndHash(It.IsAny<string>()))
                 .Returns(("hashedPassword", "salt"));
 
-            _tokenServiceMock.Setup(service => service.GenerateJwt(It.IsAny<User>()))
+            _tokenServiceMock.Setup(service => service.GenerateJwt(It.IsAny<User>(), It.IsAny<int>()))
                 .Returns("token");
 
             var handler = new UserSignUpCommandHandler(
