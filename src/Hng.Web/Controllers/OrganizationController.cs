@@ -72,15 +72,15 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
-    /// Get All Roles In Organisation
+    /// Get All Roles In Organisation, please run this, docs response and actual response differ
     /// </summary>
     [HttpGet("{orgId:guid}/roles")]
-    [ProducesResponseType(typeof(IEnumerable<RoleDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(SuccessResponseDto<IEnumerable<RoleDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRoles(Guid orgId)
     {
         var query = new GetRolesQuery(orgId);
         var roles = await mediator.Send(query);
-        return Ok(new { status_code = 200, data = roles });
+        return Ok(new SuccessResponseDto<IEnumerable<RoleDto>> { StatusCode = 200, Data = roles, Message = "Success" });
     }
 
     /// <summary>
@@ -96,10 +96,10 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
-    /// Update Organisations Role
+    /// Update Organisations Role and Permission
     /// </summary>
-    [HttpPut("{orgId:guid}/roles/{roleId}")]
-    [ProducesResponseType(typeof(UpdateRoleResponseDto), StatusCodes.Status200OK)]
+    [HttpPut("{orgId:guid}/roles/{roleId:guid}")]
+    [ProducesResponseType(typeof(CreateRoleResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateRole(Guid orgId, Guid roleId, [FromBody] UpdateRoleRequestDto request)
     {
         UpdateRoleCommand command = new(orgId, roleId, request);
@@ -165,7 +165,6 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
-
     public async Task<ActionResult<CreateOrganizationDto>> CreateAndSendOrganizationInvites([FromBody] CreateAndSendInvitesDto body)
     {
         body.InviterId = await authenticationService.GetCurrentUserAsync();
