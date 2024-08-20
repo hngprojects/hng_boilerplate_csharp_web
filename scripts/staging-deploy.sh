@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# stop the systemd service
+sudo systemctl stop hng-web-staging
+
 # navigate to repo root and fetch lates change
 cd  $(git rev-parse --show-toplevel)
 
@@ -17,4 +20,4 @@ dotnet build -c Release
 dotnet publish -c Release
 
 # restart the systemd service
-sudo systemctl restart hng-web-staging
+sudo systemctl start hng-web-staging
