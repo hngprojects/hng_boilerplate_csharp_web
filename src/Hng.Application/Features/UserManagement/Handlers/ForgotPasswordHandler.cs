@@ -41,8 +41,8 @@ namespace Hng.Application.Features.UserManagement.Handlers
             {
                 code = Guid.NewGuid().ToString().Replace("-", "");
 
-                var accessToken = _tokenService.GenerateJwt(user, 4);
-                var pageLink = $"{_options.Value.Path}/reset-password/access_token?{accessToken}";
+                var accessToken = _tokenService.GenerateJwt(user, 10);
+                var pageLink = $"{_options.Value.Path}/reset-password?access_token={Uri.EscapeDataString(accessToken)}";
 
                 //send email
                 await _queueService.SendForgotPasswordEmailAsync(
