@@ -32,6 +32,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 return Result.Failure<PasswordResetResponse>("Reset Link has expired!");
 
             (user.PasswordSalt, user.Password) = _passwordService.GeneratePasswordSaltAndHash(request.NewPassword);
+            user.PasswordResetToken = null;
 
             await _userRepo.UpdateAsync(user);
             await _userRepo.SaveChanges();

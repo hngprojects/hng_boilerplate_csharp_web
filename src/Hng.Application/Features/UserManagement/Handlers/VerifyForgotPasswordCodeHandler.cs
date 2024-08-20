@@ -26,6 +26,11 @@ namespace Hng.Application.Features.UserManagement.Handlers
             if ((DateTime.UtcNow - user.PasswordResetTokenTime.GetValueOrDefault()).Minutes > 10)
                 return Result.Failure<VerifyForgotPasswordCodeResponse>("Code has expired!");
 
+            user.PasswordResetToken = null;
+
+            await _userRepo.UpdateAsync(user);
+            await _userRepo.SaveChanges();
+
             return Result.Success(new VerifyForgotPasswordCodeResponse()
             {
                 Message = "successful",
