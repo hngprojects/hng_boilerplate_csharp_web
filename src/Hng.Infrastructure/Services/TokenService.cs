@@ -32,7 +32,9 @@ namespace Hng.Infrastructure.Services
             Claim[] claims = [
                 new(ClaimTypes.Sid, userData.Id.ToString()),
                 new(ClaimTypes.Email, userData.Email),
-                new(ClaimTypes.Name, userData.FirstName)
+                new(ClaimTypes.Name, userData.FirstName),
+                new(ClaimTypes.NameIdentifier,
+                !string.IsNullOrWhiteSpace(userData.PasswordResetToken) ? userData.PasswordResetToken : "")
                 ];
 
             expireInMinutes = expireInMinutes == 0 ? _jwtKeys.ExpireInMinute : expireInMinutes;
@@ -57,6 +59,18 @@ namespace Hng.Infrastructure.Services
                 .First(x => x.Type == ClaimTypes.Email).Value;
 
             return loggedInUSerEmail;
+        }
+
+        public string GetForgotPasswordToken()
+        {
+            var identity = _context.HttpContext.User.Identity as ClaimsIdentity;
+
+            var claim = identity.Claims;
+
+            var forgotPasswordToken = claim
+                .First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+
+            return forgotPasswordToken;
         }
 
         private static SymmetricSecurityKey GetSecurityKey(string secretKey)

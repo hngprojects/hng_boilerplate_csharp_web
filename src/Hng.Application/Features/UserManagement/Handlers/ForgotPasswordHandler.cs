@@ -41,6 +41,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             {
                 code = Guid.NewGuid().ToString().Replace("-", "");
 
+                user.PasswordResetToken = code;
                 var accessToken = _tokenService.GenerateJwt(user, 10);
                 var pageLink = $"{_options.Value.Path}/reset-password?access_token={Uri.EscapeDataString(accessToken)}";
 
@@ -55,6 +56,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             else
             {
                 code = GenerateSixDigitCode();
+                user.PasswordResetToken = code;
 
                 //send email
                 await _queueService.SendForgotPasswordEmailMobileAsync(
@@ -65,7 +67,6 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     DateTime.UtcNow.Year.ToString());
             }
 
-            user.PasswordResetToken = code;
             user.PasswordResetTokenTime = DateTime.UtcNow;
 
             await _userRepo.UpdateAsync(user);

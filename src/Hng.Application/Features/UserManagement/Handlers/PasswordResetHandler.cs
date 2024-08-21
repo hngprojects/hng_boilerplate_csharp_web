@@ -31,7 +31,12 @@ namespace Hng.Application.Features.UserManagement.Handlers
             if (string.IsNullOrWhiteSpace(email))
                 return Result.Failure<PasswordResetResponse>("User does not exist");
 
-            var user = await _userRepo.GetBySpec(u => u.Email == email && !string.IsNullOrWhiteSpace(u.PasswordResetToken));
+            var forgotPasswordToken = _tokenService.GetForgotPasswordToken();
+
+            if (string.IsNullOrWhiteSpace(forgotPasswordToken))
+                return Result.Failure<PasswordResetResponse>("User does not exist");
+
+            var user = await _userRepo.GetBySpec(u => u.Email == email && u.PasswordResetToken == forgotPasswordToken);
 
             if (user == null)
                 return Result.Failure<PasswordResetResponse>("This password reset link has been used!");
