@@ -7,12 +7,6 @@ namespace Hng.Application.Features.UserManagement.Dtos
 {
     public record VerifyForgotPasswordCodeDto : IRequest<Result<VerifyForgotPasswordCodeResponse>>
     {
-        public VerifyForgotPasswordCodeDto(string email, string code)
-        {
-            Code = code;
-            Email = email;
-        }
-
         [Required(ErrorMessage = "Code is required")]
         public string Code { get; set; }
 

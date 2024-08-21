@@ -33,7 +33,6 @@ namespace Hng.Application.Features.UserManagement.Handlers
             _passwordService = passwordService;
             _tokenService = tokenService;
             _httpContextAccessor = httpContextAccessor;
-
         }
 
         public async Task<UserLoginResponseDto<SignupResponseData>> Handle(CreateUserLoginCommand request, CancellationToken cancellationToken)
@@ -58,7 +57,6 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
             var token = _tokenService.GenerateJwt(user);
 
-
             var lastlogin = new LastLogin
             {
                 Id = Guid.NewGuid(),
@@ -70,8 +68,6 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
             await _loginLast.AddAsync(lastlogin);
             await _loginLast.SaveChanges();
-
-
 
             return new UserLoginResponseDto<SignupResponseData>
             {
