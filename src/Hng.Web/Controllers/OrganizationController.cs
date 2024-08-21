@@ -41,6 +41,9 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         }) : Ok(response);
     }
 
+    /// <summary>
+    /// Get All User Organization 
+    /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(SuccessResponseDto<List<OrganizationDto>>), StatusCodes.Status200OK)]
     public async Task<ActionResult<SuccessResponseDto<List<OrganizationDto>>>> GetOrganizations()
@@ -231,5 +234,43 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         GetUniqueOrganizationLinkQuery command = new(dto);
         StatusCodeResponse response = await mediator.Send(command);
         return StatusCode(response.StatusCode, response);
+    }
+
+    /// <summary>
+    /// Delete Organizations User
+    /// </summary>
+    [HttpDelete("{orgId:guid}/users")]
+    [ProducesResponseType(typeof(SuccessResponseDto<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteUserOrganization(Guid orgId)
+    {
+        try
+        {
+            var query = new DeleteUserOrganizationCommand(orgId);
+            var result = await mediator.Send(query);
+            if (result)
+            {
+                return Ok(new SuccessResponseDto<object>
+                {
+                    Data = true
+                });
+            }
+            return NotFound(new FailureResponseDto<object>
+            {
+                Error = "Not Found",
+                Data = false
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new FailureResponseDto<object>
+            {
+                Error = "Bad Request",
+                Message = ex.Message,
+                Data = false
+            });
+        }
     }
 }
