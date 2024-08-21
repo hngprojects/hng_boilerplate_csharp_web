@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.UserManagement.Dtos
 {
-    public record ForgotPasswordDto : IRequest<Result<ForgotPasswordResponse>>
+    public record ForgotPasswordDto : ForgotPasswordRequestDto, IRequest<Result<ForgotPasswordResponse>>
     {
         public ForgotPasswordDto(string email, bool isMobile)
         {
@@ -12,9 +12,13 @@ namespace Hng.Application.Features.UserManagement.Dtos
             IsMobile = isMobile;
         }
 
-        public string Email { get; set; }
-
         public bool IsMobile { get; set; }
+    }
+
+    public record ForgotPasswordRequestDto
+    {
+        [JsonPropertyName("email")]
+        public string Email { get; set; }
     }
 
     public record ForgotPasswordResponse

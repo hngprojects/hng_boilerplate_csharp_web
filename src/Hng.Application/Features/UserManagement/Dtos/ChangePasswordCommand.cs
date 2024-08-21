@@ -7,9 +7,8 @@ namespace Hng.Application.Features.UserManagement.Dtos
 {
     public record ChangePasswordCommand : IRequest<Result<ChangePasswordResponse>>
     {
-        [Required(ErrorMessage = "Old Password is required")]
         [JsonPropertyName("old_password")]
-        public string OldPassword { get; set; }
+        public string OldPassword { get; set; } //relaxed because of people that signed in via google
 
         [Required(ErrorMessage = "New Password is required")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
