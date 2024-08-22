@@ -50,5 +50,5 @@ public class OrganizationDto
     [JsonIgnore]
     [JsonPropertyName("members")]
     public ICollection<UserDto> Users { get; set; }
-    public ICollection<UserRole> UsersRoles { get; set; } = [];
+    // public ICollection<UserRole> UsersRoles { get; set; } = [];
 }
