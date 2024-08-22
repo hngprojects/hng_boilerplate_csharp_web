@@ -8,7 +8,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     volumes:
-      - ./src/Hng.Web/appsettings.Production.json:/appsettings.Production.json
+      - ./src/Hng.Web/appsettings.Production.json:/app/appsettings.Production.json
     depends_on:
       - postgres
       - redis
@@ -16,7 +16,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "5002:80"
+      - "6002:80"
     depends_on:
       - backend
     volumes:
