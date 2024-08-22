@@ -34,7 +34,7 @@ public class MessageQueueService(ILogger<MessageQueueService> logger, IRepositor
             }
             catch (AuthenticationException ex)
             {
-                logger.LogError("Failed sending email with id {emailId} with error {error}", message, ex.Message);
+                logger.LogError("Failed sending email with id {emailId} with error {error}", message.Id, ex.Message);
                 // message.LastAttemptedAt = DateTimeOffset.UtcNow;
                 // message.RetryCount += 1;
             }
