@@ -27,7 +27,8 @@ namespace Hng.Application.Features.Organisations.Handlers
         public async Task<SuccessResponseDto<List<OrganizationDto>>> Handle(GetAllUsersOrganizationsQuery request, CancellationToken cancellationToken)
         {
             var userId = await _authenticationService.GetCurrentUserAsync();
-            var orgs = await _organizationRepository.GetAllBySpec(x => x.OwnerId == userId);
+            var user = await _userRepository.GetBySpec(x => x.Id == userId, u => u.Organizations);
+            var orgs = user.Organizations.ToList();
             var orgsList = _mapper.Map<List<OrganizationDto>>(orgs);
             return new SuccessResponseDto<List<OrganizationDto>>
             {
