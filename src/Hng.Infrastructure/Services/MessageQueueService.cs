@@ -2,22 +2,46 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using Hng.Infrastructure.Utilities.Results;
+using MailKit.Security;
 using Microsoft.Extensions.Logging;
 
 namespace Hng.Infrastructure.Services;
 
-public class MessageQueueService(ILogger<MessageQueueService> logger, IRepository<Message> repository, IEmailTemplateService templateService) : IMessageQueueService
+public class MessageQueueService(ILogger<MessageQueueService> logger, IRepository<Message> repository, IEmailTemplateService templateService, IEmailService emailService) : IMessageQueueService
 {
     private readonly ILogger<MessageQueueService> logger = logger;
     private readonly IEmailTemplateService templateService = templateService;
+    private readonly IEmailService emailService = emailService;
 
+    /// <summary>
+    /// Temp issue: this function tries to send the emails directly on a different thread
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
     private async Task<Message> QueueEmailAsync(Message message)
     {
-        logger.LogInformation("Now queuing email with id : {emailId}", message.Id);
+        // logger.LogInformation("Now queuing email with id : {emailId}", message.Id);
 
-        await repository.AddAsync(message);
+        logger.LogInformation("Sending email with id {emailId}", message.Id);
 
-        await repository.SaveChanges();
+        async void SendEmail()
+        {
+            try
+            {
+                await emailService.SendEmailMessage(message);
+                // message.LastAttemptedAt = DateTimeOffset.UtcNow;
+                // message.Status = Domain.Enums.MessageStatus.Sent;
+            }
+            catch (AuthenticationException ex)
+            {
+                logger.LogError("Failed sending email with id {emailId} with error {error}", message, ex.Message);
+                // message.LastAttemptedAt = DateTimeOffset.UtcNow;
+                // message.RetryCount += 1;
+            }
+        }
+        Task sendTask = new(SendEmail);
+
+        sendTask.Start();
 
         return message;
     }
