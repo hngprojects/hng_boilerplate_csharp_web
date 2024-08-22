@@ -4,6 +4,7 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Hng.Application.Features.UserManagement.Handlers
 {
@@ -32,7 +33,11 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
             var user = await _userRepo.GetBySpec(u => u.Email == email);
 
-            if (user == null || !_passwordService.IsPasswordEqual(request.OldPassword, user.PasswordSalt, user.Password))
+            if (user == null)
+                return Result.Failure<ChangePasswordResponse>("Invalid Password!");
+
+            if (!string.IsNullOrWhiteSpace(request.OldPassword)
+                && !_passwordService.IsPasswordEqual(request.OldPassword, user.PasswordSalt, user.Password))
                 return Result.Failure<ChangePasswordResponse>("Invalid Password!");
 
             (user.PasswordSalt, user.Password) = _passwordService.GeneratePasswordSaltAndHash(request.NewPassword);
@@ -40,7 +45,15 @@ namespace Hng.Application.Features.UserManagement.Handlers
             await _userRepo.UpdateAsync(user);
             await _userRepo.SaveChanges();
 
-            return Result.Success<ChangePasswordResponse>(new ChangePasswordResponse() { Message = "successful" });
+            return Result.Success(new ChangePasswordResponse()
+            {
+                Message = "successful",
+                StatusCode = StatusCodes.Status200OK,
+                Data = new ChangePasswordData()
+                {
+                    Message = "success"
+                }
+            });
         }
     }
 }

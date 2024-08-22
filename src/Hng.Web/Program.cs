@@ -5,6 +5,9 @@ using Hng.Application;
 using Hng.Infrastructure;
 using System.Reflection;
 using Prometheus;
+using Hng.Web.ModelStateError;
+using Microsoft.AspNetCore.Mvc;
+using Hng.Web.Filters.Swashbuckle;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,17 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    }).
+    ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = actionContext =>
+        {
+            var errors = actionContext.ModelState
+                        .Where(e => e.Value.Errors.Count > 0)
+                        .Select(e => new ModelError { Field = e.Key, Message = e.Value.Errors.First().ErrorMessage })
+                        .ToList();
+            return new BadRequestObjectResult(new ModelStateErrorResponse { Errors = errors });
+        };
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -23,6 +37,7 @@ builder.Services.AddApplicationConfig(builder.Configuration);
 builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"));
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SchemaFilter<SnakeCaseDictionaryFilter>();
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
@@ -72,5 +87,6 @@ app.Use((context, next) =>
 });
 
 app.MapControllers();
+
 
 app.Run();

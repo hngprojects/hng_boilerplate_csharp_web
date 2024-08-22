@@ -48,7 +48,7 @@ public class OrganizationDto
     public bool IsActive { get; set; }
 
     [JsonIgnore]
-    [JsonPropertyName("users")]
+    [JsonPropertyName("members")]
     public ICollection<UserDto> Users { get; set; }
     public ICollection<UserRole> UsersRoles { get; set; } = [];
 }

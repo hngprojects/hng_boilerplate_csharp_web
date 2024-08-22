@@ -41,9 +41,8 @@ namespace Hng.Application.Test.Features.Profile
                 Profile = new Domain.Entities.Profile() { UserId = userid, Id = Guid.NewGuid() }
             };
             var userProfile = user.Profile;
-            var request = new UpdateProfilePictureDto()
-            {
-            };
+
+            var request = new UpdateProfilePictureDto(user.Email, null);
 
             _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                 .ReturnsAsync(user);

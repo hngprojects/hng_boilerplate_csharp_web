@@ -69,8 +69,8 @@ namespace Hng.Application.Test.Features.Roles
 
             // Assert
             Assert.Equal(200, result.StatusCode);
-            Assert.Equal("Admin", result.Name);
-            Assert.Equal("Admin role", result.Description);
+            Assert.Equal("Admin", result.Data.Name);
+            Assert.Equal("Admin role", result.Data.Description);
         }
 
 

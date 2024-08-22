@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Hng.Application.Features.Roles.Dto;
 using Hng.Application.Features.Roles.Queries;
+using Hng.Application.Shared.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Roles.Handler
 {
-    public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, RoleDetailsDto>
+    public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQuery, RoleDetailsResponseDto>
     {
         private readonly IRepository<Role> _roleRepository;
         private readonly IMapper _mapper;
@@ -23,12 +24,12 @@ namespace Hng.Application.Features.Roles.Handler
             _mapper = mapper;
         }
 
-        public async Task<RoleDetailsDto> Handle(GetRoleByIdQuery request, CancellationToken cancellationToken)
+        public async Task<RoleDetailsResponseDto> Handle(GetRoleByIdQuery request, CancellationToken cancellationToken)
         {
             var role = await _roleRepository.GetBySpec(r => r.Id == request.RoleId && r.OrganizationId == request.OrganizationId, r => r.Permissions);
             if (role == null)
             {
-                return new RoleDetailsDto
+                return new RoleDetailsResponseDto
                 {
                     StatusCode = 404,
                     Error = "Not Found",
@@ -36,9 +37,13 @@ namespace Hng.Application.Features.Roles.Handler
                 };
             }
 
-            var response = _mapper.Map<RoleDetailsDto>(role);
-            response.StatusCode = 200;
-            response.Message = "Role details retrieved successfully";
+            var details = _mapper.Map<RoleDetails>(role);
+            var response = new RoleDetailsResponseDto
+            {
+                StatusCode = 200,
+                Message = "Role details retrieved successfully",
+                Data = details
+            };
 
             return response;
         }

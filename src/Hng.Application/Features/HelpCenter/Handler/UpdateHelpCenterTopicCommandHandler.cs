@@ -37,6 +37,7 @@ namespace Hng.Application.Features.HelpCenter.Handler
 
             _mapper.Map(request.Request, existingTopic);
             await _repository.UpdateAsync(existingTopic);
+            await _repository.SaveChanges();
 
             var responseDto = _mapper.Map<HelpCenterTopicResponseDto>(existingTopic);
             return new HelpCenterResponseDto<HelpCenterTopicResponseDto>

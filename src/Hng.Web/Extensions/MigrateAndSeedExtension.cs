@@ -16,6 +16,7 @@ namespace Hng.Web.Extensions
             await seeder.SeedUsers();
             await seeder.SeedProfile();
             await seeder.SeedProducts();
+            await seeder.SeedPermissions();
             await seeder.SeedOrganisation();
             await seeder.SeedCategory();
             return app;

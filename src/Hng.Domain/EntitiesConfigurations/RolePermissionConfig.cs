@@ -16,9 +16,8 @@ namespace Hng.Domain.EntitiesConfigurations
             builder.Property(x => x.Description);
             builder.Property(x => x.CreatedAt).IsRequired();
 
-            builder.HasOne(rp => rp.Role)
-                .WithMany(r => r.Permissions)
-                .HasForeignKey(rp => rp.RoleId);
+            builder.HasMany(rp => rp.Roles)
+                .WithMany(r => r.Permissions);
         }
     }
 }

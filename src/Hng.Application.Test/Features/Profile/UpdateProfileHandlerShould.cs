@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Hng.Application.Features.ExternalIntegrations.FilesUploadIntegrations.Cloudinary.Services;
 using Hng.Application.Features.Profiles.Dtos;
 using Hng.Application.Features.Profiles.Handlers;
 using Hng.Application.Features.Profiles.Mappers;
@@ -46,8 +45,8 @@ namespace Hng.Application.Test.Features.Profile
                 Profile = new Domain.Entities.Profile() { UserId = userid, Id = Guid.NewGuid() }
             };
             var userProfile = user.Profile;
-            var request = new UpdateProfileDto()
-            { Bio = "Good test" };
+            var profile = new UpdateProfileDto() { Bio = "Good test" };
+            var request = new UpdateProfile(user.Email, profile);
 
             _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                 .ReturnsAsync(user);

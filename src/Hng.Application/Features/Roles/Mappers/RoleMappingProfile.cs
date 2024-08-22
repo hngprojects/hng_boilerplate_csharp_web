@@ -15,9 +15,10 @@ namespace Hng.Application.Features.Roles.Mappers
         {
             // Mapping from Role to CreateRoleResponseDto
             CreateMap<Role, CreateRoleResponseDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForPath(dest => dest.Data.Id, opt => opt.MapFrom(src => src.Id))
+                .ForPath(dest => dest.Data.Name, opt => opt.MapFrom(src => src.Name))
+                .ForPath(dest => dest.Data.Description, opt => opt.MapFrom(src => src.Description))
+                .ForPath(dest => dest.Data.Permissions, opt => opt.MapFrom(src => src.Permissions))
                 .ReverseMap();
 
             // Mapping from CreateRoleCommand to Role
@@ -27,7 +28,7 @@ namespace Hng.Application.Features.Roles.Mappers
                 .ReverseMap();
 
             // Mapping from Role to RoleDetailsDto
-            CreateMap<Role, RoleDetailsDto>()
+            CreateMap<Role, RoleDetails>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
@@ -52,6 +53,9 @@ namespace Hng.Application.Features.Roles.Mappers
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ReverseMap();
+
+            CreateMap<RolePermission, PermissionDto>()
                 .ReverseMap();
         }
     }

@@ -56,10 +56,9 @@ namespace Hng.Application.Test.Features.Blog
             _mockBlogRepository.Verify(repo => repo.AddAsync(It.IsAny<Domain.Entities.Blog>()), Times.Once);
             _mockBlogRepository.Verify(repo => repo.SaveChanges(), Times.Once);
 
-            Assert.NotNull(result);
-            Assert.Equal("Test Title", result.Title);
-            Assert.Equal("Test Content", result.Content);
-            Assert.Equal(BlogCategory.Data, result.Category);
+            Assert.Equal(201, result.StatusCode);
+            Assert.Equal("Blog created successfully", result.Message);
+            Assert.NotNull(result.Data);
         }
     }
 }

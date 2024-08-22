@@ -1,7 +1,7 @@
-﻿using Hng.Application.Features.Products.Dtos;
+﻿using Hng.Application.Features.Categories.Dtos;
 using MediatR;
 
-namespace Hng.Application.Features.Products.Queries
+namespace Hng.Application.Features.Categories.Queries
 {
     public class GetCategoriesQuery : IRequest<IEnumerable<CategoryDto>>
     {

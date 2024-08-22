@@ -8,6 +8,7 @@ using Hng.Application.Features.SuperAdmin.Dto;
 using Hng.Domain.Entities;
 using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;
 
@@ -61,13 +62,14 @@ namespace Hng.Application.Test.Features.Blog
 
             // Assert
             result.Should().NotBeNull();
-            result.Id.Should().Be(blogId);
-            result.Title.Should().Be(blog.Title);
-            result.ImageUrl.Should().Be(blog.ImageUrl);
-            result.Content.Should().Be(blog.Content);
-            result.PublishedDate.Should().Be(blog.PublishedDate);
-            result.AuthorId.Should().Be(authorId);
-            result.Category.Should().Be(blog.Category);
+            result.Data.Should().NotBeNull();
+            result.Data.Id.Should().Be(blogId);
+            result.Data.Title.Should().Be(blog.Title);
+            result.Data.ImageUrl.Should().Be(blog.ImageUrl);
+            result.Data.Content.Should().Be(blog.Content);
+            result.Data.PublishedDate.Should().Be(blog.PublishedDate);
+            result.Data.AuthorId.Should().Be(authorId);
+            result.Data.Category.Should().Be(blog.Category);
         }
 
         [Fact]
@@ -85,7 +87,9 @@ namespace Hng.Application.Test.Features.Blog
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.Should().BeNull();
+            result.Should().NotBeNull();
+            result.Data.Should().BeNull();
+            result.StatusCode.Should().Be(StatusCodes.Status404NotFound);
         }
     }
 }

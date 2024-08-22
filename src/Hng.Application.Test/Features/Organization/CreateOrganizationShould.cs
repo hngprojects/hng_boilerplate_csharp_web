@@ -4,6 +4,8 @@ using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.Organisations.Handlers;
 using Hng.Application.Features.Organisations.Mappers;
 using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Xunit;
 
@@ -11,18 +13,18 @@ namespace Hng.Application.Test.Features.Organization
 {
     public class CreateOrganizationShould
     {
-        private readonly IMapper _mapper;
         private readonly Mock<IRepository<Domain.Entities.Organization>> _repositoryMock;
-        private readonly CreateOrganizationCommandHandler _handler;
+        private readonly CreateOrganisationCommandHandler _handler;
 
         public CreateOrganizationShould()
         {
             var mappingProfile = new OrganizationMapperProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));
-            _mapper = new Mapper(configuration);
+            IMapper mapper = new Mapper(configuration);
 
             _repositoryMock = new Mock<IRepository<Domain.Entities.Organization>>();
-            _handler = new CreateOrganizationCommandHandler(_repositoryMock.Object, _mapper);
+            var authenticationServiceMock = new Mock<IAuthenticationService>();
+            _handler = new CreateOrganisationCommandHandler(_repositoryMock.Object, mapper, authenticationServiceMock.Object);
         }
 
         [Fact]
@@ -69,15 +71,18 @@ namespace Hng.Application.Test.Features.Organization
             var result = await _handler.Handle(command, default);
 
             Assert.NotNull(result);
-            Assert.Equal(expectedId, result.Id);
-            Assert.Equal(createDto.Name, result.Name);
-            Assert.Equal(createDto.Description, result.Description);
-            Assert.Equal(createDto.Email, result.Email);
-            Assert.Equal(createDto.Industry, result.Industry);
-            Assert.Equal(createDto.Type, result.Type);
-            Assert.Equal(createDto.Country, result.Country);
-            Assert.Equal(createDto.Address, result.Address);
-            Assert.Equal(createDto.State, result.State);
+            Assert.Equal(StatusCodes.Status201Created, result.StatusCode);
+            Assert.Equal("Organisation Created Successfully", result.Message);
+            Assert.NotNull(result.Data);
+            Assert.Equal(expectedId, result.Data.Id);
+            Assert.Equal(createDto.Name, result.Data.Name);
+            Assert.Equal(createDto.Description, result.Data.Description);
+            Assert.Equal(createDto.Email, result.Data.Email);
+            Assert.Equal(createDto.Industry, result.Data.Industry);
+            Assert.Equal(createDto.Type, result.Data.Type);
+            Assert.Equal(createDto.Country, result.Data.Country);
+            Assert.Equal(createDto.Address, result.Data.Address);
+            Assert.Equal(createDto.State, result.Data.State);
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Hng.Application.Features.Profiles.Dtos
         public string JobTitle { get; set; }
         [JsonPropertyName("bio")]
         public string Bio { get; set; }
+        [JsonPropertyName("department")]
+        public string Department { get; set; }
         [JsonPropertyName("facebook_link")]
         public string FacebookLink { get; set; }
         [JsonPropertyName("twitter_link")]
