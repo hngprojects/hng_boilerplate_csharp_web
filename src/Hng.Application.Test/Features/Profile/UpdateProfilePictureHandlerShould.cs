@@ -3,6 +3,7 @@ using Hng.Application.Features.Profiles.Dtos;
 using Hng.Application.Features.Profiles.Handlers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Services.Interfaces;
 using Moq;
 using System.Linq.Expressions;
 using Xunit;
@@ -14,6 +15,7 @@ namespace Hng.Application.Test.Features.Profile
         private readonly Mock<IRepository<User>> _userRepositoryMock;
         private readonly Mock<IImageService> _imageServiceMock;
         private readonly Mock<IRepository<Domain.Entities.Profile>> _profileRepositoryMock;
+        private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly UpdateProfilePictureHandler _handler;
 
         public UpdateProfilePictureHandlerShould()
@@ -21,10 +23,12 @@ namespace Hng.Application.Test.Features.Profile
             _userRepositoryMock = new Mock<IRepository<User>>();
             _imageServiceMock = new Mock<IImageService>();
             _profileRepositoryMock = new Mock<IRepository<Domain.Entities.Profile>>();
+            _tokenServiceMock = new Mock<ITokenService>();
             _handler = new UpdateProfilePictureHandler(
                 _userRepositoryMock.Object,
                 _imageServiceMock.Object,
-                _profileRepositoryMock.Object);
+                _profileRepositoryMock.Object,
+                _tokenServiceMock.Object);
         }
 
         [Fact]
@@ -42,8 +46,9 @@ namespace Hng.Application.Test.Features.Profile
             };
             var userProfile = user.Profile;
 
-            var request = new UpdateProfilePictureDto(user.Email, null);
+            var request = new UpdateProfilePictureDto() { };
 
+            _tokenServiceMock.Setup(f => f.GetCurrentUserEmail()).Returns(user.Email);
             _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                 .ReturnsAsync(user);
 
