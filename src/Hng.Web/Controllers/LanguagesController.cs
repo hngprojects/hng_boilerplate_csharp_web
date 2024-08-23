@@ -3,11 +3,12 @@ using Hng.Application.Features.Languages.Dtos;
 using Hng.Application.Features.Languages.Queries;
 using Hng.Application.Shared.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/v1/languages")]
     public class LanguagesController : ControllerBase
