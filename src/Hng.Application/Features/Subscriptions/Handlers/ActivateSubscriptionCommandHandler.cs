@@ -29,7 +29,7 @@ public class ActivateSubscriptionCommandHandler : IRequestHandler<ActivateSubscr
             data.IsActive = true;
             data.UpdatedAt = DateTime.UtcNow;
 
-            await _subscriptionRepository.AddAsync(data);
+            await _subscriptionRepository.UpdateAsync(data);
             await _subscriptionRepository.SaveChanges();
 
             return _mapper.Map<SubscriptionDto>(data);

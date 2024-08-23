@@ -18,21 +18,20 @@ namespace Hng.Web.Controllers
         /// update user's details
         /// </summary>
         /// <param name="profileDto"></param>
-        /// <param name="email"></param>
         /// <returns></returns>
-        [HttpPut("{email}")]
+        [HttpPut()]
         [ProducesResponseType(typeof(UpdateProfileResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(UpdateProfileResponseDto), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto profileDto, string email)
+        [ProducesResponseType(typeof(UpdateProfileResponseDto), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto profileDto)
         {
-            var response = await _mediator.Send(new UpdateProfile(email, profileDto));
+            var response = await _mediator.Send(new UpdateProfile() { UpdateProfileDto = profileDto });
 
             if (response.IsFailure)
-                return StatusCode(StatusCodes.Status404NotFound,
+                return StatusCode(StatusCodes.Status401Unauthorized,
                 new UpdateProfileResponseDto()
                 {
                     Message = response.Error,
-                    StatusCode = StatusCodes.Status404NotFound
+                    StatusCode = StatusCodes.Status401Unauthorized
                 });
 
             return Ok(response.Value);
@@ -42,21 +41,20 @@ namespace Hng.Web.Controllers
         /// update profile picture
         /// </summary>
         /// <param name="profileDto"></param>
-        /// <param name="email"></param>
         /// <returns></returns>
-        [HttpPut("{email}/picture")]
+        [HttpPut("picture")]
         [ProducesResponseType(typeof(UpdateProfilePictureResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(UpdateProfilePictureResponseDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateProfilePicture([FromForm] UpdateProfilePicture profileDto, string email)
+        [ProducesResponseType(typeof(UpdateProfilePictureResponseDto), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateProfilePicture([FromForm] UpdateProfilePictureDto profileDto)
         {
-            var response = await _mediator.Send(new UpdateProfilePictureDto(email, profileDto.DisplayPhoto));
+            var response = await _mediator.Send(profileDto);
 
             if (response.IsFailure)
-                return StatusCode(StatusCodes.Status400BadRequest,
+                return StatusCode(StatusCodes.Status401Unauthorized,
                 new UpdateProfilePictureResponseDto()
                 {
                     Message = response.Error,
-                    StatusCode = StatusCodes.Status400BadRequest
+                    StatusCode = StatusCodes.Status401Unauthorized
                 });
 
             return Ok(response.Value);
@@ -65,21 +63,21 @@ namespace Hng.Web.Controllers
         /// <summary>
         /// delete profile picture
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        [HttpDelete("{email}/picture")]
+        [HttpDelete("picture")]
         [ProducesResponseType(typeof(DeleteProfilePictureResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(DeleteProfilePictureResponseDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteProfilePicture(string email)
+        [ProducesResponseType(typeof(DeleteProfilePictureResponseDto), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteProfilePicture(DeleteProfilePictureDto request)
         {
-            var response = await _mediator.Send(new DeleteProfilePictureDto() { Email = email });
+            var response = await _mediator.Send(request);
 
             if (response.IsFailure)
-                return StatusCode(StatusCodes.Status400BadRequest,
+                return StatusCode(StatusCodes.Status401Unauthorized,
                 new DeleteProfilePictureResponseDto()
                 {
                     Message = response.Error,
-                    StatusCode = StatusCodes.Status400BadRequest
+                    StatusCode = StatusCodes.Status401Unauthorized
                 });
 
             return Ok(response.Value);

@@ -7,6 +7,7 @@ using System.Reflection;
 using Prometheus;
 using Hng.Web.ModelStateError;
 using Microsoft.AspNetCore.Mvc;
+using Hng.Web.Filters.Swashbuckle;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddApplicationConfig(builder.Configuration);
 builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"));
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SchemaFilter<SnakeCaseDictionaryFilter>();
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
@@ -85,5 +87,6 @@ app.Use((context, next) =>
 });
 
 app.MapControllers();
+
 
 app.Run();

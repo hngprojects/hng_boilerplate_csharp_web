@@ -16,6 +16,7 @@ namespace Hng.Infrastructure.Context
             modelBuilder.ApplyConfiguration<UserRole>(new UserRoleConfig());
             modelBuilder.ApplyConfiguration<Transaction>(new PaymentConfiguration());
             modelBuilder.ApplyConfiguration<Subscription>(new SubscriptionConfiguration());
+            modelBuilder.ApplyConfiguration(new ApiStatusConfiguration());
             modelBuilder.Entity<EmailTemplate>()
             .Property(e => e.PlaceHolders)
             .HasColumnType("jsonb") //Map to the native json type of PostgreSQL
@@ -47,6 +48,8 @@ namespace Hng.Infrastructure.Context
         public DbSet<HelpCenterTopic> HelpCenterTopic { get; set; }
         public DbSet<OrganizationInvite> OrganizationInvites { get; set; }
         public DbSet<BillingPlan> BillingPlans { get; set; }
+        public DbSet<LastLogin> LastLogins { get; set; }
+        public DbSet<ApiStatus> ApiStatuses { get; set; }
         public DbSet<Language> Languages { get; set; }
     }
 }

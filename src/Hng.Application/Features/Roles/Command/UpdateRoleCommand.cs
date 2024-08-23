@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Roles.Command
 {
-    public class UpdateRoleCommand : IRequest<UpdateRoleResponseDto>
+    public class UpdateRoleCommand : IRequest<CreateRoleResponseDto>
     {
         public UpdateRoleCommand(Guid orgId, Guid roleId, UpdateRoleRequestDto uptRoleRequest)
         {

@@ -6,8 +6,6 @@ namespace Hng.Application.Features.Profiles.Dtos
 {
     public record DeleteProfilePictureDto : IRequest<Result<DeleteProfilePictureResponseDto>>
     {
-        [JsonPropertyName("email")]
-        public string Email { get; set; }
     }
 
     public record DeleteProfilePictureResponseDto

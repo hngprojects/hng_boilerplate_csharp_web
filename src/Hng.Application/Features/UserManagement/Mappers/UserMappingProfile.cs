@@ -28,6 +28,8 @@ namespace Hng.Application.Features.UserManagement.Mappers
 
             CreateMap<User, UserResponseDto>()
                 .ReverseMap();
+
+            CreateMap<User, UserOrganzationDto>();
         }
     }
 }
