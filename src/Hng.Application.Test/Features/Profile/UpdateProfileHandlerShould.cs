@@ -4,6 +4,7 @@ using Hng.Application.Features.Profiles.Handlers;
 using Hng.Application.Features.Profiles.Mappers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Services.Interfaces;
 using Moq;
 using System.Linq.Expressions;
 using Xunit;
@@ -14,6 +15,7 @@ namespace Hng.Application.Test.Features.Profile
     {
         private readonly Mock<IRepository<User>> _userRepositoryMock;
         private readonly Mock<IRepository<Domain.Entities.Profile>> _profileRepositoryMock;
+        private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly IMapper _mapper;
         private readonly UpdateProfileHandler _handler;
 
@@ -25,10 +27,12 @@ namespace Hng.Application.Test.Features.Profile
 
             _userRepositoryMock = new Mock<IRepository<User>>();
             _profileRepositoryMock = new Mock<IRepository<Domain.Entities.Profile>>();
+            _tokenServiceMock = new Mock<ITokenService>();
             _handler = new UpdateProfileHandler(
                 _userRepositoryMock.Object,
                 _profileRepositoryMock.Object,
-                _mapper);
+                _mapper,
+                _tokenServiceMock.Object);
         }
 
         [Fact]
@@ -46,8 +50,9 @@ namespace Hng.Application.Test.Features.Profile
             };
             var userProfile = user.Profile;
             var profile = new UpdateProfileDto() { Bio = "Good test" };
-            var request = new UpdateProfile(user.Email, profile);
+            var request = new UpdateProfile() { UpdateProfileDto = profile };
 
+            _tokenServiceMock.Setup(f => f.GetCurrentUserEmail()).Returns(user.Email);
             _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
                 .ReturnsAsync(user);
 
