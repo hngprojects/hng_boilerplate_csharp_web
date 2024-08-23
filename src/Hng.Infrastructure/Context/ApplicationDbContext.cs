@@ -47,5 +47,6 @@ namespace Hng.Infrastructure.Context
         public DbSet<HelpCenterTopic> HelpCenterTopic { get; set; }
         public DbSet<OrganizationInvite> OrganizationInvites { get; set; }
         public DbSet<BillingPlan> BillingPlans { get; set; }
+        public DbSet<Language> Languages { get; set; }
     }
 }

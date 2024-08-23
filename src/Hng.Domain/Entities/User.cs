@@ -31,4 +31,6 @@ public class User : EntityBase
     public ICollection<UserRole> UsersRoles { get; set; } = [];
     public Guid? TimezoneId { get; set; }
     public Timezone Timezone { get; set; }
+    public Guid? LanguageId { get; set; }
+    public Language Language { get; set; }
 }

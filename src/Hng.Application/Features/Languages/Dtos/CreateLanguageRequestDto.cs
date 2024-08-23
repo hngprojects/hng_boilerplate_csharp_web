@@ -2,11 +2,8 @@
 
 namespace Hng.Application.Features.Languages.Dtos
 {
-    public class LanguageDto
+    public class CreateLanguageRequestDto
     {
-        [JsonPropertyName("id")]
-        public Guid Id { get; set; }
-
         [JsonPropertyName("name")]
         public string Name { get; set; }
     }
