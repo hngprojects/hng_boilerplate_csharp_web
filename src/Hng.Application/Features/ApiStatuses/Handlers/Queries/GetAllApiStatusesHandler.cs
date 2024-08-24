@@ -1,17 +1,10 @@
 ﻿using AutoMapper;
 using Hng.Application.Features.ApiStatuses.Dtos.Requests;
 using Hng.Application.Features.ApiStatuses.Dtos.Responses;
-using Hng.Application.Features.Timezones.Dtos;
-using Hng.Application.Features.Timezones.Queries;
 using Hng.Application.Shared.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hng.Application.Features.ApiStatuses.Handlers.Queries
 {
@@ -33,7 +26,7 @@ namespace Hng.Application.Features.ApiStatuses.Handlers.Queries
             var apiStatus = await _apistatusRepository.GetAllAsync();
             var apiStatusDtos = _mapper.Map<List<ApiStatusResponseDto>>(apiStatus);
             var paginatedApiStatus = PagedListDto<ApiStatusResponseDto>.ToPagedList(
-                apiStatusDtos,
+                apiStatusDtos.OrderByDescending(l => l.LastChecked),
                 pageNumber,
                 pageSize
             );

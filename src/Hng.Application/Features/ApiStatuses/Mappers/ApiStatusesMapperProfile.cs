@@ -1,12 +1,5 @@
 ﻿using Hng.Application.Features.ApiStatuses.Dtos.Responses;
-using Hng.Application.Features.Timezones.Commands;
-using Hng.Application.Features.Timezones.Dtos;
 using Hng.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hng.Application.Features.ApiStatuses.Mappers
 {
