@@ -20,7 +20,7 @@ namespace Hng.Application.Test.Features.UserManagement
         private readonly Mock<ILogger<UserSignUpCommandHandler>> _loggerMock;
         private readonly Mock<IPasswordService> _passwordServiceMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
-
+        private readonly Mock<IEmailService> _emailServiceMock;
         public UserSignUpCommandShould()
         {
             var config = new MapperConfiguration(cfg =>
@@ -35,6 +35,7 @@ namespace Hng.Application.Test.Features.UserManagement
             _loggerMock = new Mock<ILogger<UserSignUpCommandHandler>>();
             _passwordServiceMock = new Mock<IPasswordService>();
             _tokenServiceMock = new Mock<ITokenService>();
+            _emailServiceMock = new Mock<IEmailService>();
         }
 
         [Fact]
@@ -56,7 +57,8 @@ namespace Hng.Application.Test.Features.UserManagement
             _mapper,
             _loggerMock.Object,
             _passwordServiceMock.Object,
-            _tokenServiceMock.Object);
+            _tokenServiceMock.Object,
+            _emailServiceMock.Object);
 
 
             var command = new UserSignUpCommand(new UserSignUpDto
@@ -96,7 +98,8 @@ namespace Hng.Application.Test.Features.UserManagement
             _mapper,
             _loggerMock.Object,
             _passwordServiceMock.Object,
-            _tokenServiceMock.Object);
+            _tokenServiceMock.Object,
+            _emailServiceMock.Object);
 
             var command = new UserSignUpCommand(new UserSignUpDto
             {
@@ -131,7 +134,8 @@ namespace Hng.Application.Test.Features.UserManagement
             _mapper,
             _loggerMock.Object,
             _passwordServiceMock.Object,
-            _tokenServiceMock.Object);
+            _tokenServiceMock.Object,
+            _emailServiceMock.Object);
 
             var command = new UserSignUpCommand(new UserSignUpDto
             {
