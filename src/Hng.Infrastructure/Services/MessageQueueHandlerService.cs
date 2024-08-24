@@ -1,84 +1,85 @@
+using System.Text.Json;
 using Hng.Domain.Entities;
-using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 
 namespace Hng.Infrastructure.Services;
 
-internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> logger, IServiceProvider serviceProvider) : IHostedService, IDisposable
+internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> logger, IServiceProvider serviceProvider, IConnectionMultiplexer redis) : IHostedService
 {
     private readonly ILogger<MessageQueueHandlerService> logger = logger;
     private readonly IServiceProvider serviceProvider = serviceProvider;
-    private Timer timer = null;
+    private readonly IConnectionMultiplexer redis = redis;
 
-    public void Dispose()
-    {
-        timer?.Dispose();
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         logger.LogDebug("Email service running");
-        timer = new Timer(ProcessQueue, null, TimeSpan.FromSeconds(30), TimeSpan.FromHours(12));
+
+        ISubscriber subscriber = redis.GetSubscriber();
+
+        await subscriber.SubscribeAsync(RedisChannel.Literal("email_queue"),
+            async (channel, message) => await MessageSubscriber(channel, message, cancellationToken));
+
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        logger.LogDebug("Email service is stopping");
         return Task.CompletedTask;
     }
 
-    public async Task StopAsync(CancellationToken cancellationToken)
+    private async Task MessageSubscriber(RedisChannel redisChannel, RedisValue message, CancellationToken cancellationToken)
     {
-        logger.LogDebug("Email service is stopping");
-        timer.Change(Timeout.Infinite, 0);
-        await timer.DisposeAsync();
+        Message email = JsonSerializer.Deserialize<Message>(message);
+
+        logger.LogInformation("Email subscriber processing received message for {recipient}", email.RecipientName.Replace(Environment.NewLine, ""));
+
+        await ProcessMessage(email, cancellationToken);
     }
 
-    private async void ProcessQueue(object data)
-    {
-
-        using IServiceScope scope = serviceProvider.CreateScope();
-
-        IRepository<Message> repository = scope.ServiceProvider.GetRequiredService<IRepository<Message>>();
-
-        logger.LogDebug("Getting message backlog");
-
-        IEnumerable<Message> pendingMessages = await repository.GetAllBySpec(e => e.Status == Domain.Enums.MessageStatus.Pending);
-
-        logger.LogDebug("Processing message backlog");
-
-        foreach (var message in pendingMessages)
-        {
-            try
-            {
-                logger.LogDebug("Sending message to {recipientName} with contact \n{recipientContact}",
-                    message.RecipientName.Replace(Environment.NewLine, ""),
-                    message.RecipientContact.Replace(Environment.NewLine, ""));
-                Message sentMessage = await ProcessMessage(message);
-                sentMessage.Status = Domain.Enums.MessageStatus.Sent;
-                sentMessage.LastAttemptedAt = DateTimeOffset.UtcNow;
-                await repository.UpdateAsync(sentMessage);
-            }
-
-            catch (Exception ex)
-            {
-                logger.LogError("Message failed to send with error {exception}", ex);
-
-                message.RetryCount += 1;
-
-                if (message.RetryCount >= 3)
-                {
-                    message.Status = Domain.Enums.MessageStatus.Failed;
-                }
-                await repository.UpdateAsync(message);
-            }
-        }
-        await repository.SaveChanges();
-    }
-
-
-    private async Task<Message> ProcessMessage(Message message)
+    private async Task ProcessMessage(Message message, CancellationToken cancellationToken)
     {
         using IServiceScope service = serviceProvider.CreateScope();
         IEmailService emailService = service.ServiceProvider.GetRequiredService<IEmailService>();
-        return await emailService.SendEmailMessage(message);
+
+        bool sent = await Send();
+
+        if (!sent)
+        {
+            logger.LogWarning("Failed to send email to {recipient}. Retrying in 1 minute...", message.RecipientName.Replace(Environment.NewLine, ""));
+            await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
+            sent = await Send();
+
+            if (!sent)
+            {
+                logger.LogError("Retry failed for email to {recipient}. Message will not be processed further.", message.RecipientName.Replace(Environment.NewLine, ""));
+            }
+        }
+
+        async Task<bool> Send()
+        {
+            try
+            {
+                logger.LogInformation("Sending message to {recipientName} with contact \n{recipientContact}",
+                    message.RecipientName.Replace(Environment.NewLine, ""),
+                    message.RecipientContact.Replace(Environment.NewLine, ""));
+                Message sentMessage = await emailService.SendEmailMessage(message);
+                sentMessage.Status = Domain.Enums.MessageStatus.Sent;
+                sentMessage.LastAttemptedAt = DateTimeOffset.UtcNow;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("An error occurred when sending the mail {error}", ex);
+                return false;
+            }
+        }
+
     }
+
+
 }
+
