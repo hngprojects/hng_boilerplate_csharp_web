@@ -13,7 +13,9 @@ namespace Hng.Application.Features.ApiStatuses.Handlers.Queries
         private readonly IRepository<ApiStatus> _apistatusRepository;
         private readonly IMapper _mapper;
 
-        public GetAllApiStatusesHandler(IRepository<ApiStatus> apistatusRepository, IMapper mapper)
+        public GetAllApiStatusesHandler(
+            IRepository<ApiStatus> apistatusRepository,
+            IMapper mapper)
         {
             _apistatusRepository = apistatusRepository;
             _mapper = mapper;
@@ -26,7 +28,7 @@ namespace Hng.Application.Features.ApiStatuses.Handlers.Queries
             var apiStatus = await _apistatusRepository.GetAllAsync();
             var apiStatusDtos = _mapper.Map<List<ApiStatusResponseDto>>(apiStatus);
             var paginatedApiStatus = PagedListDto<ApiStatusResponseDto>.ToPagedList(
-                apiStatusDtos,
+                apiStatusDtos.OrderByDescending(l => l.LastChecked),
                 pageNumber,
                 pageSize
             );

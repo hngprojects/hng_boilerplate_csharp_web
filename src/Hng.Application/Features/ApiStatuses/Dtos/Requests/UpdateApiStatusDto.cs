@@ -1,11 +1,17 @@
-﻿using Hng.Domain.Enums;
+﻿using CSharpFunctionalExtensions;
+using Hng.Domain.Enums;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.ApiStatuses.Dtos.Requests
 {
-    public record UpdateApiStatusDto
+    public record UpdateApiStatusDto : IRequest<Result<CreateApiStatusResponseDto>>
     {
-        public List<ApiStatusModel> ApiStatusModels { get; set; } = [];
+        [Required(ErrorMessage = "Report is required")]
+        [JsonPropertyName("report")]
+        public IFormFile Report { get; set; }
     }
 
     public record ApiStatusModel
