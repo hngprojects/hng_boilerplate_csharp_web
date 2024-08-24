@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Hng.Application.Features.ApiStatuses.Dtos.Responses
+﻿namespace Hng.Application.Features.ApiStatuses.Dtos.Responses
 {
     public record ApiStatusResponseModel
     {
@@ -15,13 +13,9 @@ namespace Hng.Application.Features.ApiStatuses.Dtos.Responses
         public List<CollectionItem> item { get; set; } = [];
     }
 
-    public record Environment
-    {
-    }
+    public record Environment { }
 
-    public record Global
-    {
-    }
+    public record Global { }
 
     public record Run
     {
@@ -33,13 +27,9 @@ namespace Hng.Application.Features.ApiStatuses.Dtos.Responses
         public string error { get; set; }
     }
 
-    public record Stat
-    {
-    }
+    public record Stat { }
 
-    public record Timing
-    {
-    }
+    public record Timing { }
 
     public record Execution
     {
@@ -51,9 +41,7 @@ namespace Hng.Application.Features.ApiStatuses.Dtos.Responses
         public List<Assertion> assertions { get; set; }
     }
 
-    public record Transfer
-    {
-    }
+    public record Transfer { }
 
     public record Failure
     {
@@ -62,9 +50,8 @@ namespace Hng.Application.Features.ApiStatuses.Dtos.Responses
         public FailureParent parent { get; set; }
     }
 
-    public record Cursor
-    {
-    }
+    public record Cursor { }
+
 
     public record Item
     {
@@ -92,9 +79,8 @@ namespace Hng.Application.Features.ApiStatuses.Dtos.Responses
         public string name { get; set; }
     }
 
-    public record Request
-    {
-    }
+    public record Request { }
+
 
     public record Url
     {
@@ -114,11 +100,7 @@ namespace Hng.Application.Features.ApiStatuses.Dtos.Responses
         public long responseTime { get; set; }
     }
 
-    public record Assertion
-    {
-    }
+    public record Assertion { }
 
-    public record FailureError
-    {
-    }
+    public record FailureError { }
 }

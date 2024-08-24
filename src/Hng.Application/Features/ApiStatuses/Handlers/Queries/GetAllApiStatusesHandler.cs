@@ -13,7 +13,9 @@ namespace Hng.Application.Features.ApiStatuses.Handlers.Queries
         private readonly IRepository<ApiStatus> _apistatusRepository;
         private readonly IMapper _mapper;
 
-        public GetAllApiStatusesHandler(IRepository<ApiStatus> apistatusRepository, IMapper mapper)
+        public GetAllApiStatusesHandler(
+            IRepository<ApiStatus> apistatusRepository,
+            IMapper mapper)
         {
             _apistatusRepository = apistatusRepository;
             _mapper = mapper;

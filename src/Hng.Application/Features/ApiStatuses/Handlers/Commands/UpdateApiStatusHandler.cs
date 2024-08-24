@@ -27,7 +27,8 @@ namespace Hng.Application.Features.ApiStatuses.Handlers.Commands
                 }
 
                 using var stream = request.Report.OpenReadStream();
-                var jsonObject = await JsonSerializer.DeserializeAsync<ApiStatusResponseModel>(stream, cancellationToken: cancellationToken);
+                var jsonObject =
+                    await JsonSerializer.DeserializeAsync<ApiStatusResponseModel>(stream, cancellationToken: cancellationToken);
 
                 var groupCollection = jsonObject.collection.item
                 .GroupBy(c => c.name)
