@@ -3,6 +3,7 @@ using System;
 using Hng.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Hng.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240823154842_LanguageEntities")]
+    partial class LanguageEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,37 +24,6 @@ namespace Hng.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Hng.Domain.Entities.ApiStatus", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ApiGroup")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Details")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("LastChecked")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<long>("ResponseTime")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ApiStatuses");
-                });
 
             modelBuilder.Entity("Hng.Domain.Entities.BillingPlan", b =>
                 {
@@ -127,20 +99,17 @@ namespace Hng.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("Slug")
+                    b.Property<string>("ParentId")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("Slug")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -283,29 +252,25 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("Jobs");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Entities.LastLogin", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Language", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("IPAddress")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("LoginTime")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("LogoutTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LastLogins");
+                    b.ToTable("Languages");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Message", b =>
@@ -467,9 +432,6 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Industry")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("InviteToken")
-                        .HasColumnType("uuid");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
@@ -515,8 +477,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("ExpiresAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("InviteCode")
-                        .HasColumnType("uuid");
+                    b.Property<string>("InviteLink")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid");
@@ -525,8 +488,6 @@ namespace Hng.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InviteCode");
 
                     b.ToTable("OrganizationInvites");
                 });
@@ -542,9 +503,6 @@ namespace Hng.Infrastructure.Migrations
 
                     b.Property<string>("Category")
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("CategoryId")
-                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -581,8 +539,6 @@ namespace Hng.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("OrganizationId");
 
                     b.HasIndex("UserId");
@@ -609,9 +565,6 @@ namespace Hng.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("InstagramLink")
                         .HasColumnType("text");
 
                     b.Property<string>("JobTitle")
@@ -871,12 +824,6 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("text");
 
-                    b.Property<string>("PasswordResetToken")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("PasswordResetTokenTime")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("PasswordSalt")
                         .HasColumnType("text");
 
@@ -986,17 +933,6 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("Blog");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Entities.LastLogin", b =>
-                {
-                    b.HasOne("Hng.Domain.Entities.User", "User")
-                        .WithMany("LastLogins")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Hng.Domain.Entities.Notification", b =>
                 {
                     b.HasOne("Hng.Domain.Entities.User", "User")
@@ -1021,10 +957,6 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("Hng.Domain.Entities.Category", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId");
-
                     b.HasOne("Hng.Domain.Entities.Organization", "Organization")
                         .WithMany()
                         .HasForeignKey("OrganizationId")
@@ -1189,9 +1121,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("Hng.Domain.Entities.Category", b =>
+            modelBuilder.Entity("Hng.Domain.Entities.Language", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
@@ -1214,8 +1146,6 @@ namespace Hng.Infrastructure.Migrations
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>
                 {
                     b.Navigation("Blogs");
-
-                    b.Navigation("LastLogins");
 
                     b.Navigation("Products");
 
