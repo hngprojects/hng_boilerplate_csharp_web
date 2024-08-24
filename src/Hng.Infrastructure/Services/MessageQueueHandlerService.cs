@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Services.Interfaces;
+using Hng.Infrastructure.Utilities.EmailQueue;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -33,7 +34,7 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
 
     private async Task MessageSubscriber(RedisChannel redisChannel, RedisValue message, CancellationToken cancellationToken)
     {
-        Message email = JsonSerializer.Deserialize<Message>(message);
+        Message email = JsonSerializer.Deserialize<Email>(message).ToMessage();
 
         logger.LogInformation("Email subscriber processing received message for {recipient}", email.RecipientName.Replace(Environment.NewLine, ""));
 
@@ -49,13 +50,13 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
 
         if (!sent)
         {
-            logger.LogWarning("Failed to send email to {recipient}. Retrying in 1 minute...", message.RecipientName.Replace(Environment.NewLine, ""));
+            logger.LogWarning("Failed to send email to {recipient}. Retrying in 1 minute...", message.RecipientContact.Replace(Environment.NewLine, ""));
             await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
             sent = await Send();
 
             if (!sent)
             {
-                logger.LogError("Retry failed for email to {recipient}. Message will not be processed further.", message.RecipientName.Replace(Environment.NewLine, ""));
+                logger.LogError("Retry failed for email to {recipient}. Message will not be processed further.", message.RecipientContact.Replace(Environment.NewLine, ""));
             }
         }
 

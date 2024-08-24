@@ -2,6 +2,7 @@ using System.Text.Json;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
+using Hng.Infrastructure.Utilities.EmailQueue;
 using Hng.Infrastructure.Utilities.Results;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ public class MessageQueueService(ILogger<MessageQueueService> logger, IEmailTemp
         logger.LogInformation("Now queuing email with id : {emailId}", message.Id);
         RedisChannel channel = RedisChannel.Literal("email_queue");
         ISubscriber publisher = redis.GetSubscriber();
-        await publisher.PublishAsync(channel, JsonSerializer.Serialize(message));
+        await publisher.PublishAsync(channel, JsonSerializer.Serialize(message.ToEmail()));
         return message;
     }
 
