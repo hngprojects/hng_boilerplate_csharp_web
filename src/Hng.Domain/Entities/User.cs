@@ -34,4 +34,6 @@ public class User : EntityBase
     public ICollection<LastLogin> LastLogins { get; set; } = [];
     public Guid? TimezoneId { get; set; }
     public Timezone Timezone { get; set; }
+    public Guid? LanguageId { get; set; }
+    public Language Language { get; set; }
 }

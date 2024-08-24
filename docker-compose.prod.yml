@@ -12,6 +12,7 @@ services:
     depends_on:
       - postgres
       - redis
+    restart: unless-stopped
 
   nginx:
     image: nginx:latest
@@ -30,6 +31,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   redis:
     image: redis:latest

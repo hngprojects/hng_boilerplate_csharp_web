@@ -22,6 +22,37 @@ namespace Hng.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Hng.Domain.Entities.ApiStatus", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ApiGroup")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastChecked")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ResponseTime")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApiStatuses");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.BillingPlan", b =>
                 {
                     b.Property<Guid>("Id")
@@ -830,6 +861,9 @@ namespace Hng.Infrastructure.Migrations
                     b.Property<bool>("IsSuperAdmin")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid?>("LanguageId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -857,6 +891,8 @@ namespace Hng.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
 
                     b.HasIndex("TimezoneId");
 
@@ -1078,9 +1114,15 @@ namespace Hng.Infrastructure.Migrations
 
             modelBuilder.Entity("Hng.Domain.Entities.User", b =>
                 {
+                    b.HasOne("Hng.Domain.Entities.Language", "Language")
+                        .WithMany("Users")
+                        .HasForeignKey("LanguageId");
+
                     b.HasOne("Hng.Domain.Entities.Timezone", "Timezone")
                         .WithMany()
                         .HasForeignKey("TimezoneId");
+
+                    b.Navigation("Language");
 
                     b.Navigation("Timezone");
                 });

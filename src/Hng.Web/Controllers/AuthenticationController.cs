@@ -14,10 +14,7 @@ namespace Hng.Web.Controllers
     {
         private readonly IMediator _mediator;
 
-        public AuthenticationController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public AuthenticationController(IMediator mediator) => _mediator = mediator;
 
         /// <summary>
         /// Gets Logged in User Details, Run This one, Server and Docs Response Differ
@@ -298,6 +295,5 @@ namespace Hng.Web.Controllers
                 });
             }
         }
-
     }
 }
