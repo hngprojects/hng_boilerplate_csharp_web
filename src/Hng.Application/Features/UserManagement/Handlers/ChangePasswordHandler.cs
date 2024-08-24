@@ -33,7 +33,11 @@ namespace Hng.Application.Features.UserManagement.Handlers
 
             var user = await _userRepo.GetBySpec(u => u.Email == email);
 
-            if (user == null || !_passwordService.IsPasswordEqual(request.OldPassword, user.PasswordSalt, user.Password))
+            if (user == null)
+                return Result.Failure<ChangePasswordResponse>("Invalid Password!");
+
+            if (!string.IsNullOrWhiteSpace(request.OldPassword)
+                && !_passwordService.IsPasswordEqual(request.OldPassword, user.PasswordSalt, user.Password))
                 return Result.Failure<ChangePasswordResponse>("Invalid Password!");
 
             (user.PasswordSalt, user.Password) = _passwordService.GeneratePasswordSaltAndHash(request.NewPassword);

@@ -7,14 +7,6 @@ namespace Hng.Application.Features.Profiles.Dtos
 {
     public record UpdateProfile : IRequest<Result<UpdateProfileResponseDto>>
     {
-        public UpdateProfile(string email, UpdateProfileDto updateProfile)
-        {
-            Email = email;
-            UpdateProfileDto = updateProfile;
-        }
-
-        public string Email { get; set; }
-
         public UpdateProfileDto UpdateProfileDto { get; set; }
     }
 

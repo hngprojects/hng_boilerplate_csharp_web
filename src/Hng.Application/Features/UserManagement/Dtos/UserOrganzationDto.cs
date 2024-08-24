@@ -4,6 +4,8 @@ namespace Hng.Application.Features.UserManagement.Dtos
 {
     public class UserOrganzationDto
     {
+        public Guid Id { get; set; }
+
         [JsonPropertyName("first_name")]
         public string FirstName { get; set; }
 

@@ -8,15 +8,16 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
     volumes:
-      - ./src/Hng.Web/appsettings.Production.json:/appsettings.Production.json
+      - ./src/Hng.Web/appsettings.Production.json:/app/appsettings.Production.json
     depends_on:
       - postgres
       - redis
+    restart: unless-stopped
 
   nginx:
     image: nginx:latest
     ports:
-      - "5002:80"
+      - "6002:80"
     depends_on:
       - backend
     volumes:
@@ -30,6 +31,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   redis:
     image: redis:latest

@@ -21,7 +21,7 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
     public Task StartAsync(CancellationToken cancellationToken)
     {
         logger.LogDebug("Email service running");
-        timer = new Timer(ProcessQueue, null, TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(1));
+        timer = new Timer(ProcessQueue, null, TimeSpan.FromSeconds(30), TimeSpan.FromHours(12));
         return Task.CompletedTask;
     }
 
@@ -54,6 +54,7 @@ internal class MessageQueueHandlerService(ILogger<MessageQueueHandlerService> lo
                     message.RecipientContact.Replace(Environment.NewLine, ""));
                 Message sentMessage = await ProcessMessage(message);
                 sentMessage.Status = Domain.Enums.MessageStatus.Sent;
+                sentMessage.LastAttemptedAt = DateTimeOffset.UtcNow;
                 await repository.UpdateAsync(sentMessage);
             }
 

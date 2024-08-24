@@ -17,18 +17,20 @@
     public class UpdateRoleCommandHandlerTests
     {
         private readonly Mock<IRepository<Role>> _mockRoleRepository;
+        private readonly Mock<IRepository<RolePermission>> _mockPermissionsRepository;
         private readonly IMapper _mapper;
         private readonly UpdateRoleCommandHandler _handler;
 
         public UpdateRoleCommandHandlerTests()
         {
             _mockRoleRepository = new Mock<IRepository<Role>>();
+            _mockPermissionsRepository = new Mock<IRepository<RolePermission>>();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<RoleMappingProfile>();
             });
             _mapper = config.CreateMapper();
-            _handler = new UpdateRoleCommandHandler(_mockRoleRepository.Object, _mapper);
+            _handler = new UpdateRoleCommandHandler(_mockRoleRepository.Object, _mockPermissionsRepository.Object, _mapper);
         }
 
         [Fact]
@@ -52,10 +54,14 @@
         {
             // Arrange
             var roleId = Guid.NewGuid();
-            var requestDto = new UpdateRoleRequestDto { Name = "Updated Role", Description = "Updated description" };
+            var permId = Guid.NewGuid();
+            var requestDto = new UpdateRoleRequestDto { Name = "Updated Role", Description = "Updated description", Permissions = [permId] };
             var command = new UpdateRoleCommand(Guid.NewGuid(), roleId, requestDto);
-            var existingRole = new Role { Id = roleId, Name = "Old Role", Description = "Old description" };
+            var existingRole = new Role { Id = roleId, Name = "Old Role", Description = "Old description", Permissions = [new() { Name = "perm1" }] };
             _mockRoleRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<Role, bool>>>())).ReturnsAsync(existingRole);
+            _mockPermissionsRepository.Setup(repo => repo.GetAllBySpec(It.IsAny<Expression<Func<RolePermission, bool>>>()))
+                .ReturnsAsync(new List<RolePermission>() { new(
+                    ){Id=permId,Name="UpdatedPerm"}});
 
 
             // Act
@@ -64,6 +70,8 @@
             // Assert
             Assert.Equal(200, result.StatusCode);
             Assert.Equal("Role updated successfully", result.Message);
+            Assert.NotNull(result.Data.Permissions);
+            Assert.Contains<Guid>(permId, result.Data.Permissions.Select(x => x.Id));
         }
 
     }

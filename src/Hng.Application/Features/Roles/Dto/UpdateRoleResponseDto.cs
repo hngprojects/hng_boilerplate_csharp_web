@@ -10,7 +10,7 @@ namespace Hng.Application.Features.Roles.Dto
     public class UpdateRoleResponseDto
     {
         public int StatusCode { get; set; }
-        [JsonPropertyName("roleid")]
+        [JsonPropertyName("role_id")]
         public string Id { get; set; }
         [JsonPropertyName("name")]
         public string Name { get; set; }

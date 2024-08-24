@@ -1,5 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using Hng.Application.Features.UserManagement.Commands;
+﻿using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.UserManagement.Queries;
 using Hng.Application.Shared.Dtos;
@@ -15,10 +14,7 @@ namespace Hng.Web.Controllers
     {
         private readonly IMediator _mediator;
 
-        public AuthenticationController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public AuthenticationController(IMediator mediator) => _mediator = mediator;
 
         /// <summary>
         /// Gets Logged in User Details, Run This one, Server and Docs Response Differ
@@ -137,14 +133,14 @@ namespace Hng.Web.Controllers
         /// <summary>
         /// forgot password
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("{email}/forgot-password")]
+        [HttpPost("forgot-password")]
         [ProducesResponseType(typeof(ForgotPasswordResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ForgotPasswordResponse), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ForgotPassword(string email)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto request)
         {
-            var response = await _mediator.Send(new ForgotPasswordDto(email, false));
+            var response = await _mediator.Send(new ForgotPasswordDto(request.Email, false));
 
             if (response.IsFailure)
                 return StatusCode(StatusCodes.Status404NotFound,
@@ -158,16 +154,16 @@ namespace Hng.Web.Controllers
         }
 
         /// <summary>
-        /// forgot password for Mobile
+        /// forgot password for mobile
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("{email}/forgot-password-mobile")]
+        [HttpPost("forgot-password-mobile")]
         [ProducesResponseType(typeof(ForgotPasswordResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ForgotPasswordResponse), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ForgotPasswordMobile(string email)
+        public async Task<IActionResult> ForgotPasswordMobile([FromBody] ForgotPasswordRequestDto request)
         {
-            var response = await _mediator.Send(new ForgotPasswordDto(email, true));
+            var response = await _mediator.Send(new ForgotPasswordDto(request.Email, true));
 
             if (response.IsFailure)
                 return StatusCode(StatusCodes.Status404NotFound,
@@ -181,17 +177,16 @@ namespace Hng.Web.Controllers
         }
 
         /// <summary>
-        /// Verifies forgot Password Code
+        /// verifies forgot password code for mobile
         /// </summary>
-        /// <param name="email"></param>
-        /// <param name="code"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost("{email}/{code}/verify-code")]
+        [HttpPost("verify-code")]
         [ProducesResponseType(typeof(VerifyForgotPasswordCodeResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(VerifyForgotPasswordCodeResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> VerifyForgotPasswordCode(string email, string code)
+        public async Task<IActionResult> VerifyForgotPasswordCode([FromBody] VerifyForgotPasswordCodeDto request)
         {
-            var response = await _mediator.Send(new VerifyForgotPasswordCodeDto(email, code));
+            var response = await _mediator.Send(request);
 
             if (response.IsFailure)
                 return StatusCode(StatusCodes.Status400BadRequest,
@@ -205,7 +200,7 @@ namespace Hng.Web.Controllers
         }
 
         /// <summary>
-        /// resets password
+        /// resets password for mobile
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -232,6 +227,7 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("reset-password")]
         [ProducesResponseType(typeof(PasswordResetResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(PasswordResetResponse), StatusCodes.Status400BadRequest)]
@@ -299,6 +295,5 @@ namespace Hng.Web.Controllers
                 });
             }
         }
-
     }
 }

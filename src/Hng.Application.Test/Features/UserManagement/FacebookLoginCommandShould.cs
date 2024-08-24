@@ -81,7 +81,7 @@ namespace Hng.Application.Test.Features.UserManagement
             _mapperMock.Setup(m => m.Map<UserDto>(It.IsAny<User>()))
                        .Returns(userDto);
 
-            _tokenServiceMock.Setup(ts => ts.GenerateJwt(It.IsAny<User>()))
+            _tokenServiceMock.Setup(ts => ts.GenerateJwt(It.IsAny<User>(), It.IsAny<int>()))
                              .Returns("fake_jwt_token");
 
             // Act
@@ -152,7 +152,7 @@ namespace Hng.Application.Test.Features.UserManagement
                 .Verifiable();
 
             _tokenServiceMock
-                .Setup(service => service.GenerateJwt(It.IsAny<User>()))
+                .Setup(service => service.GenerateJwt(It.IsAny<User>(), It.IsAny<int>()))
                 .Returns("jwt-token");
 
             _mapperMock
