@@ -10,7 +10,7 @@ namespace Hng.Application.Features.Languages.Dtos
     public class LanguagesListResponseDto
     {
         [JsonPropertyName("languages")]
-        public List<LanguageDto> Languages { get; set; }
+        public List<LanguageDto> Data { get; set; }
 
         [JsonPropertyName("total_count")]
         public int TotalCount { get; set; }

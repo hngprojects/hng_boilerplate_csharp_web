@@ -37,7 +37,7 @@ namespace Hng.Application.Features.Languages.Handlers.Connamds
             var responseDto = _mapper.Map<LanguageDto>(existingLanguage);
             return new LanguageResponseDto
             {
-                Language = responseDto,
+                Data = responseDto,
                 StatusCode = 200,
                 Message = "Language updated successfully"
             };

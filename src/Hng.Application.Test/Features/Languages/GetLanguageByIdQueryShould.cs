@@ -48,8 +48,8 @@ namespace Hng.Application.Test.Features.Languages
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
             Assert.Equal("Language retrieved successfully", result.Message);
-            Assert.Equal(expectedId, result.Language.Id);
-            Assert.Equal("English", result.Language.Name);
+            Assert.Equal(expectedId, result.Data.Id);
+            Assert.Equal("English", result.Data.Name);
         }
 
         [Fact]
@@ -71,7 +71,7 @@ namespace Hng.Application.Test.Features.Languages
             Assert.NotNull(result);
             Assert.Equal(404, result.StatusCode);
             Assert.Equal("Language not found", result.Message);
-            Assert.Null(result.Language);
+            Assert.Null(result.Data);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Hng.Application.Features.Languages.Dtos
     public class LanguageResponseDto
     {
         [JsonPropertyName("language")]
-        public LanguageDto Language { get; set; }
+        public LanguageDto Data { get; set; }
 
         [JsonPropertyName("status_code")]
         public int StatusCode { get; set; }
