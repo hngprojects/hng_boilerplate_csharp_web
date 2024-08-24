@@ -20,9 +20,10 @@ namespace Hng.Application.Features.UserManagement.Handlers
         private readonly ILogger<UserSignUpCommandHandler> _logger;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
 
 
-        public UserSignUpCommandHandler(IRepository<User> userRepository, IRepository<Role> roleRepository, IMapper mapper, ILogger<UserSignUpCommandHandler> logger, IPasswordService passwordService, ITokenService tokenService)
+        public UserSignUpCommandHandler(IRepository<User> userRepository, IRepository<Role> roleRepository, IMapper mapper, ILogger<UserSignUpCommandHandler> logger, IPasswordService passwordService, ITokenService tokenService, IEmailService emailService)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -30,6 +31,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             _logger = logger;
             _passwordService = passwordService;
             _tokenService = tokenService;
+            _emailService = emailService;
         }
 
 
@@ -88,6 +90,15 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 await _userRepository.AddAsync(createdUser);
                 await _roleRepository.AddAsync(role);
                 await _userRepository.SaveChanges();
+
+                var emailMessage = Message.CreateEmail(
+                    createdUser.Email,
+                    "Welcome to Our Service",
+                    $"Hi {createdUser.FirstName},\n\nThank you for signing up! We're excited to have you on board.",
+                    createdUser.FirstName
+                );
+
+                await _emailService.SendEmailMessage(emailMessage);
 
                 var token = _tokenService.GenerateJwt(createdUser);
                 SignupResponseData signUpResponseData = GetUserDetails(createdUser);
