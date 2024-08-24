@@ -23,28 +23,18 @@ namespace Hng.Web.Controllers
         [HttpGet]
         [Authorize]
         [ProducesResponseType(typeof(DashboardDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> GetUserProduct([FromQuery] Guid userId)
         {
             var response = await _mediator.Send(new GetDashboardQuery(userId));
-            if (response != null)
-            {
-                return Ok(new
-                {
-                    data = response,
-                    message = "Retrieved successfully",
-                    status_code = 200
-                });
+			return Ok(new
+			{
+				data = response,
+				message = "Retrieved successfully",
+				status_code = 200
+			});
 
-            }
-            return NotFound(new
-            {
-                error = "No record found for this user",
-                message = "Request failed",
-                status_code = 404
-            });
-        }
+		}
 
         [HttpGet("sales-trend")]
         [Authorize]
