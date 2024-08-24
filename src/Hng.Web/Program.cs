@@ -43,6 +43,9 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 
     c.CustomSchemaIds(type => type.FullName);
+
+    c.SchemaFilter<SnakeCaseDictionaryFilter>();
+    c.OperationFilter<FileUploadOperationFilter>();
 });
 
 // Add Prometheus
