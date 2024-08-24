@@ -1,78 +1,94 @@
 ﻿using AutoMapper;
 using Hng.Application.Features.ApiStatuses.Commands;
+using Hng.Application.Features.ApiStatuses.Dtos.Requests;
 using Hng.Application.Features.ApiStatuses.Handlers.Commands;
 using Hng.Application.Features.ApiStatuses.Mappers;
 using Hng.Domain.Entities;
+using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
 using Microsoft.AspNetCore.Http;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
-namespace Hng.Application.Test.Features.ApiStatuses
+public class CreateApiStatusCommandShould
 {
-    public class CreateApiStatusCommandShould
+    private readonly Mock<IRepository<ApiStatus>> _mockRepository;
+    private readonly IMapper _mapper;
+    private readonly CreateApiStatusCommandHandler _handler;
+
+    public CreateApiStatusCommandShould()
     {
-        private readonly Mock<IRepository<ApiStatus>> _mockRepository;
-        private readonly IMapper _mapper;
-        private readonly CreateApiStatusCommandHandler _handler;
+        _mockRepository = new Mock<IRepository<ApiStatus>>();
 
-        public CreateApiStatusCommandShould()
+        var configuration = new MapperConfiguration(cfg =>
         {
-            _mockRepository = new Mock<IRepository<ApiStatus>>();
+            cfg.AddProfile<ApiStatusesMapperProfile>();
+        });
 
-            var configuration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<ApiStatusesMapperProfile>();
-            });
+        _mapper = configuration.CreateMapper();
 
-            _mapper = configuration.CreateMapper();
+        _handler = new CreateApiStatusCommandHandler(_mockRepository.Object, _mapper);
+    }
 
-            _handler = new CreateApiStatusCommandHandler(_mockRepository.Object, _mapper);
-        }
+    [Fact]
+    public async Task ReturnBadRequestForInvalidFileType()
+    {
+        // Arrange
+        var file = new FormFile(new MemoryStream(new byte[0]), 0, 0, "file", "test.txt");
+        var command = new CreateApiStatusCommand { File = file };
 
-        [Fact]
-        public async Task Handle_ShouldReturnBadRequest_ForInvalidFileType()
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(400, result.StatusCode);
+        Assert.Equal("Invalid file type. Only JSON files are allowed.", result.Message);
+    }
+
+    [Fact]
+    public async Task ReturnBadRequestForInvalidJsonStructure()
+    {
+        // Arrange
+        var json = "{ }"; // Invalid JSON structure
+        var file = new FormFile(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json)), 0, json.Length, "file", "invalid.json");
+        var command = new CreateApiStatusCommand { File = file };
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(400, result.StatusCode);
+        Assert.Equal("Invalid or empty JSON structure.", result.Message);
+    }
+
+    [Fact]
+    public async Task SaveApiStatusesSuccessfully()
+    {
+        // Arrange
+        var apiStatusModels = new List<ApiStatusModel>
         {
-            // Arrange
-            var command = new CreateApiStatusCommand
-            {
-                File = new FormFile(Stream.Null, 0, 0, "Data", "test.png") // Invalid file type
-            };
-
-            // Act
-            var result = await _handler.Handle(command, CancellationToken.None);
-
-            // Assert
-            Assert.Equal(400, result.StatusCode);
-            Assert.Equal("Invalid file type. Only JSON files are allowed.", result.Message);
-        }
-
-        [Fact]
-        public async Task Handle_ShouldSaveApiStatuses_ForValidJsonFile()
+            new ApiStatusModel { ApiGroup = "Group1", Status = ApiStatusType.Operational, ResponseTime = 100, Details = "All good" }
+        };
+        var apiStatusWrapper = new ApiStatusWrapper
         {
-            // Arrange
-            var json = "[{\"api_group\":\"Group1\",\"status\":0,\"response_time\":123,\"details\":\"All good\"}]";
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(json);
-            writer.Flush();
-            stream.Position = 0;
-
-            var command = new CreateApiStatusCommand
+            Collection = new Dictionary<string, List<ApiStatusModel>>
             {
-                File = new FormFile(stream, 0, stream.Length, "Data", "test.json")
-            };
+                { "key", apiStatusModels }
+            }
+        };
 
-            _mockRepository.Setup(x => x.AddRangeAsync(It.IsAny<List<ApiStatus>>()))
-                           .Returns(Task.CompletedTask);
+        var json = JsonConvert.SerializeObject(apiStatusWrapper);
+        var file = new FormFile(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json)), 0, json.Length, "file", "valid.json");
+        var command = new CreateApiStatusCommand { File = file };
 
-            // Act
-            var result = await _handler.Handle(command, CancellationToken.None);
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
 
-            // Assert
-            _mockRepository.Verify(x => x.AddRangeAsync(It.IsAny<List<ApiStatus>>()), Times.Once);
-            Assert.Equal(201, result.StatusCode);
-            Assert.Equal("API statuses created successfully.", result.Message);
-        }
+        // Assert
+        _mockRepository.Verify(repo => repo.AddRangeAsync(It.IsAny<List<ApiStatus>>()), Times.Once);
+        _mockRepository.Verify(repo => repo.SaveChanges(), Times.Once);
+        Assert.Equal(201, result.StatusCode);
+        Assert.Equal("API statuses created successfully.", result.Message);
     }
 }
