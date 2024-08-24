@@ -14,7 +14,6 @@ public class Message : EntityBase
         Subject = subject;
         Content = content;
     }
-
     [Required]
     public MessageType Type { get; set; }
 
