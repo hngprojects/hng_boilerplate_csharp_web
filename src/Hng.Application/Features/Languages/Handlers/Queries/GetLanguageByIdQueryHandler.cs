@@ -33,7 +33,7 @@ namespace Hng.Application.Features.Languages.Handlers.Queries
             var responseDto = _mapper.Map<LanguageDto>(language);
             return new LanguageResponseDto
             {
-                Language = responseDto,
+                Data = responseDto,
                 StatusCode = 200,
                 Message = "Language retrieved successfully"
             };
