@@ -1,10 +1,8 @@
-﻿using Hng.Application.Features.ApiStatuses.Dtos.Requests;
+﻿using Hng.Application.Features.ApiStatuses.Commands;
+using Hng.Application.Features.ApiStatuses.Dtos.Requests;
 using Hng.Application.Features.ApiStatuses.Dtos.Responses;
-using Hng.Application.Features.Faq.Dtos;
-using Hng.Application.Features.Faq.Queries;
 using Hng.Application.Shared.Dtos;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
@@ -19,6 +17,24 @@ namespace Hng.Web.Controllers
         {
             _mediator = mediator;
         }
+
+
+        /// <summary>
+        /// Uploads a JSON file containing API statuses.
+        /// </summary>
+        /// <param name="file">The JSON file containing API statuses.</param>
+        /// <returns>A response indicating the result of the operation.</returns>
+        [HttpPost("upload")]
+        [ProducesResponseType(typeof(CreateApiStatusResponseDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateApiStatus(IFormFile file)
+        {
+            var command = new CreateApiStatusCommand { File = file };
+            var result = await _mediator.Send(command);
+            return StatusCode(result.StatusCode, result);
+        }
+
 
         /// <summary>
         /// Retrieves all APIStatus entries.
