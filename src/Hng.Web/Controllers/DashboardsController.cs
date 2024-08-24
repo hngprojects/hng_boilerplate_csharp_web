@@ -27,14 +27,14 @@ namespace Hng.Web.Controllers
         public async Task<ActionResult> GetUserProduct([FromQuery] Guid userId)
         {
             var response = await _mediator.Send(new GetDashboardQuery(userId));
-			return Ok(new
-			{
-				data = response,
-				message = "Retrieved successfully",
-				status_code = 200
-			});
+            return Ok(new
+            {
+                data = response,
+                message = "Retrieved successfully",
+                status_code = 200
+            });
 
-		}
+        }
 
         [HttpGet("sales-trend")]
         [Authorize]
