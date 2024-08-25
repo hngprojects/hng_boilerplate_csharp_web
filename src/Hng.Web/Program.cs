@@ -34,7 +34,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocs();
 builder.Services.AddApplicationConfig(builder.Configuration);
-builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"));
+builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"), builder.Configuration.GetConnectionString("RedisConnectionString"));
 builder.Services.AddSwaggerGen(c =>
 {
     c.SchemaFilter<SnakeCaseDictionaryFilter>();
@@ -43,6 +43,9 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 
     c.CustomSchemaIds(type => type.FullName);
+
+    c.SchemaFilter<SnakeCaseDictionaryFilter>();
+    c.OperationFilter<FileUploadOperationFilter>();
 });
 
 // Add Prometheus

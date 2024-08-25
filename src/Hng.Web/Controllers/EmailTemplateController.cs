@@ -45,7 +45,7 @@ public class EmailTemplateController(ISender sender) : ControllerBase
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(SuccessResponseDto<PaginatedResponseDto<PagedListDto<EmailTemplateDTO>>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ControllerErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAllTemplates([FromQuery] GetAllEmailTemplatesQuery query)
     {
 
