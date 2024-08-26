@@ -20,13 +20,13 @@ namespace Hng.Application.Features.ApiStatuses.Handlers.Commands
         {
             try
             {
-                if (request.Report.Length == 0
-                || (request.Report.Length != 0 && request.Report.ContentType != "application/json"))
+                if (request.report.Length == 0
+                || (request.report.Length != 0 && request.report.ContentType != "application/json"))
                 {
                     return Result.Failure<CreateApiStatusResponseDto>("Report can only be json format");
                 }
 
-                using var stream = request.Report.OpenReadStream();
+                using var stream = request.report.OpenReadStream();
                 var jsonObject =
                     await JsonSerializer.DeserializeAsync<ApiStatusResponseModel>(stream, cancellationToken: cancellationToken);
 
