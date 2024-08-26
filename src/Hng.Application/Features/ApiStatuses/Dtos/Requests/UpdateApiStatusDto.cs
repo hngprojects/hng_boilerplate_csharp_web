@@ -10,8 +10,7 @@ namespace Hng.Application.Features.ApiStatuses.Dtos.Requests
     public record UpdateApiStatusDto : IRequest<Result<CreateApiStatusResponseDto>>
     {
         [Required(ErrorMessage = "Report is required")]
-        [JsonPropertyName("report")]
-        public IFormFile Report { get; set; }
+        public IFormFile report { get; set; }
     }
 
     public record ApiStatusModel

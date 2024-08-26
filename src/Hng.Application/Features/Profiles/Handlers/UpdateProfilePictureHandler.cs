@@ -38,13 +38,13 @@ namespace Hng.Application.Features.Profiles.Handlers
 
             var user = await _userRepo.GetBySpec(u => u.Email == email, u => u.Profile);
 
-            if (request.DisplayPhoto != null)
+            if (request.display_photo != null)
             {
-                if (request.DisplayPhoto.Length != 0 &&
-                    request.DisplayPhoto.ContentType != "image/jpeg" && request.DisplayPhoto.ContentType != "image/png")
+                if (request.display_photo.Length != 0 &&
+                    request.display_photo.ContentType != "image/jpeg" && request.display_photo.ContentType != "image/png")
                     return Result.Failure<UpdateProfilePictureResponseDto>("Logo can only be jpeg or png format");
 
-                var avatarUrl = await _imageService.UploadImageAsync(request.DisplayPhoto);
+                var avatarUrl = await _imageService.UploadImageAsync(request.display_photo);
 
                 if (user.Profile == null)
                 {
