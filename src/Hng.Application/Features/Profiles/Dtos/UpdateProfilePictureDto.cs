@@ -7,8 +7,7 @@ namespace Hng.Application.Features.Profiles.Dtos
 {
     public record UpdateProfilePictureDto : IRequest<Result<UpdateProfilePictureResponseDto>>
     {
-        [JsonPropertyName("display_photo")]
-        public IFormFile DisplayPhoto { get; set; }
+        public IFormFile display_photo { get; set; }
     }
 
     public record UpdateProfilePictureResponseDto
