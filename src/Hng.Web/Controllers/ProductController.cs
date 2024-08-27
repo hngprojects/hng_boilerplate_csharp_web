@@ -120,18 +120,30 @@ namespace Hng.Web.Controllers
         /// <summary>
         /// Product Deletion - deletes a product owned by a specific user
         /// </summary>
-        [HttpDelete("products/{id}")]
+        [HttpDelete("products/{id:guid}")]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(SuccessResponseDto<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> DeleteProductById(Guid id)
         {
-            var command = new DeleteProductByIdCommand(id);
-            var deletedProduct = await _mediator.Send(command);
-            return deletedProduct is not null ? NoContent() : NotFound(new
+            try
             {
-                status_code = 404,
-                message = "Product not found"
-            });
+                var command = new DeleteProductByIdCommand(id);
+                var response = await _mediator.Send(command);
+                return response != null
+                    ? Ok(new SuccessResponseDto<object> { Message = "Product deleted successfully", Data = true })
+                    : NotFound(new FailureResponseDto<object> { Error = "Not Found", Message = $"Product with ID {id} not found.", Data = false });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new FailureResponseDto<object>
+                {
+                    Error = "Bad Request",
+                    Message = ex.Message,
+                    Data = false
+                });
+            }
         }
 
         /// <summary>
@@ -156,22 +168,31 @@ namespace Hng.Web.Controllers
         /// <param name="id"></param>
         /// <param name="updateProductDto"></param>
         /// <returns></returns>
-        [HttpPut("products/{id:guid}")]
+        [HttpPatch("products/{id:guid}")]
         [Authorize]
-        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SuccessResponseDto<ProductDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductDto updateProductDto)
         {
-            var command = new UpdateProductCommand(id, updateProductDto);
-            var result = await _mediator.Send(command);
-            return result != null
-                ? Ok(result)
-                : NotFound(new
+            try
+            {
+                var command = new UpdateProductCommand(id, updateProductDto);
+                var response = await _mediator.Send(command);
+                return response != null
+                    ? Ok(new SuccessResponseDto<ProductDto> { Message = "Product updated successfully", Data = response })
+                    : NotFound(new FailureResponseDto<object> { Error = "Not Found", Message = $"Product with ID {id} not found.", Data = false });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new FailureResponseDto<object>
                 {
-                    status_code = 404,
-                    message = "Product not found",
-                    error = "Not Found"
+                    Error = "Bad Request",
+                    Message = ex.Message,
+                    Data = false
                 });
+            }
         }
 
         /// <summary>

@@ -239,16 +239,16 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     /// <summary>
     /// Delete Organizations User
     /// </summary>
-    [HttpDelete("{orgId:guid}/users")]
+    [HttpDelete("{orgId:guid}/users/{userId:guid}")]
     [ProducesResponseType(typeof(SuccessResponseDto<object>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteUserOrganization(Guid orgId)
+    public async Task<IActionResult> DeleteUserOrganization(Guid orgId, Guid userId)
     {
         try
         {
-            var query = new DeleteUserOrganizationCommand(orgId);
+            var query = new DeleteUserOrganizationCommand(orgId, userId);
             var result = await mediator.Send(query);
             if (result)
             {

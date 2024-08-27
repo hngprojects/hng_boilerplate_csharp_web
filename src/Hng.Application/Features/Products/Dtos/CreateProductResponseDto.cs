@@ -27,6 +27,9 @@ namespace Hng.Application.Features.Products.Dtos
         [JsonPropertyName("quantity")]
         public int Quantity { get; set; }
 
+        [JsonPropertyName("image_url")]
+        public string ImageUrl { get; set; }
+
         [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
 
