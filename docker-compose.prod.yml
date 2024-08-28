@@ -28,7 +28,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-${COMPOSE_PROJECT_NAME}}
       POSTGRES_USER: ${POSTGRES_USER:-${COMPOSE_PROJECT_NAME}}
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${POSTGRES_PROD_PASSWORD:-password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
