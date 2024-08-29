@@ -1,0 +1,6 @@
+@Hng.Graphql_HostAddress = http://localhost:5022
+
+GET {{Hng.Graphql_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
