@@ -168,7 +168,7 @@ namespace Hng.Web.Controllers
         /// <param name="id"></param>
         /// <param name="updateProductDto"></param>
         /// <returns></returns>
-        [HttpPatch("products/{id:guid}")]
+        [HttpPut("products/{id:guid}")]
         [Authorize]
         [ProducesResponseType(typeof(SuccessResponseDto<ProductDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
