@@ -1,41 +1,56 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Hng.Application.Interfaces;
-using Hng.Infrastructure.Repository.Interface;
+using Hng.Application.Features.UserManagement.Commands;
+using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Application.Features.UserManagement.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Hng.Web.Controllers
+namespace Hng.Web.Controllers;
+
+[Authorize]
+[ApiController]
+[Route("api/v1/users")]
+public class UserController(IMediator mediator) : ControllerBase
 {
-    [ApiController]
-    [Route("api/v1/users")]
-    public class UserController(IUserService userService) : ControllerBase
+    private readonly IMediator _mediator = mediator;
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<UserDto>> GetUserById(Guid id)
     {
-        private readonly IUserService userService = userService;
-        
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(Guid id)
-        {
-            var dataFromRepo = await userService.GetUserByIdAsync(id);
-            if (dataFromRepo == null)
+        var query = new GetUserByIdQuery(id);
+        var response = await _mediator.Send(query);
+        return response is null
+            ? NotFound(new
             {
-                return NotFound(new
-                {
-                    message = "User not found",
-                    is_successful = false,
-                    status_code = 404
-                });
-            }
+                message = "User not found",
+                is_successful = false,
+                status_code = 404
+            })
+            : Ok(response);
+    }
 
-            return Ok(dataFromRepo);
-        }
+    [HttpGet("")]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+    {
+        var users = await _mediator.Send(new GetUsersQuery());
+        return Ok(users);
+    }
 
-        [HttpGet("")]
-        public async Task<IActionResult> GetUsers()
+    [HttpPut("organisations/{organisationId:guid}")]
+    public async Task<IActionResult> SwitchUserOrganisation(
+        Guid organisationId,
+        [FromBody] SwitchOrganisationRequestDto request)
+    {
+        var command = new SwitchOrganisationCommand
         {
-            var users = await userService.GetAllUsersAsync();
-            return Ok(users);
-        }
+            OrganisationId = organisationId,
+            IsActive = request.IsActive
+        };
+
+        var response = await _mediator.Send(command);
+        return Ok(response);
+
     }
 }

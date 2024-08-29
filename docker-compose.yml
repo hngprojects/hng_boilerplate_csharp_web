@@ -1,0 +1,40 @@
+name: csharp_dev
+
+services:
+  backend:
+    image: ${COMPOSE_PROJECT_NAME}
+    build:
+      context: .
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    volumes:
+      - ./src/Hng.Web/appsettings.Development.json:/app/appsettings.Development.json
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "6000:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-${COMPOSE_PROJECT_NAME}}
+      POSTGRES_USER: ${POSTGRES_USER:-${COMPOSE_PROJECT_NAME}}
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+
+volumes:
+  postgres_data:
