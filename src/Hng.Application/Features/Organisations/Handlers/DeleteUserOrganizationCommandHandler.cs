@@ -22,7 +22,8 @@ namespace Hng.Application.Features.Organisations.Handlers
 
         public async Task<bool> Handle(DeleteUserOrganizationCommand request, CancellationToken cancellationToken)
         {
-            var org = await _organizationRepository.GetBySpec(x => x.Id == request.OrganizationId && x.OwnerId == request.UserId);
+            var userId = await _authenticationService.GetCurrentUserAsync();
+            var org = await _organizationRepository.GetBySpec(x => x.Id == request.OrganizationId && x.OwnerId == userId);
             if (org != null)
             {
                 await _organizationRepository.DeleteAsync(org);

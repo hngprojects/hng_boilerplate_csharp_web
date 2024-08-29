@@ -33,7 +33,7 @@ namespace Hng.Application.Test.Features.Organisations
             // Arrange
             var userId = Guid.NewGuid();
             var organizationId = Guid.NewGuid();
-            var command = new DeleteUserOrganizationCommand(organizationId, userId);
+            var command = new DeleteUserOrganizationCommand(organizationId);
 
             var organization = new Domain.Entities.Organization { Id = organizationId, OwnerId = userId };
 
@@ -63,7 +63,7 @@ namespace Hng.Application.Test.Features.Organisations
             // Arrange
             var userId = Guid.NewGuid();
             var organizationId = Guid.NewGuid();
-            var command = new DeleteUserOrganizationCommand(organizationId, userId);
+            var command = new DeleteUserOrganizationCommand(organizationId);
 
             _mockAuthenticationService.Setup(a => a.GetCurrentUserAsync())
                 .ReturnsAsync(userId);
