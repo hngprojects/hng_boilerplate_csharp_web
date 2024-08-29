@@ -12,5 +12,11 @@ namespace Hng.Application.Features.Products.Dtos
         public string Description { get; set; }
         [JsonPropertyName("category")]
         public string Category { get; set; }
+
+        [JsonPropertyName("image_url")]
+        public string ImageUrl { get; set; }
+
+        [JsonPropertyName("quantity")]
+        public int Quantity { get; set; }
     }
 }

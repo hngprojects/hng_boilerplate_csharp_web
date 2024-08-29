@@ -1,10 +1,4 @@
-﻿using Hng.Application.Features.Organisations.Dtos;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
 namespace Hng.Application.Features.Organisations.Commands
 {
