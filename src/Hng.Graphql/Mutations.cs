@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Graphql
 {
-    public class Mutations
+    public partial class Mutations
     {
         public async Task<UserLoginResponseDto<SignupResponseData>> Login(UserLoginRequestDto loginRequest, [FromServices] IMediator mediator)
         {
@@ -28,7 +28,5 @@ namespace Hng.Graphql
             CreateRoleCommand command = new CreateRoleCommand(orgId, request);
             return await mediator.Send(command);
         }
-
-
     }
 }
