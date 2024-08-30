@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Graphql
 {
-    public class Queries
+    public partial class Queries
     {
         [Authorize]
         public async Task<UserDto> GetLoggedInUsersDetails([FromServices] IMediator mediator)
