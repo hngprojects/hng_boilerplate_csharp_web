@@ -51,5 +51,7 @@ namespace Hng.Infrastructure.Context
         public DbSet<LastLogin> LastLogins { get; set; }
         public DbSet<ApiStatus> ApiStatuses { get; set; }
         public DbSet<Language> Languages { get; set; }
+        public DbSet<ContactUs> ContactUs { get; set; }
+        public DbSet<Waitlist> Waitlists { get; set; }
     }
 }

@@ -15,6 +15,11 @@ namespace Hng.Application.Features.Products.Dtos
 
         [JsonPropertyName("price")]
         public decimal Price { get; set; }
+        [JsonPropertyName("image_url")]
+        public string ImageUrl { get; set; }
+
+        [JsonPropertyName("quantity")]
+        public int Quantity { get; set; }
 
         [JsonPropertyName("category")]
         public string Category { get; set; }

@@ -175,6 +175,29 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.ContactUs", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContactUs");
+                });
+
             modelBuilder.Entity("Hng.Domain.Entities.EmailTemplate", b =>
                 {
                     b.Property<Guid>("Id")
@@ -281,6 +304,27 @@ namespace Hng.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.Language", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Languages");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.LastLogin", b =>
@@ -926,6 +970,23 @@ namespace Hng.Infrastructure.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("Hng.Domain.Entities.Waitlist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Waitlists");
+                });
+
             modelBuilder.Entity("OrganizationUser", b =>
                 {
                     b.Property<Guid>("OrganizationsId")
@@ -1192,6 +1253,11 @@ namespace Hng.Infrastructure.Migrations
             modelBuilder.Entity("Hng.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Hng.Domain.Entities.Language", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Hng.Domain.Entities.Organization", b =>
