@@ -29,38 +29,38 @@ namespace Hng.Graphql
         [Authorize]
         public async Task<ChangePasswordResponse> ChangePassword([FromBody] ChangePasswordCommand command, [FromServices] IMediator mediator)
         {
-            var response= await mediator.Send(command);
+            var response = await mediator.Send(command);
             return response.Value;
         }
 
         public async Task<ForgotPasswordResponse> ForgotPassword([FromBody] ForgotPasswordRequestDto request, [FromServices] IMediator mediator)
         {
-            var response= await mediator.Send(new ForgotPasswordDto(request.Email, false));
+            var response = await mediator.Send(new ForgotPasswordDto(request.Email, false));
             return response.Value;
         }
 
         public async Task<ForgotPasswordResponse> ForgotPasswordMobile([FromBody] ForgotPasswordRequestDto request, [FromServices] IMediator mediator)
         {
-            var response= await mediator.Send(new ForgotPasswordDto(request.Email, true));
+            var response = await mediator.Send(new ForgotPasswordDto(request.Email, true));
             return response.Value;
         }
 
         public async Task<VerifyForgotPasswordCodeResponse> VerifyForgotPasswordCode([FromBody] VerifyForgotPasswordCodeDto request, [FromServices] IMediator mediator)
         {
-            var response= await mediator.Send(request);
+            var response = await mediator.Send(request);
             return response.Value;
         }
 
         public async Task<PasswordResetMobileResponse> PasswordResetMobile([FromBody] PasswordResetMobileDto request, [FromServices] IMediator mediator)
         {
-            var respone= await mediator.Send(new PasswordResetMobileCommand(request));
+            var respone = await mediator.Send(new PasswordResetMobileCommand(request));
             return respone.Value;
         }
 
         [Authorize]
         public async Task<PasswordResetResponse> PasswordReset([FromBody] PasswordResetDto request, [FromServices] IMediator mediator)
         {
-            var response= await mediator.Send(request);
+            var response = await mediator.Send(request);
             return response.Value;
         }
 

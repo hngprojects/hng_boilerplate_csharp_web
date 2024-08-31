@@ -10,7 +10,7 @@ namespace Hng.Graphql
 {
     public partial class Queries
     {
-       
+
 
         [Authorize]
         public async Task<IEnumerable<RoleDto>> GetRolesInOrganisation(Guid orgId, [FromServices] IMediator mediator)

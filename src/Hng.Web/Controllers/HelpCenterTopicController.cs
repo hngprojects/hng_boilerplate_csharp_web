@@ -2,6 +2,7 @@
 using Hng.Application.Features.HelpCenter.Dtos;
 using Hng.Application.Features.HelpCenter.Queries;
 using Hng.Application.Shared.Dtos;
+using HotChocolate.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,7 @@ namespace Hng.Web.Controllers
         /// <param name="request">The details of the Help Center topic to create.</param>
         /// <returns>A response with the creation result or an error message.</returns>
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(typeof(HelpCenterResponseDto<HelpCenterTopicResponseDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateHelpCenterTopic([FromBody] CreateHelpCenterTopicRequestDto request)
