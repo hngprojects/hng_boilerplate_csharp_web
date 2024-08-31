@@ -12,7 +12,7 @@ namespace Hng.Graphql
         [Authorize]
         public async Task<SuccessResponseDto<CategoryDto>> CreateCategory(CreateCategoryDto createCategoryDto, [FromServices] IMediator mediator)
         {
-            var command = new CreateCategoryCommand(createCategoryDto.Name,createCategoryDto.Description, createCategoryDto.Slug);
+            var command = new CreateCategoryCommand(createCategoryDto.Name, createCategoryDto.Description, createCategoryDto.Slug);
             return await mediator.Send(command);
         }
 
