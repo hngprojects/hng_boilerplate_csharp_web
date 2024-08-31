@@ -8,7 +8,6 @@ namespace Hng.Graphql
 {
     public partial class Mutations
     {
-        [Authorize]
         public async Task<ContactResponse<ContactUsResponseDto>> CreateContactMessage(ContactUsRequestDto contactUsRequest, [FromServices] IMediator mediator)
         {
             var command = new CreateContactUsCommand(contactUsRequest);
