@@ -27,7 +27,7 @@ namespace Hng.Web.Controllers
         public async Task<ActionResult> GetUsersBySearch([FromQuery] UsersQueryParameters parameters)
         {
             var users = await _mediator.Send(new GetUsersBySearchQuery(parameters));
-            return Ok(new PaginatedResponseDto<PagedListDto<UserDto>> { Data = users, Metadata = users.MetaData });
+            return Ok(new PaginatedResponseDto<PagedListDto<UserSuperDto>> { Data = users, Metadata = users.MetaData });
         }
     }
 }

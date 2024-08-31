@@ -2,7 +2,7 @@
 
 namespace Hng.Application.Features.SuperAdmin.Dto
 {
-    public class UserDto
+    public class UserSuperDto
     {
         [JsonPropertyName("id")]
         public Guid Id { get; set; }

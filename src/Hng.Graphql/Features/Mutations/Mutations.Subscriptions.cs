@@ -10,15 +10,12 @@ namespace Hng.Graphql
 {
     public partial class Mutations
     {
-        //[Authorize]
-        //public async Task<SubscribeFreePlanResponse> SubscribeFreePlan(SubscribeFreePlan command, [FromServices] IMediator mediator)
-        //{
-        //    //var command = new SubscribeFreePlan();
-        //   // return await mediator.Send(command);
-
-
-        //   // return await mediator.Send(command);
-        //}
+        [Authorize]
+        public async Task<SubscribeFreePlanResponse> SubscribeFreePlan(SubscribeFreePlan command, [FromServices] IMediator mediator)
+        {
+            var response = await mediator.Send(command);
+            return response.Value;
+        }
 
         [Authorize]
         public async Task<SubscriptionDto> ActivateSubscription(Guid subscriptionId, [FromServices] IMediator mediator)
