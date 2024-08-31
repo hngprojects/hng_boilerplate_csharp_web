@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Hng.Application.Features.SuperAdmin.Queries
 {
-    public class GetUsersBySearchQuery : IRequest<PagedListDto<UserDto>>
+    public class GetUsersBySearchQuery : IRequest<PagedListDto<UserSuperDto>>
     {
         public GetUsersBySearchQuery(UsersQueryParameters parameters)
         {

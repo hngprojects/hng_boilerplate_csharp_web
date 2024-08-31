@@ -13,7 +13,7 @@ namespace Hng.Graphql
         [Authorize]
         public async Task<SubscribeFreePlanResponse> SubscribeFreePlan(SubscribeFreePlan command, [FromServices] IMediator mediator)
         {
-            var response= await mediator.Send(command);
+            var response = await mediator.Send(command);
             return response.Value;
         }
 

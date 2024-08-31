@@ -4,7 +4,7 @@ using FluentAssertions;
 using Hng.Application.Features.Blogs.Dtos;
 using Hng.Application.Features.Blogs.Handlers;
 using Hng.Application.Features.Blogs.Queries;
-using Hng.Application.Features.SuperAdmin.Dto;
+using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
 using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;

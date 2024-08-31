@@ -10,7 +10,7 @@ namespace Hng.Graphql
     public partial class Queries
     {
         [Authorize]
-        public async Task<PagedListDto<UserDto>> GetUsersBySearch(UsersQueryParameters parameters, [FromServices] IMediator mediator)
+        public async Task<PagedListDto<UserSuperDto>> GetUsersBySearch(UsersQueryParameters parameters, [FromServices] IMediator mediator)
         {
             var users = new GetUsersBySearchQuery(parameters);
             return await mediator.Send(users);
