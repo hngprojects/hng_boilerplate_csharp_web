@@ -34,7 +34,7 @@ namespace Hng.Application.Test.Features.UserManagement
             _userRepositoryMock = new Mock<IRepository<User>>();
             _passwordServiceMock = new Mock<IPasswordService>();
             _tokenServiceMock = new Mock<ITokenService>();
-            _lastLoginMock= new Mock<IRepository<LastLogin>>();
+            _lastLoginMock = new Mock<IRepository<LastLogin>>();
 
             _user = new User
             {
