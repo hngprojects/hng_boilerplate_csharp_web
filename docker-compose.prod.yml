@@ -13,6 +13,14 @@ services:
       - postgres
       - redis
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.17'
+          memory: 170M
+        reservations:
+          cpus: '0.08'
+          memory: 85M
 
   nginx:
     image: nginx:latest
@@ -22,6 +30,7 @@ services:
       - backend
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+    restart: unless-stopped
 
   postgres:
     image: postgres:latest
@@ -35,6 +44,6 @@ services:
 
   redis:
     image: redis:latest
-
+    restart: unless-stopped
 volumes:
   postgres_data:
