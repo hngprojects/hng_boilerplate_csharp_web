@@ -8,8 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Waitlist\**" />
     <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Features\Waitlist\**" />
     <EmbeddedResource Remove="Models\**" />
+    <None Remove="Features\Waitlist\**" />
     <None Remove="Models\**" />
     <Compile Remove="Features\UserManagement\Commands\CreateUserCommand.cs" />
     <Compile Remove="Features\UserManagement\Dtos\UserCreationDto.cs" />
