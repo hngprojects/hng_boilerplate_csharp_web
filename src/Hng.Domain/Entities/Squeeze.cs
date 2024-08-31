@@ -2,7 +2,7 @@
 
 namespace Hng.Domain.Entities;
 
-public class Squeeze
+public class Squeeze : EntityBase
 {
     [Required]
     public string FirstName { get; set; }
