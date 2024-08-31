@@ -27,6 +27,8 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.4.0" />
+	  <PackageReference Include="HotChocolate.AspNetCore" Version="13.9.11" />
+	  <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.9.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
       <PrivateAssets>all</PrivateAssets>
@@ -50,6 +52,7 @@
   <ItemGroup>
 	  <ProjectReference Include="..\Hng.Application\Hng.Application.csproj" />
 	  <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
+	  <ProjectReference Include="..\Hng.Graphql\Hng.Graphql.csproj" />
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
   </ItemGroup>
 

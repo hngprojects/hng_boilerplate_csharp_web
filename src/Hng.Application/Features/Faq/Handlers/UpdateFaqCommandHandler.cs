@@ -4,7 +4,6 @@ using Hng.Application.Features.Faq.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 public class UpdateFaqCommandHandler : IRequestHandler<UpdateFaqCommand, UpdateFaqResponseDto>
 {
@@ -38,7 +37,7 @@ public class UpdateFaqCommandHandler : IRequestHandler<UpdateFaqCommand, UpdateF
         {
             StatusCode = 200,
             Message = "FAQ updated successfully",
-            Data = new UpdateFaqResponseDto.FaqData
+            Data = new FaqData
             {
                 Id = faq.Id,
                 Question = faq.Question,
