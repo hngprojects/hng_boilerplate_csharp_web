@@ -1,6 +1,5 @@
 ﻿using Hng.Application.Features.BillingPlans.Commands;
 using Hng.Application.Features.BillingPlans.Dtos;
-using Hng.Application.Features.BillingPlans.Queries;
 using Hng.Application.Shared.Dtos;
 using HotChocolate.Authorization;
 using MediatR;
