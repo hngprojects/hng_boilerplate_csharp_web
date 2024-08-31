@@ -6,7 +6,7 @@ public class SqueezeDto
 {
     [JsonPropertyName("id")]
     public Guid Id { get; set; }
-        
+
     [JsonPropertyName("first_name")]
     public string FirstName { get; set; }
 
