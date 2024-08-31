@@ -10,12 +10,7 @@ namespace Hng.Graphql
 {
     public partial class Queries
     {
-        [Authorize]
-        public async Task<UserDto> GetLoggedInUsersDetails([FromServices] IMediator mediator)
-        {
-            var query = new GetLoggedInUserDetailsQuery();
-            return await mediator.Send(query);
-        }
+       
 
         [Authorize]
         public async Task<IEnumerable<RoleDto>> GetRolesInOrganisation(Guid orgId, [FromServices] IMediator mediator)
