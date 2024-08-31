@@ -1,7 +1,6 @@
 ﻿using Hng.Application.Features.Dashboard.Dtos;
 using Hng.Application.Features.Dashboard.Queries;
 using Hng.Application.Features.ExternalIntegrations.PaymentIntegrations.Paystack.Dtos.Responses;
-using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
