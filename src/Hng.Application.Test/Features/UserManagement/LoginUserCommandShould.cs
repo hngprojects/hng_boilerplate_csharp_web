@@ -1,9 +1,15 @@
 ﻿using AutoMapper;
+using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Application.Features.UserManagement.Handlers;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Moq;
+using System.Linq.Expressions;
+using Xunit;
 
 namespace Hng.Application.Test.Features.UserManagement
 {
@@ -11,6 +17,7 @@ namespace Hng.Application.Test.Features.UserManagement
     {
         private readonly IMapper _mapper;
         private readonly Mock<IRepository<User>> _userRepositoryMock;
+        private readonly Mock<IRepository<LastLogin>> _lastLoginMock;
         private readonly Mock<IPasswordService> _passwordServiceMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
         private readonly User _user;
@@ -27,6 +34,7 @@ namespace Hng.Application.Test.Features.UserManagement
             _userRepositoryMock = new Mock<IRepository<User>>();
             _passwordServiceMock = new Mock<IPasswordService>();
             _tokenServiceMock = new Mock<ITokenService>();
+            _lastLoginMock = new Mock<IRepository<LastLogin>>();
 
             _user = new User
             {
@@ -35,7 +43,8 @@ namespace Hng.Application.Test.Features.UserManagement
                 FirstName = "John",
                 LastName = "Doe",
                 Password = "hashedpassword",
-                PasswordSalt = "salt"
+                PasswordSalt = "salt",
+
             };
         }
 
@@ -43,16 +52,19 @@ namespace Hng.Application.Test.Features.UserManagement
         //public async Task ReturnLoginResponseDtoForValidCredentials()
         //{
         //    // Arrange
-        //    _userRepositoryMock.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>()))
-        //        .ReturnsAsync(_user);
+        //    _userRepositoryMock.Setup(repo => repo.GetQueryableBySpec(It.IsAny<Expression<Func<User, bool>>>())
+        //    .Include(It.IsAny<Expression<Func<User, ICollection<Hng.Domain.Entities.Organization>>>>())
+        //    .ThenInclude(It.IsAny<Expression<Func<Hng.Domain.Entities.Organization, ICollection<UserRole>>>>())
+        //    .ThenInclude(It.IsAny<Expression<Func<UserRole,Role>>>())
+        //    .Include(It.IsAny<Expression<Func<User,ICollection<Subscription>>>>()).FirstOrDefaultAsync<User>(CancellationToken.None)).ReturnsAsync(_user);
 
         //    _passwordServiceMock.Setup(service => service.IsPasswordEqual("password", _user.PasswordSalt, _user.Password))
         //        .Returns(true);
 
-        //    _tokenServiceMock.Setup(service => service.GenerateJwt(It.IsAny<User>()))
+        //    _tokenServiceMock.Setup(service => service.GenerateJwt(It.IsAny<User>(), 5))
         //        .Returns("token");
 
-        //    var handler = new LoginUserCommandHandler(_userRepositoryMock.Object, _mapper, _passwordServiceMock.Object, _tokenServiceMock.Object);
+        //    var handler = new LoginUserCommandHandler(_userRepositoryMock.Object,_lastLoginMock.Object, _mapper, _passwordServiceMock.Object, _tokenServiceMock.Object,new HttpContextAccessor());
 
         //    var command = new CreateUserLoginCommand(new UserLoginRequestDto
         //    {
