@@ -1,6 +1,4 @@
-﻿using Hng.Application.Features.Notifications.Dtos;
-using Hng.Application.Features.Products.Dtos;
-using Hng.Application.Features.WaitLists.Commands;
+﻿using Hng.Application.Features.WaitLists.Commands;
 using Hng.Application.Features.WaitLists.Dtos;
 using Hng.Application.Shared.Dtos;
 using Hng.Domain.Entities;
@@ -11,7 +9,6 @@ using Hng.Application.Features.WaitLists.Queries;
 
 namespace Hng.Web.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/v1/waitlists")]
     public class WaitlistController : ControllerBase
@@ -24,10 +21,10 @@ namespace Hng.Web.Controllers
         }
 
         /// <summary>
-        /// Create Waitlist
+        /// Creates a new waitlist entry.
         /// </summary>
         [HttpPost]
-        [ProducesResponseType(typeof(SuccessResponseDto<NotificationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SuccessResponseDto<Waitlist>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Create([FromBody] WaitListDto command)
@@ -37,7 +34,7 @@ namespace Hng.Web.Controllers
                 var createCommand = new CreateWaitlistCommand(command);
                 var response = await _mediator.Send(createCommand);
                 return response != null
-                      ? CreatedAtAction(nameof(Create), new SuccessResponseDto<Waitlist> { Data = response })
+                      ? CreatedAtAction(nameof(Create), new SuccessResponseDto<Waitlist> { Message = "Waitlist created successfully", Data = response })
                       : BadRequest(new FailureResponseDto<object> { Error = "Conflict", Message = "Email already exists in the waitlist", Data = false });
             }
             catch (Exception ex)
@@ -51,10 +48,10 @@ namespace Hng.Web.Controllers
             }
         }
         /// <summary>
-        /// Get All Waitlist
+        /// Retrieves all waitlist entries.
         /// </summary>
         [HttpGet()]
-        [ProducesResponseType(typeof(SuccessResponseDto<GetNotificationsResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SuccessResponseDto<Waitlist>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetAll()
@@ -80,7 +77,7 @@ namespace Hng.Web.Controllers
             }
         }
         /// <summary>
-        /// Waitlist Deletion - deletes waitlist by id
+        /// Waitlist Deletion - Deletes a waitlist entry by ID.
         /// </summary>
         [HttpDelete("{id:guid}")]
         [Authorize]
