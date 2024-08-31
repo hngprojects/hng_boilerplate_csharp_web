@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Google.Apis.Auth;
+using Hng.Application.Features.Subscriptions.Dtos.Responses;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
+using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
@@ -49,6 +51,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 .Include(u => u.Organizations)
                 .ThenInclude(o => o.UsersRoles)
                 .ThenInclude(ur => ur.Role)
+                .Include(u => u.Subscriptions)
                 .FirstOrDefaultAsync();
 
             if (dbUser == null)
@@ -67,6 +70,18 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     Id = Guid.NewGuid()
                 };
                 newUser.Organizations.Add(userOrg);
+                var sub = new Subscription
+                {
+                    Frequency = SubscriptionFrequency.Annually,
+                    IsActive = true,
+                    Plan = SubscriptionPlan.Free,
+                    StartDate = DateTime.UtcNow,
+                    ExpiryDate = DateTime.UtcNow.AddYears(1),
+                    UserId = newUser.Id,
+                    OrganizationId = userOrg.Id,
+                    Amount = 0
+                };
+                newUser.Subscriptions.Add(sub);
                 var role = new Role
                 {
                     Id = Guid.NewGuid(),
@@ -115,7 +130,18 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 Role = o.UsersRoles.Where(x => x.User == user && x.Orgainzation == o).FirstOrDefault()?.Role.Name,
                 IsOwner = o.OwnerId == user.Id,
             }).ToList();
-            var signUpResponseData = new SignupResponseData { User = userResponse, Organization = orgs };
+            var subs = user.Subscriptions.Select(r => new SubscribeFreePlanResponse
+            {
+                SubscriptionId = r.Id,
+                Frequency = r.Frequency.ToString(),
+                IsActive = r.IsActive,
+                Plan = r.Plan.ToString(),
+                StartDate = r.StartDate,
+                UserId = r.UserId,
+                OrganizationId = r.OrganizationId,
+                Amount = r.Amount,
+            }).ToList();
+            var signUpResponseData = new SignupResponseData { User = userResponse, Organization = orgs, Subscription = subs };
             return signUpResponseData;
         }
     }

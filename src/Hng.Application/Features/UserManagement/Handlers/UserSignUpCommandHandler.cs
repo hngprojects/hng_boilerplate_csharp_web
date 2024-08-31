@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Hng.Application.Features.Subscriptions.Dtos.Responses;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
+using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
@@ -18,9 +20,10 @@ namespace Hng.Application.Features.UserManagement.Handlers
         private readonly ILogger<UserSignUpCommandHandler> _logger;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
 
 
-        public UserSignUpCommandHandler(IRepository<User> userRepository, IRepository<Role> roleRepository, IMapper mapper, ILogger<UserSignUpCommandHandler> logger, IPasswordService passwordService, ITokenService tokenService)
+        public UserSignUpCommandHandler(IRepository<User> userRepository, IRepository<Role> roleRepository, IMapper mapper, ILogger<UserSignUpCommandHandler> logger, IPasswordService passwordService, ITokenService tokenService, IEmailService emailService)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
@@ -28,6 +31,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
             _logger = logger;
             _passwordService = passwordService;
             _tokenService = tokenService;
+            _emailService = emailService;
         }
 
 
@@ -58,6 +62,18 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     Id = Guid.NewGuid()
                 };
                 createdUser.Organizations.Add(userOrg);
+                var sub = new Subscription
+                {
+                    Frequency = SubscriptionFrequency.Annually,
+                    IsActive = true,
+                    Plan = SubscriptionPlan.Free,
+                    StartDate = DateTime.UtcNow,
+                    ExpiryDate = DateTime.UtcNow.AddYears(1),
+                    UserId = createdUser.Id,
+                    OrganizationId = userOrg.Id,
+                    Amount = 0
+                };
+                createdUser.Subscriptions.Add(sub);
                 var role = new Role
                 {
                     Id = Guid.NewGuid(),
@@ -74,6 +90,15 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 await _userRepository.AddAsync(createdUser);
                 await _roleRepository.AddAsync(role);
                 await _userRepository.SaveChanges();
+
+                var emailMessage = Message.CreateEmail(
+                    createdUser.Email,
+                    "Welcome to Our Service",
+                    $"Hi {createdUser.FirstName},\n\nThank you for signing up! We're excited to have you on board.",
+                    createdUser.FirstName
+                );
+
+                await _emailService.SendEmailMessage(emailMessage);
 
                 var token = _tokenService.GenerateJwt(createdUser);
                 SignupResponseData signUpResponseData = GetUserDetails(createdUser);
@@ -106,7 +131,18 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 Role = o.UsersRoles.Where(x => x.User == createdUser && x.Orgainzation == o).FirstOrDefault()?.Role.Name,
                 IsOwner = o.OwnerId == createdUser.Id,
             }).ToList();
-            var signUpResponseData = new SignupResponseData { User = user, Organization = orgs };
+            var subs = createdUser.Subscriptions.Select(r => new SubscribeFreePlanResponse
+            {
+                SubscriptionId = r.Id,
+                Frequency = r.Frequency.ToString(),
+                IsActive = r.IsActive,
+                Plan = r.Plan.ToString(),
+                StartDate = r.StartDate,
+                UserId = r.UserId,
+                OrganizationId = r.OrganizationId,
+                Amount = r.Amount,
+            }).ToList();
+            var signUpResponseData = new SignupResponseData { User = user, Organization = orgs, Subscription = subs };
             return signUpResponseData;
         }
     }

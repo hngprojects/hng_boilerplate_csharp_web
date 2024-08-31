@@ -7,14 +7,6 @@ namespace Hng.Application.Features.Profiles.Dtos
 {
     public record UpdateProfile : IRequest<Result<UpdateProfileResponseDto>>
     {
-        public UpdateProfile(string email, UpdateProfileDto updateProfile)
-        {
-            Email = email;
-            UpdateProfileDto = updateProfile;
-        }
-
-        public string Email { get; set; }
-
         public UpdateProfileDto UpdateProfileDto { get; set; }
     }
 
@@ -47,6 +39,9 @@ namespace Hng.Application.Features.Profiles.Dtos
 
         [JsonPropertyName("facebook_link")]
         public string FacebookLink { get; set; }
+
+        [JsonPropertyName("instagram_link")]
+        public string InstagramLink { get; set; }
 
         [JsonPropertyName("twitter_link")]
         public string TwitterLink { get; set; }

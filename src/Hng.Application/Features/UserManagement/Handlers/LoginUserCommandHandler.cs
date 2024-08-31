@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Hng.Application.Features.Subscriptions.Dtos.Responses;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
@@ -13,20 +14,26 @@ namespace Hng.Application.Features.UserManagement.Handlers
     public class LoginUserCommandHandler : IRequestHandler<CreateUserLoginCommand, UserLoginResponseDto<SignupResponseData>>
     {
         private readonly IRepository<User> _userRepo;
+        private readonly IRepository<LastLogin> _loginLast;
         private readonly IMapper _mapper;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public LoginUserCommandHandler(
             IRepository<User> userRepo,
-            IMapper mapper,
+            IRepository<LastLogin> loginLast,
+             IMapper mapper,
             IPasswordService passwordService,
-            ITokenService tokenService)
+            ITokenService tokenService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userRepo = userRepo;
+            _loginLast = loginLast;
             _mapper = mapper;
             _passwordService = passwordService;
             _tokenService = tokenService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<UserLoginResponseDto<SignupResponseData>> Handle(CreateUserLoginCommand request, CancellationToken cancellationToken)
@@ -36,6 +43,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 .Include(u => u.Organizations)
                 .ThenInclude(o => o.UsersRoles)
                 .ThenInclude(ur => ur.Role)
+                .Include(u => u.Subscriptions)
                 .FirstOrDefaultAsync();
 
             if (user == null || !_passwordService.IsPasswordEqual(request.LoginRequestBody.Password, user.PasswordSalt, user.Password))
@@ -50,6 +58,18 @@ namespace Hng.Application.Features.UserManagement.Handlers
             }
 
             var token = _tokenService.GenerateJwt(user);
+
+            var lastlogin = new LastLogin
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                LoginTime = DateTime.UtcNow,
+                IPAddress = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString()
+
+            };
+
+            await _loginLast.AddAsync(lastlogin);
+            await _loginLast.SaveChanges();
 
             return new UserLoginResponseDto<SignupResponseData>
             {
@@ -69,7 +89,18 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 Role = o.UsersRoles.FirstOrDefault()?.Role.Name,
                 IsOwner = o.OwnerId == user.Id,
             }).ToList();
-            var signUpResponseData = new SignupResponseData { User = userResponse, Organization = orgs };
+            var subs = user.Subscriptions.Select(r => new SubscribeFreePlanResponse
+            {
+                SubscriptionId = r.Id,
+                Frequency = r.Frequency.ToString(),
+                IsActive = r.IsActive,
+                Plan = r.Plan.ToString(),
+                StartDate = r.StartDate,
+                UserId = r.UserId,
+                OrganizationId = r.OrganizationId,
+                Amount = r.Amount,
+            }).ToList();
+            var signUpResponseData = new SignupResponseData { User = userResponse, Organization = orgs, Subscription = subs };
             return signUpResponseData;
         }
     }

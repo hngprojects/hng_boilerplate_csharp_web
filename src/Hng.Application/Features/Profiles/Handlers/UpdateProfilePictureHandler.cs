@@ -3,6 +3,7 @@ using Hng.Application.Features.ExternalIntegrations.FilesUploadIntegrations.Clou
 using Hng.Application.Features.Profiles.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Profile = Hng.Domain.Entities.Profile;
@@ -14,31 +15,36 @@ namespace Hng.Application.Features.Profiles.Handlers
         private readonly IRepository<User> _userRepo;
         private readonly IImageService _imageService;
         private readonly IRepository<Profile> _profileRepo;
+        private readonly ITokenService _tokenService;
 
         public UpdateProfilePictureHandler(
             IRepository<User> userRepo,
             IImageService imageService,
-            IRepository<Profile> profileRepo)
+            IRepository<Profile> profileRepo,
+            ITokenService tokenService)
         {
             _userRepo = userRepo;
             _imageService = imageService;
             _profileRepo = profileRepo;
+            _tokenService = tokenService;
         }
 
         public async Task<Result<UpdateProfilePictureResponseDto>> Handle(UpdateProfilePictureDto request, CancellationToken cancellationToken)
         {
-            var user = await _userRepo.GetBySpec(u => u.Email == request.Email, u => u.Profile);
+            var email = _tokenService.GetCurrentUserEmail();
 
-            if (user == null)
-                return Result.Failure<UpdateProfilePictureResponseDto>("User with Email does not Exist!");
+            if (string.IsNullOrWhiteSpace(email))
+                return Result.Failure<UpdateProfilePictureResponseDto>("Unauthorize user");
 
-            if (request.DisplayPhoto != null)
+            var user = await _userRepo.GetBySpec(u => u.Email == email, u => u.Profile);
+
+            if (request.display_photo != null)
             {
-                if (request.DisplayPhoto.Length != 0 &&
-                    request.DisplayPhoto.ContentType != "image/jpeg" && request.DisplayPhoto.ContentType != "image/png")
+                if (request.display_photo.Length != 0 &&
+                    request.display_photo.ContentType != "image/jpeg" && request.display_photo.ContentType != "image/png")
                     return Result.Failure<UpdateProfilePictureResponseDto>("Logo can only be jpeg or png format");
 
-                var avatarUrl = await _imageService.UploadImageAsync(request.DisplayPhoto);
+                var avatarUrl = await _imageService.UploadImageAsync(request.display_photo);
 
                 if (user.Profile == null)
                 {

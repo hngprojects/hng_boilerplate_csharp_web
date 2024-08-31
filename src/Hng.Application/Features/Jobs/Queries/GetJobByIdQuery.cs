@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Hng.Application.Features.Jobs.Queries;
 
-public class GetJobByIdQuery(Guid id) : IRequest<JobDto>
+public class GetJobByIdQuery(Guid id) : IRequest<GetJobRequestDto>
 {
     public Guid JobId { get; } = id;
 }

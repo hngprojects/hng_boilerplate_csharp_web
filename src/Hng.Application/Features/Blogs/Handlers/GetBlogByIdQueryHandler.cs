@@ -4,23 +4,36 @@ using Hng.Application.Features.Blogs.Queries;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Hng.Application.Features.Blogs.Handlers;
 
-public class GetBlogByIdQueryHandler : IRequestHandler<GetBlogByIdQuery, BlogDto>
+public class GetBlogByIdQueryHandler(IMapper mapper, IRepository<Blog> blogRepository)
+    : IRequestHandler<GetBlogByIdQuery, GetBlogResponseDto>
 {
-    private readonly IMapper _mapper;
-    private readonly IRepository<Blog> _blogRepository;
+    private readonly IMapper _mapper = mapper;
+    private readonly IRepository<Blog> _blogRepository = blogRepository;
 
-    public GetBlogByIdQueryHandler(IMapper mapper, IRepository<Blog> blogRepository)
-    {
-        _mapper = mapper;
-        _blogRepository = blogRepository;
-    }
-
-    public async Task<BlogDto> Handle(GetBlogByIdQuery request, CancellationToken cancellationToken)
+    public async Task<GetBlogResponseDto> Handle(GetBlogByIdQuery request, CancellationToken cancellationToken)
     {
         var blog = await _blogRepository.GetBySpec(b => b.Id == request.BlogId);
-        return blog == null ? null : _mapper.Map<BlogDto>(blog);
+
+        if (blog is null)
+        {
+            return new GetBlogResponseDto
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Blog Not Found",
+            };
+        }
+
+        var blogDto = _mapper.Map<BlogDto>(blog);
+
+        return new GetBlogResponseDto
+        {
+            StatusCode = StatusCodes.Status200OK,
+            Message = "Blog Successfully Retrieved",
+            Data = blogDto
+        };
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using Hng.Application.Features.Subscriptions.Dtos.Requests;
+using Hng.Application.Features.Subscriptions.Dtos.Responses;
+using System.Text.Json.Serialization;
 
 namespace Hng.Application.Features.UserManagement.Dtos
 {
@@ -19,5 +21,7 @@ namespace Hng.Application.Features.UserManagement.Dtos
         public UserResponseDto User { get; set; }
         [JsonPropertyName("organisations")]
         public List<OrganisationDto> Organization { get; set; } = [];
+        [JsonPropertyName("subscriptions")]
+        public List<SubscribeFreePlanResponse> Subscription { get; set; } = [];
     }
 }

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>	
+	  <PackageReference Include="MediatR" Version="12.4.0" />
+		<PackageReference Include="HotChocolate.AspNetCore" Version="13.9.11" />
+		<PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.9.11" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hng.Application\Hng.Application.csproj" />
+  </ItemGroup>
+
+</Project>

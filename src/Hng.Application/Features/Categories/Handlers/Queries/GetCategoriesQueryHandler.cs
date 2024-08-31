@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Hng.Application.Features.Products.Dtos;
-using Hng.Application.Features.Products.Queries;
+using Hng.Application.Features.Categories.Dtos;
+using Hng.Application.Features.Categories.Queries;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using MediatR;
 
-namespace Hng.Application.Features.Products.Handlers
+namespace Hng.Application.Features.Categories.Handlers.Queries
 {
     public class GetCategoriesQueryHandler : IRequestHandler<GetCategoriesQuery, IEnumerable<CategoryDto>>
     {

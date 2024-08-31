@@ -13,5 +13,8 @@ namespace Hng.Application.Features.Roles.Dto
         public string Name { get; set; }
         [JsonPropertyName("description")]
         public string Description { get; set; }
+
+        [JsonPropertyName("permissions")]
+        public List<Guid> Permissions { get; set; }
     }
 }

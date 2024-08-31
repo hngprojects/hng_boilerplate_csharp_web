@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Hng.Application.Features.OrganisationInvite.Commands;
 using Hng.Application.Features.OrganisationInvite.Dtos;
+using Hng.Application.Features.OrganisationInvite.Queries;
 using Hng.Application.Features.OrganisationInvite.Validators;
 using Hng.Application.Features.Organisations.Commands;
 using Hng.Application.Features.Organisations.Dtos;
@@ -40,6 +41,9 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
         }) : Ok(response);
     }
 
+    /// <summary>
+    /// Get All User Organization 
+    /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(SuccessResponseDto<List<OrganizationDto>>), StatusCodes.Status200OK)]
     public async Task<ActionResult<SuccessResponseDto<List<OrganizationDto>>>> GetOrganizations()
@@ -71,15 +75,15 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
-    /// Get All Roles In Organisation
+    /// Get All Roles In Organisation, please run this, docs response and actual response differ
     /// </summary>
     [HttpGet("{orgId:guid}/roles")]
-    [ProducesResponseType(typeof(IEnumerable<RoleDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(SuccessResponseDto<IEnumerable<RoleDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRoles(Guid orgId)
     {
         var query = new GetRolesQuery(orgId);
         var roles = await mediator.Send(query);
-        return Ok(new { status_code = 200, data = roles });
+        return Ok(new SuccessResponseDto<IEnumerable<RoleDto>> { StatusCode = 200, Data = roles, Message = "Success" });
     }
 
     /// <summary>
@@ -95,10 +99,10 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
-    /// Update Organisations Role
+    /// Update Organisations Role and Permission
     /// </summary>
-    [HttpPut("{orgId:guid}/roles/{roleId}")]
-    [ProducesResponseType(typeof(UpdateRoleResponseDto), StatusCodes.Status200OK)]
+    [HttpPut("{orgId:guid}/roles/{roleId:guid}")]
+    [ProducesResponseType(typeof(CreateRoleResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateRole(Guid orgId, Guid roleId, [FromBody] UpdateRoleRequestDto request)
     {
         UpdateRoleCommand command = new(orgId, roleId, request);
@@ -156,7 +160,7 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
-    /// Create and send invite links to join an organisatiozn
+    /// Create and send unique invite links for users to join an organisation
     /// </summary>
     [HttpPost("invites/send")]
     [ProducesResponseType(typeof(ControllerResponse<CreateAndSendInvitesResponseDto>), StatusCodes.Status200OK)]
@@ -164,7 +168,6 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
-
     public async Task<ActionResult<CreateOrganizationDto>> CreateAndSendOrganizationInvites([FromBody] CreateAndSendInvitesDto body)
     {
         body.InviterId = await authenticationService.GetCurrentUserAsync();
@@ -175,4 +178,99 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
 
+    /// <summary>
+    /// Accept an invite to join an organisation
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("invites/accept")]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status202Accepted)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
+    [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
+
+    public async Task<ActionResult> AcceptInvite([FromBody] AcceptInviteDto body)
+    {
+        AcceptInviteCommand command = new(body);
+        StatusCodeResponse result = await mediator.Send(command);
+        return StatusCode(result.StatusCode, new { result.StatusCode, result.Message, result.Data });
+    }
+
+    /// <summary>
+    /// Get All Users In Organisation
+    /// </summary>
+    [HttpGet("{orgId:guid}/users")]
+    [ProducesResponseType(typeof(SuccessResponseDto<OrganizationUserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUsers(Guid orgId)
+    {
+        var query = new GetAllUsersQuery(orgId);
+        var organization = await mediator.Send(query);
+        return organization != null
+                  ? Ok(new SuccessResponseDto<OrganizationUserDto> { Data = organization })
+                  : NotFound(new FailureResponseDto<object>
+                  {
+                      Error = "Not Found",
+                      Message = "Organization not found",
+                      Data = false
+                  });
+    }
+    /// <summary>
+    /// Generate a unique link that allows anyone to join an organisation
+    /// </summary>
+
+    [HttpGet("{org_id}/invites/")]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.UnprocessableContent)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.Unauthorized)]
+    [ProducesResponseType(typeof(ControllerResponse<EmptyDataResponse>), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ControllerErrorResponse), (int)HttpStatusCode.BadRequest)]
+
+    public async Task<ActionResult> GetUniqueOrganizationInviteLink([ValidGuid] string org_id)
+    {
+        Guid userId = await authenticationService.GetCurrentUserAsync();
+        var dto = new GetUniqueOrganizationInviteLinkDto() { OrganizationId = org_id, UserId = userId };
+        GetUniqueOrganizationLinkQuery command = new(dto);
+        StatusCodeResponse response = await mediator.Send(command);
+        return StatusCode(response.StatusCode, response);
+    }
+
+    /// <summary>
+    /// Delete Organizations User
+    /// </summary>
+    [HttpDelete("{orgId:guid}/users")]
+    [ProducesResponseType(typeof(SuccessResponseDto<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteUserOrganization(Guid orgId)
+    {
+        try
+        {
+            var query = new DeleteUserOrganizationCommand(orgId);
+            var result = await mediator.Send(query);
+            if (result)
+            {
+                return Ok(new SuccessResponseDto<object>
+                {
+                    Data = true
+                });
+            }
+            return NotFound(new FailureResponseDto<object>
+            {
+                Error = "Not Found",
+                Data = false
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new FailureResponseDto<object>
+            {
+                Error = "Bad Request",
+                Message = ex.Message,
+                Data = false
+            });
+        }
+    }
 }

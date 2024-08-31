@@ -3,6 +3,7 @@ using CSharpFunctionalExtensions;
 using Hng.Application.Features.Profiles.Dtos;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
+using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Profile = Hng.Domain.Entities.Profile;
@@ -14,23 +15,28 @@ namespace Hng.Application.Features.Profiles.Handlers
         private readonly IRepository<User> _userRepo;
         private readonly IRepository<Profile> _profileRepo;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
 
         public UpdateProfileHandler(
             IRepository<User> userRepo,
             IRepository<Profile> profileRepo,
-            IMapper mapper)
+            IMapper mapper,
+            ITokenService tokenService)
         {
             _userRepo = userRepo;
             _profileRepo = profileRepo;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         public async Task<Result<UpdateProfileResponseDto>> Handle(UpdateProfile request, CancellationToken cancellationToken)
         {
-            var user = await _userRepo.GetBySpec(u => u.Email == request.Email, u => u.Profile);
+            var email = _tokenService.GetCurrentUserEmail();
 
-            if (user == null)
-                return Result.Failure<UpdateProfileResponseDto>("User with Email does not Exist!");
+            if (string.IsNullOrWhiteSpace(email))
+                return Result.Failure<UpdateProfileResponseDto>("Unauthorize user");
+
+            var user = await _userRepo.GetBySpec(u => u.Email == email, u => u.Profile);
 
             if (user.Profile == null)
             {
@@ -80,6 +86,7 @@ namespace Hng.Application.Features.Profiles.Handlers
             user.Profile.PhoneNumber = !string.IsNullOrWhiteSpace(request.PhoneNumber) ? request.PhoneNumber : "";
             user.Profile.Pronoun = !string.IsNullOrWhiteSpace(request.Pronoun) ? request.Pronoun : "";
             user.Profile.TwitterLink = !string.IsNullOrWhiteSpace(request.TwitterLink) ? request.TwitterLink : "";
+            user.Profile.InstagramLink = !string.IsNullOrWhiteSpace(request.InstagramLink) ? request.InstagramLink : "";
             user.Profile.Username = !string.IsNullOrWhiteSpace(request.Username) ? request.Username : "";
 
             return user.Profile;
@@ -98,6 +105,7 @@ namespace Hng.Application.Features.Profiles.Handlers
                 PhoneNumber = request.PhoneNumber,
                 Pronoun = request.Pronoun,
                 TwitterLink = request.TwitterLink,
+                InstagramLink = request.InstagramLink,
                 Username = request.Username,
                 Department = request.Department,
                 UserId = userId

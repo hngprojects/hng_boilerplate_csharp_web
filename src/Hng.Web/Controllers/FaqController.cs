@@ -1,12 +1,9 @@
 ﻿using Hng.Application.Features.Faq.Commands;
 using Hng.Application.Features.Faq.Dtos;
 using Hng.Application.Features.Faq.Queries;
-using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
 
 [Route("api/v1/faqs")]
 [ApiController]
@@ -49,7 +46,6 @@ public class FaqController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
-
     /// <summary>
     /// Deletes an FAQ entry.
     /// </summary>
@@ -64,6 +60,7 @@ public class FaqController : ControllerBase
         var result = await _mediator.Send(command);
         return StatusCode(result.StatusCode, result);
     }
+
     /// <summary>
     /// Retrieves all FAQ entries.
     /// </summary>

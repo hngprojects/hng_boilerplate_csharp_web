@@ -7,6 +7,8 @@ using System.Reflection;
 using Prometheus;
 using Hng.Web.ModelStateError;
 using Microsoft.AspNetCore.Mvc;
+using Hng.Web.Filters.Swashbuckle;
+using Hng.Graphql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,14 +35,19 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocs();
 builder.Services.AddApplicationConfig(builder.Configuration);
-builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"));
+
+builder.Services.AddGraphql();
+builder.Services.AddInfrastructureConfig(builder.Configuration.GetConnectionString("DefaultConnectionString"), builder.Configuration.GetConnectionString("RedisConnectionString"));
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SchemaFilter<SnakeCaseDictionaryFilter>();
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 
     c.CustomSchemaIds(type => type.FullName);
+
+    c.SchemaFilter<SnakeCaseDictionaryFilter>();
 });
 
 // Add Prometheus
@@ -85,5 +92,6 @@ app.Use((context, next) =>
 });
 
 app.MapControllers();
+app.MapGraphQL();
 
 app.Run();

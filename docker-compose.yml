@@ -1,4 +1,4 @@
-name: csharp
+name: csharp_dev
 
 services:
   backend:
@@ -8,15 +8,16 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     volumes:
-      - ./src/Hng.Web/appsettings.Development.json:/appsettings.Development.json
+      - ./src/Hng.Web/appsettings.Development.json:/app/appsettings.Development.json
     depends_on:
       - postgres
       - redis
+    restart: unless-stopped
 
   nginx:
     image: nginx:latest
     ports:
-      - "5000:80"
+      - "6000:80"
     depends_on:
       - backend
     volumes:
@@ -30,6 +31,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   redis:
     image: redis:latest
