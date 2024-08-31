@@ -28,7 +28,5 @@ namespace Hng.Graphql
             CreateRoleCommand command = new CreateRoleCommand(orgId, request);
             return await mediator.Send(command);
         }
-
-
     }
 }
