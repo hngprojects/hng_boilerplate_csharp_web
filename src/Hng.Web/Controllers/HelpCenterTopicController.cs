@@ -2,9 +2,8 @@
 using Hng.Application.Features.HelpCenter.Dtos;
 using Hng.Application.Features.HelpCenter.Queries;
 using Hng.Application.Shared.Dtos;
-using HotChocolate.Authorization;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hng.Web.Controllers
