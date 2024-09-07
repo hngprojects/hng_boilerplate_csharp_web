@@ -22,7 +22,7 @@ namespace Hng.Application.Test.Features.SuperAdmin
             var config = new MapperConfiguration(cfg =>
             {
                 // Add your AutoMapper profiles here
-                cfg.CreateMap<User, UserDto>();
+                cfg.CreateMap<User, UserSuperDto>();
             });
 
             _mapper = config.CreateMapper();
