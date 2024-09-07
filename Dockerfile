@@ -26,6 +26,8 @@ WORKDIR /app
 
 # Copy the published output from the publish stage
 COPY --from=publish /app/publish .
+# Copy the EmailTemplates folder
+COPY src/Hng.Infrastructure/EmailTemplates /app/EmailTemplates
 
 # Command to run the application
 ENTRYPOINT ["dotnet", "Hng.Web.dll"]

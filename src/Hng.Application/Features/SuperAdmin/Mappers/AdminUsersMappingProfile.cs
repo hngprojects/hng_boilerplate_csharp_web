@@ -7,7 +7,7 @@ namespace Hng.Application.Features.SuperAdmin.Mappers
     {
         public AdminUsersMappingProfile()
         {
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserSuperDto>().ReverseMap();
         }
     }
 }

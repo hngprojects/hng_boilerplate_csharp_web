@@ -13,6 +13,14 @@ services:
       - postgres
       - redis
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.17'
+          memory: 170M
+        reservations:
+          cpus: '0.08'
+          memory: 85M
 
   nginx:
     image: nginx:latest
