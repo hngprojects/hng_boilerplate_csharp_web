@@ -8,7 +8,7 @@
 
 	<ItemGroup>	
 	  <PackageReference Include="MediatR" Version="12.4.0" />
-		<PackageReference Include="HotChocolate.AspNetCore" Version="13.9.11" />
+		<PackageReference Include="HotChocolate.AspNetCore" Version="13.9.14" />
 		<PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.9.11" />
 	</ItemGroup>
 
