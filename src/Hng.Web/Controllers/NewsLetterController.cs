@@ -28,5 +28,15 @@ namespace Hng.Web.Controllers
                 return Unauthorized(new FailureResponseDto<object> { Message = "Email already exists.", Error = StatusCodes.Status401Unauthorized.ToString(), Data = null });
             return StatusCode((int)HttpStatusCode.Created, new SuccessResponseDto<NewsLetterSubscriptionDto> { Message = "Email was successfully stored.", Data = result });
         }
+
+        [HttpPost("unsubscribe")]
+        [EndpointDescription("Unsubscribe from News Letter")]
+        [ProducesResponseType<SuccessResponseDto<bool>>((int)HttpStatusCode.OK)]
+        [ProducesResponseType<FailureResponseDto<object>>((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> RemoveSubscriber(NewsLetterSubscriptionDto subscriber)
+        {
+            var result = await _mediator.Send(new DeleteSubscriberCommand(subscriber));
+            return StatusCode(result.StatusCode, new SuccessResponseDto<bool> { Message = result.Message, Data = result.Data });
+        }
     }
 }
