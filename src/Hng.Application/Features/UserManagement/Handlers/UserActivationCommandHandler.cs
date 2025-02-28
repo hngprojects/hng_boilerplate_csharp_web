@@ -22,8 +22,8 @@ public class UserActivationCommandHandler(IRepository<User> userRepository) : IR
 
     public async Task<UserActivationResponse> Handle(UserActivationCommand request, CancellationToken cancellationToken)
     {
-       
-        var user = await _userRepository.GetBySpec(u => u.Id == request.UserId );
+
+        var user = await _userRepository.GetBySpec(u => u.Id == request.UserId);
 
         if (user is null)
         {
@@ -33,7 +33,7 @@ public class UserActivationCommandHandler(IRepository<User> userRepository) : IR
                 StatusCode = StatusCodes.Status404NotFound
             };
         }
-        if (user.UserStatus == Domain.Enums.UserStatus.activate) 
+        if (user.UserStatus == Domain.Enums.UserStatus.activate)
         {
             return new UserActivationResponse
             {
