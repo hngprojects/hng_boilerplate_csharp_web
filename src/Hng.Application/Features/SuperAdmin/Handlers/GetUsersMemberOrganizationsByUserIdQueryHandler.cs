@@ -17,12 +17,11 @@ namespace Hng.Application.Features.SuperAdmin.Handlers
         private readonly IAuthenticationService _authenticationService;
 
         public GetUsersMemberOrganizationsByUserIdQueryHandler(IRepository<User> userRepository,
-            IRepository<Organization> organizationRepository, IMapper mapper, IAuthenticationService authenticationService)
+            IRepository<Organization> organizationRepository, IMapper mapper)
         {
             _userRepository = userRepository;
             _organizationRepository = organizationRepository;
             _mapper = mapper;
-            _authenticationService = authenticationService;
         }
 
         public async Task<PagedListDto<OrganizationDto>> Handle(GetUsersMemberOrganizationsByUserIdQuery request, CancellationToken cancellationToken)
