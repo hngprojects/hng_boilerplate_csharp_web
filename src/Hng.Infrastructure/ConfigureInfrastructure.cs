@@ -29,10 +29,10 @@ namespace Hng.Infrastructure
             services.AddScoped<IOrganisationInviteService, OrganisationInviteService>();
             services.AddScoped<IEmailTemplateService, EmailTemplateService>();
             services.AddSingleton<IConnectionMultiplexer>(sp =>
-            {
-                var Configuration = ConfigurationOptions.Parse(redisConnectionString, true);
-                return ConnectionMultiplexer.Connect(Configuration);
-            });
+             {
+                 var Configuration = ConfigurationOptions.Parse(redisConnectionString, true);
+                 return ConnectionMultiplexer.Connect(Configuration);
+             });
             return services;
         }
     }
