@@ -2,15 +2,17 @@ using Hng.Application.Features.SuperAdmin.Dto;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 
-namespace Hng.Application.Features.SuperAdmin.Queries;
-
-public class GetUsersMemberOrganizationsByUserIdQuery: IRequest<PagedListDto<OrganizationDto>>
+namespace Hng.Application.Features.SuperAdmin.Queries
 {
-    public GetUsersMemberOrganizationsByUserIdQuery(Guid userId, BaseQueryParameters userMemberOrganizationsQueryParameter)
+    public class GetUsersMemberOrganizationsByUserIdQuery : IRequest<PagedListDto<OrganizationDto>>
     {
-        UserId = userId;
-        UserMemberOrganizationsQueryParameter = userMemberOrganizationsQueryParameter;
+        public GetUsersMemberOrganizationsByUserIdQuery(Guid userId, BaseQueryParameters userMemberOrganizationsQueryParameter)
+        {
+            UserId = userId;
+            UserMemberOrganizationsQueryParameter = userMemberOrganizationsQueryParameter;
+        }
+
+        public Guid UserId { get; set; }
+        public BaseQueryParameters UserMemberOrganizationsQueryParameter { get; set; }
     }
-    public Guid UserId { get; set; }
-    public BaseQueryParameters UserMemberOrganizationsQueryParameter { get; set; }
 }
