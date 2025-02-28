@@ -40,7 +40,7 @@ namespace Hng.Web.Controllers
             var command = new UserActivationCommand
             {
                 UserId = id,
-                
+
             };
 
             var response = await _mediator.Send(command);

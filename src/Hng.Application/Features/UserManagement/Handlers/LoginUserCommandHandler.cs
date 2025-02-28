@@ -57,7 +57,7 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     StatusCode = StatusCodes.Status401Unauthorized
                 };
             }
-            if (user.UserStatus==UserStatus.deactivate)
+            if (user.UserStatus == UserStatus.deactivate)
             {
                 return new UserLoginResponseDto<SignupResponseData>
                 {
