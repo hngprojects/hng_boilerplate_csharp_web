@@ -33,7 +33,7 @@ namespace Hng.Web.Controllers
             return Ok(new PaginatedResponseDto<PagedListDto<UserSuperDto>> { Data = users, Metadata = users.MetaData });
         }
 
-        [HttpGet("users/{id}")]
+        [HttpPut("users/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> ActivateUser(Guid id)
         {

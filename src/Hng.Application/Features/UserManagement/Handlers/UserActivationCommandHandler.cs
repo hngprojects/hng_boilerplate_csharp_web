@@ -1,4 +1,5 @@
-﻿using Hng.Application.Features.Organisations.Dtos;
+﻿using AutoMapper;
+using Hng.Application.Features.Organisations.Dtos;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
@@ -12,7 +13,12 @@ namespace Hng.Application.Features.UserManagement.Handlers;
 public class UserActivationCommandHandler(IRepository<User> userRepository) : IRequestHandler<UserActivationCommand, UserActivationResponse>
 {
     private readonly IRepository<User> _userRepository = userRepository;
-   
+    private readonly IMapper _mapper;
+
+    public UserActivationCommandHandler(IRepository<User> userRepository, IMapper mapper) : this(userRepository)
+    {
+        _mapper = mapper;
+    }
 
     public async Task<UserActivationResponse> Handle(UserActivationCommand request, CancellationToken cancellationToken)
     {
@@ -38,11 +44,12 @@ public class UserActivationCommandHandler(IRepository<User> userRepository) : IR
         user.UserStatus = Domain.Enums.UserStatus.activate;
         await _userRepository.UpdateAsync(user);
         await _userRepository.SaveChanges();
-
+        var User = _mapper.Map<UserResponseDto>(user);
         return new UserActivationResponse
         {
             Message = "User activated successfully",
-            StatusCode = StatusCodes.Status200OK
+            StatusCode = StatusCodes.Status200OK,
+            User = User
         };
     }
 }
