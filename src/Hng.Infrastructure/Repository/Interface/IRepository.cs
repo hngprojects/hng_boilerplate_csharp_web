@@ -8,6 +8,8 @@ namespace Hng.Infrastructure.Repository.Interface
         Task<T> GetAsync(Guid id);
         Task<T> GetBySpec(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
         Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includeProperties);
+        
+        IQueryable<T> GetAllAsQueryable(params Expression<Func<T, object>>[] includeProperties);
         Task<IEnumerable<T>> GetAllBySpec(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
 
         IQueryable<T> GetQueryableBySpec(Expression<Func<T, bool>> predicate);
