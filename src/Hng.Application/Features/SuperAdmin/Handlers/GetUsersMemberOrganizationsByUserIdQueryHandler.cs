@@ -15,8 +15,6 @@ public class GetUsersMemberOrganizationsByUserIdQueryHandler :IRequestHandler<Ge
     private readonly IRepository<Organization> _organizationRepository;
     private readonly IMapper _mapper;
     private readonly IAuthenticationService _authenticationService;
-    
-
     public GetUsersMemberOrganizationsByUserIdQueryHandler(IRepository<User> userRepository,
         IRepository<Organization> organizationRepository, IMapper mapper, IAuthenticationService authenticationService)
     {
@@ -25,7 +23,6 @@ public class GetUsersMemberOrganizationsByUserIdQueryHandler :IRequestHandler<Ge
         _mapper = mapper;
         _authenticationService = authenticationService;
     }
-
 
     public async Task<PagedListDto<OrganizationDto>> Handle(GetUsersMemberOrganizationsByUserIdQuery request, CancellationToken cancellationToken)
     {
@@ -37,13 +34,12 @@ public class GetUsersMemberOrganizationsByUserIdQueryHandler :IRequestHandler<Ge
         }
         var userMemberOrganizations = user.Organizations.Where(org=>org.OwnerId!=user.Id).ToList();
         
-        
         var mappedOrganizations = _mapper.Map<List<OrganizationDto>>(userMemberOrganizations);
-            
+        
         // var mappedProducts = _mapper.Map<IEnumerable<ProductDto>>(products);
 
-        var organizationResult = PagedListDto<OrganizationDto>.ToPagedList(mappedOrganizations,
-            request.UserMemberOrganizationsQueryParameter.Offset, request.UserMemberOrganizationsQueryParameter.Limit);
+        var organizationResult = PagedListDto<OrganizationDto>.ToPagedList(mappedOrganizations, request.UserMemberOrganizationsQueryParameter.Offset, request.UserMemberOrganizationsQueryParameter.Limit);
+        
         return organizationResult ;
     }
 }
