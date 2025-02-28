@@ -12,7 +12,7 @@ public class GetUsersOwnedOrganizationsByUserIdQuery : IRequest<PagedListDto<Org
         UserId = userId;
         UserOwnedOrganizationsQueryParameter = userOwnedOrganizationsQueryParameter;
     }
-     
+    
     public Guid UserId { get; set; }
     public BaseQueryParameters UserOwnedOrganizationsQueryParameter { get; set; }
 }
