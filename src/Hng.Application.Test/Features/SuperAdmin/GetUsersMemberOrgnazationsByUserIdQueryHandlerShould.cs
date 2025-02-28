@@ -1,6 +1,3 @@
-
-
-
 using System.Linq.Expressions;
 using AutoMapper;
 using Hng.Application.Features.SuperAdmin.Dto;
@@ -22,7 +19,7 @@ public class GetUsersMemberOrganizationsByUserIdQueryHandlerShould
     public GetUsersMemberOrganizationsByUserIdQueryHandlerShould()
     {
         _mockRepository = new Mock<IRepository<User>>();
-
+        
         // Set up AutoMapper with your profiles
         var config = new MapperConfiguration(cfg =>
         {
@@ -34,17 +31,13 @@ public class GetUsersMemberOrganizationsByUserIdQueryHandlerShould
         _mapper = config.CreateMapper();
     }
     
-    
     [Fact]
     public async Task ReturnNullWhenUserIsNotFound()
     {
-        _mockRepository.Setup(repo => repo.GetBySpec(
-            It.IsAny<Expression<Func<User, bool>>>(),
-            It.IsAny<Expression<Func<User, object>>[]>()
-        )).ReturnsAsync((User)null);
+        _mockRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>())).ReturnsAsync((User)null);
         
         var result = await handler.Handle(new GetUsersMemberOrganizationsByUserIdQuery(Guid.NewGuid(),new BaseQueryParameters()), CancellationToken.None);
-
+        
         Assert.Null(result);
     }
 }

@@ -18,31 +18,27 @@ public class GetUsersOwnedOrganizationsByUserIdQueryHandlerShould
     private readonly Mock<IRepository<Domain.Entities.Organization>> mockOrganizationRepository;
     private readonly IMapper mapper;
     private readonly GetUsersOwnedOrganizationsByUserIdQueryHandler handler;
+
     public GetUsersOwnedOrganizationsByUserIdQueryHandlerShould()
     {
         _mockRepository = new Mock<IRepository<User>>();
         mockOrganizationRepository = new Mock<IRepository<Domain.Entities.Organization>>();
-
         
         var config = new MapperConfiguration(cfg =>
         {
-            
+
             cfg.CreateMap<User, UserSuperDto>();
             cfg.CreateMap<Domain.Entities.Organization, OrganizationDto>();
         });
         _mapper = config.CreateMapper();
     }
-    
-    
+
     [Fact]
     public async Task ReturnNullWhenUserIsNotFound()
     {
-        _mockRepository.Setup(repo => repo.GetBySpec(
-            It.IsAny<Expression<Func<User, bool>>>(),
-            It.IsAny<Expression<Func<User, object>>[]>()
-        )).ReturnsAsync((User)null);
+        _mockRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(),It.IsAny<Expression<Func<User, object>>[]>())).ReturnsAsync((User)null);
         
-        var result = await handler.Handle(new GetUsersOwnedOrganizationsByUserIdQuery(Guid.NewGuid(),new BaseQueryParameters()), CancellationToken.None);
+        var result= await handler.Handle(new GetUsersOwnedOrganizationsByUserIdQuery(Guid.NewGuid(),new BaseQueryParameters()), CancellationToken.None);
 
         Assert.Null(result);
     }

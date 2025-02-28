@@ -156,6 +156,5 @@ namespace Hng.Application.Test.Features.SuperAdmin
             Assert.Equal(results.First().LastName, expectedLastName);
         }
 
-
     }
 }
