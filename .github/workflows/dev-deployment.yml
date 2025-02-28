@@ -19,14 +19,13 @@ jobs:
         run: docker save csharp_dev | gzip > csharp_dev.tar.gz
 
       - name: Upload Docker image
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: csharp_dev
           path: csharp_dev.tar.gz
         
   deploy:
     needs: build
-    if: github.event.repository.fork == false
     runs-on: ubuntu-latest
 
     environment:
@@ -35,7 +34,7 @@ jobs:
 
     steps:
       - name: Download Docker image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: csharp_dev
           path: .
