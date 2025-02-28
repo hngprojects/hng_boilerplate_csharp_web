@@ -61,4 +61,33 @@ public class JobController : ControllerBase
         await _mediator.Send(new DeleteJobByIdCommand(id));
         return NoContent();
     }
+
+
+    /// <summary>
+    /// Updates a job by ID
+    /// </summary>
+    /// <param name="request">The details of the job to upcate.</param>
+    /// <returns>A response with the update result or an error message.</returns>
+    [HttpPatch("update/{id:guid}")]
+    [ProducesResponseType(typeof(UpdateJobDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UpdateJobDto>> UpdateJob(Guid id, [FromBody] UpdateJobDto body)
+    {
+        var command = new UpdateJobCommand(body, id);
+        var response = await _mediator.Send(command);
+        if (response == null)
+        {
+            return BadRequest(new 
+            {
+                Message = "Job not found",
+                Status = "Failed",
+            });
+        }
+        return Ok(new SuccessResponseDto<UpdateJobDto>()
+        {
+            Data = response,
+            Message = "Job updated successfully.",
+        });
+    }
+
 }
