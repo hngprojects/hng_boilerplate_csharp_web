@@ -68,7 +68,7 @@ public class JobController : ControllerBase
     /// </summary>
     /// <param name="request">The details of the job to upcate.</param>
     /// <returns>A response with the update result or an error message.</returns>
-    [HttpPatch("update/{id:guid}")]
+    [HttpPatch("{id:guid}")]
     [ProducesResponseType(typeof(UpdateJobResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(UpdateJobResponseDto), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(UpdateJobResponseDto), StatusCodes.Status400BadRequest)]
