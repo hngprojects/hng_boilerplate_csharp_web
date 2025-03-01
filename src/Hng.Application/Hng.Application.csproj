@@ -18,7 +18,7 @@
     <Compile Remove="Features\UserManagement\Dtos\UserCreationDto.cs" />
   </ItemGroup>
 
-  <ItemGroup>
+   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.5" />
