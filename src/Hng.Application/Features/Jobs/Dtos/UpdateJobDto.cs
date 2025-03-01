@@ -23,7 +23,7 @@ namespace Hng.Application.Features.Jobs.Dtos
         public double Salary { get; set; }
 
         [JsonPropertyName("experience_level")]
-        public ExperienceLevel Level { get; set; }
+        public ExperienceLevel? Level { get; set; }
 
         [JsonPropertyName("company_name")]
         public string Company { get; set; }

@@ -69,19 +69,30 @@ public class JobController : ControllerBase
     /// <param name="request">The details of the job to upcate.</param>
     /// <returns>A response with the update result or an error message.</returns>
     [HttpPatch("update/{id:guid}")]
-    [ProducesResponseType(typeof(UpdateJobDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(FailureResponseDto<string>), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UpdateJobDto>> UpdateJob(Guid id, [FromBody] UpdateJobDto body)
+    [ProducesResponseType(typeof(UpdateJobResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UpdateJobResponseDto), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(UpdateJobResponseDto), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<UpdateJobResponseDto>> UpdateJob(Guid id, [FromBody] UpdateJobDto updateRequest)
     {
-        var command = new UpdateJobCommand(body, id);
-        var response = await _mediator.Send(command);
-
-        if (!response.Success)
+        if (string.IsNullOrEmpty(updateRequest.Description) && 
+            string.IsNullOrEmpty(updateRequest.Level.ToString()) && 
+            string.IsNullOrEmpty(updateRequest.Company) &&
+            string.IsNullOrEmpty(updateRequest.Title) &&
+            string.IsNullOrEmpty(updateRequest.Location) &&
+            updateRequest.Salary <= 0)
         {
-            return BadRequest(response);
+            return BadRequest(new UpdateJobResponseDto()
+            {
+                Message = "Invalid request data",
+                StatusCode = StatusCodes.Status400BadRequest,
+                Success = false,
+            });
         }
 
-        return Ok(response);
+        var command = new UpdateJobCommand(updateRequest, id);
+        var response = await _mediator.Send(command);
+
+        return !response.Success ? BadRequest(response) : Ok(response);
     }
 
 }

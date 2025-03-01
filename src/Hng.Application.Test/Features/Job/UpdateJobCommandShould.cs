@@ -61,13 +61,14 @@ namespace Hng.Application.Test.Features.Job
                  {
                      dest.Title = src.Title;
                      dest.Description = src.Description;
-                     dest.Level = src.Level;
+                     dest.Level = src.Level.Value;
                  });
 
             // Act
             var response = await _handler.Handle(command, CancellationToken.None);
 
             // Assert - Ensure the job was updated and the response is correct
+            Assert.NotNull(response.Data);
             Assert.True(response.Success);
             Assert.Equal(StatusCodes.Status200OK, response.StatusCode);
             Assert.Equal(updateJob.Title, existingJob.Title);
@@ -96,6 +97,7 @@ namespace Hng.Application.Test.Features.Job
             var response = await _handler.Handle(command, CancellationToken.None);
 
             // Assert - Check response for not found
+            Assert.Null(response.Data);
             Assert.False(response.Success);
             Assert.Equal(StatusCodes.Status404NotFound, response.StatusCode);
             Assert.Equal("Job not found", response.Message);
