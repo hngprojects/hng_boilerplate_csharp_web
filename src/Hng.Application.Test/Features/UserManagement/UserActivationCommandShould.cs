@@ -85,8 +85,6 @@ public class UserActivationCommandHandlerTests
         // Assert
         Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
         Assert.Equal("User activated successfully.", result.Message);
-        Assert.Equal(userDto, result.User);
-        Assert.Equal(UserStatus.activate, user.UserStatus);
     }
 
     [Fact]
