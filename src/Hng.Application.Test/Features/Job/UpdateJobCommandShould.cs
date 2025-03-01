@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Test.Features.Job
 {
-    internal class UpdateJobCommandShould
+    public class UpdateJobCommandShould
     {
     }
 }
