@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Application.Features.UserManagement.Handlers;
@@ -10,82 +7,109 @@ using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
 using Microsoft.AspNetCore.Http;
 using Moq;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
-using FluentAssertions;
 
-public class UserActivationCommandShould
+namespace Hng.Application.Tests.Features.UserManagement.Handlers;
+
+public class UserActivationCommandHandlerTests
 {
-    private readonly Mock<IRepository<User>> _userRepositoryMock;
-    private readonly UserActivationCommandHandler _handler;
-
-    public UserActivationCommandShould()
-    {
-        _userRepositoryMock = new Mock<IRepository<User>>();
-        _handler = new UserActivationCommandHandler(_userRepositoryMock.Object);
-    }
-
     [Fact]
     public async Task Handle_UserNotFound_ReturnsNotFoundResponse()
     {
         // Arrange
-        var userId = Guid.NewGuid();
-        var request = new UserActivationCommand { UserId = userId };
+        var mockUserRepository = new Mock<IRepository<User>>();
+        var mockMapper = new Mock<IMapper>();
+        var handler = new UserActivationCommandHandler(mockUserRepository.Object, mockMapper.Object);
+        var command = new UserActivationCommand { UserId = Guid.NewGuid() };
 
-        _userRepositoryMock
-            .Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+        mockUserRepository.Setup(repo => repo.GetBySpec(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>()))
             .ReturnsAsync((User)null);
 
         // Act
-        var result = await _handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        result.Message.Should().Be("Organization not found.");
+        Assert.Equal(StatusCodes.Status404NotFound, result.StatusCode);
+        Assert.Equal("User not found.", result.Message);
     }
 
     [Fact]
-    public async Task Handle_UserAlreadyActive_ReturnsConflictResponse()
+    public async Task Handle_UserAlreadyActive_ReturnsBadRequestResponse()
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var request = new UserActivationCommand { UserId = userId };
         var user = new User { Id = userId, UserStatus = UserStatus.activate };
+        var mockUserRepository = new Mock<IRepository<User>>();
+        var mockMapper = new Mock<IMapper>();
+        var handler = new UserActivationCommandHandler(mockUserRepository.Object, mockMapper.Object);
+        var command = new UserActivationCommand { UserId = userId };
 
-        _userRepositoryMock
-            .Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+        mockUserRepository.Setup(repo => repo.GetBySpec(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>()))
             .ReturnsAsync(user);
 
         // Act
-        var result = await _handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        result.Message.Should().Be("User Already Active.");
+        Assert.Equal(StatusCodes.Status400BadRequest, result.StatusCode);
+        Assert.Equal("User is already active.", result.Message);
     }
 
     [Fact]
-    public async Task Handle_ValidUser_ActivatesUserSuccessfully()
+    public async Task Handle_UserActivationSuccess_ReturnsOkResponse()
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var request = new UserActivationCommand { UserId = userId };
         var user = new User { Id = userId, UserStatus = UserStatus.deactivate };
+        var userDto = new UserResponseDto { Id = userId.ToString() };
+        var mockUserRepository = new Mock<IRepository<User>>();
+        var mockMapper = new Mock<IMapper>();
+        var handler = new UserActivationCommandHandler(mockUserRepository.Object, mockMapper.Object);
+        var command = new UserActivationCommand { UserId = userId };
 
-        _userRepositoryMock
-            .Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>()))
+        mockUserRepository.Setup(repo => repo.GetBySpec(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>()))
             .ReturnsAsync(user);
-
-        _userRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
-        _userRepositoryMock.Setup(repo => repo.SaveChanges()).Returns(Task.CompletedTask);
+        mockUserRepository.Setup(repo => repo.UpdateAsync(It.IsAny<User>()))
+            .Returns(Task.CompletedTask);
+        mockUserRepository.Setup(repo => repo.SaveChanges())
+            .Returns(Task.CompletedTask);
+        mockMapper.Setup(mapper => mapper.Map<UserResponseDto>(It.IsAny<User>()))
+            .Returns(userDto);
 
         // Act
-        var result = await _handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.StatusCode.Should().Be(StatusCodes.Status200OK);
-        result.Message.Should().Be("User activated successfully");
+        Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+        Assert.Equal("User activated successfully.", result.Message);
+        Assert.Equal(userDto, result.User);
+        Assert.Equal(UserStatus.activate, user.UserStatus);
+    }
 
-        _userRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<User>()), Times.Once);
-        _userRepositoryMock.Verify(repo => repo.SaveChanges(), Times.Once);
+    [Fact]
+    public async Task Handle_ExceptionThrown_ReturnsInternalServerError()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var user = new User { Id = userId, UserStatus = UserStatus.deactivate };
+        var mockUserRepository = new Mock<IRepository<User>>();
+        var mockMapper = new Mock<IMapper>();
+        var handler = new UserActivationCommandHandler(mockUserRepository.Object, mockMapper.Object);
+        var command = new UserActivationCommand { UserId = userId };
+
+        mockUserRepository.Setup(repo => repo.GetBySpec(It.IsAny<System.Linq.Expressions.Expression<Func<User, bool>>>()))
+            .ReturnsAsync(user);
+        mockUserRepository.Setup(repo => repo.UpdateAsync(It.IsAny<User>()))
+            .ThrowsAsync(new Exception("Database error"));
+
+        // Act
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(StatusCodes.Status500InternalServerError, result.StatusCode);
+        Assert.Equal("An error occurred while activating the user.", result.Message);
     }
 }
