@@ -38,13 +38,13 @@ namespace Hng.Application.Features.Jobs.Handlers
                 {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Job not found",
-                    Success = false                   
+                    Success = false
                 };
             }
 
             // Update existing job
             _mapper.Map(request.UpdateJob, job);
-            
+
             // Update and save the job in the database
             await _jobRepository.UpdateAsync(job);
             await _jobRepository.SaveChanges();
@@ -56,7 +56,7 @@ namespace Hng.Application.Features.Jobs.Handlers
                 Success = true,
                 StatusCode = StatusCodes.Status200OK,
                 Data = job
-            }; 
+            };
         }
     }
 }

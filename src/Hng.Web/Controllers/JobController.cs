@@ -74,8 +74,8 @@ public class JobController : ControllerBase
     [ProducesResponseType(typeof(UpdateJobResponseDto), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<UpdateJobResponseDto>> UpdateJob(Guid id, [FromBody] UpdateJobDto updateRequest)
     {
-        if (string.IsNullOrEmpty(updateRequest.Description) && 
-            string.IsNullOrEmpty(updateRequest.Level.ToString()) && 
+        if (string.IsNullOrEmpty(updateRequest.Description) &&
+            string.IsNullOrEmpty(updateRequest.Level.ToString()) &&
             string.IsNullOrEmpty(updateRequest.Company) &&
             string.IsNullOrEmpty(updateRequest.Title) &&
             string.IsNullOrEmpty(updateRequest.Location) &&

@@ -12,6 +12,6 @@ namespace Hng.Application.Features.Jobs.Commands
     {
         public UpdateJobDto UpdateJob { get; set; } = updateJob;
         public Guid JobId { get; set; } = jobId;
-       
+
     }
 }

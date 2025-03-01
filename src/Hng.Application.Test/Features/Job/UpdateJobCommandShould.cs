@@ -90,7 +90,7 @@ namespace Hng.Application.Test.Features.Job
             };
 
             var command = new UpdateJobCommand(updateJob, existingJobId);
-            
+
             _mockJobRepository.Setup(repo => repo.GetAsync(existingJobId)).ReturnsAsync((Domain.Entities.Job)null);
 
             // Act
