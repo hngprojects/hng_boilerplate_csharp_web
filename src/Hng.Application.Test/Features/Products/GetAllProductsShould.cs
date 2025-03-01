@@ -23,7 +23,7 @@ namespace Hng.Application.Test.Features.Products
             _mockProductRepository = new Mock<IRepository<Product>>();
             _mockCategoryRepository = new Mock<IRepository<Category>>();
             _mockMapper = new Mock<IMapper>();
-            _handler = new GetAllProductsHandler(_mockProductRepository.Object, _mockCategoryRepository.Object,  _mockMapper.Object);
+            _handler = new GetAllProductsHandler(_mockProductRepository.Object, _mockCategoryRepository.Object, _mockMapper.Object);
         }
 
         [Fact]

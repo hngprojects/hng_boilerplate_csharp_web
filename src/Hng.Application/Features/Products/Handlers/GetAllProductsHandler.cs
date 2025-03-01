@@ -25,7 +25,8 @@ namespace Hng.Application.Features.Products.Handlers
             var validCategories = await _categoryRepository.GetAllAsync();
             var categoriesNames = validCategories.Select(category => category.Name).ToHashSet();
 
-            if (!string.IsNullOrEmpty(request.Category) && !categoriesNames.Contains(request.Category)){
+            if (!string.IsNullOrEmpty(request.Category) && !categoriesNames.Contains(request.Category))
+            {
                 throw new ArgumentException($"Invalid category '{request.Category}' provided.");
             }
 
