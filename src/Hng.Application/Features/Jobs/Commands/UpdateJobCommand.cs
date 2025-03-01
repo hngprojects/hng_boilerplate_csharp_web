@@ -8,14 +8,10 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Jobs.Commands
 {
-    public class UpdateJobCommand : IRequest<UpdateJobDto>
+    public class UpdateJobCommand(UpdateJobDto updateJob, Guid jobId) : IRequest<UpdateJobResponseDto>
     {
-        public UpdateJobDto UpdateJob { get; set; }
-        public Guid JobId { get; set; }
-        public UpdateJobCommand(UpdateJobDto updateJob, Guid jobId)
-        {
-            UpdateJob = updateJob;
-            JobId = jobId;
-        }
+        public UpdateJobDto UpdateJob { get; set; } = updateJob;
+        public Guid JobId { get; set; } = jobId;
+       
     }
 }

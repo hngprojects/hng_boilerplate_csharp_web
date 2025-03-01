@@ -75,19 +75,13 @@ public class JobController : ControllerBase
     {
         var command = new UpdateJobCommand(body, id);
         var response = await _mediator.Send(command);
-        if (response == null)
+
+        if (!response.Success)
         {
-            return BadRequest(new 
-            {
-                Message = "Job not found",
-                Status = "Failed",
-            });
+            return BadRequest(response);
         }
-        return Ok(new SuccessResponseDto<UpdateJobDto>()
-        {
-            Data = response,
-            Message = "Job updated successfully.",
-        });
+
+        return Ok(response);
     }
 
 }
