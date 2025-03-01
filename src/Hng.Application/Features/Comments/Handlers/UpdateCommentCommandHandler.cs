@@ -6,7 +6,6 @@ using Hng.Domain.Entities;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 
 namespace Hng.Application.Features.Comments.Handlers;
 
@@ -25,18 +24,33 @@ public class UpdateCommentCommandHandler(
         var comment = await _commentRepository.GetBySpec(c => c.Id == request.commentId && c.BlogId == request.BlogId);
         if (comment == null)
         {
-            throw new KeyNotFoundException("Comment not found.");
+            return new SuccessResponseDto<CommentDto>
+            {
+                Data = null,
+                Message = "Comment not found.",
+                StatusCode = 404
+            };
         }
 
         var userId = await _authenticationService.GetCurrentUserAsync();
         if (comment.AuthorId != userId)
         {
-            throw new UnauthorizedAccessException("You are not authorized to update this comment.");
+            return new SuccessResponseDto<CommentDto>
+            {
+                Data = null,
+                Message = "You are not authorized to update this comment.",
+                StatusCode = 403
+            };
         }
 
         if (string.IsNullOrWhiteSpace(request.CommentBody.Content))
         {
-            throw new ArgumentException("Content cannot be empty.");
+            return new SuccessResponseDto<CommentDto>
+            {
+                Data = null,
+                Message = "Comment cannot be empty.",
+                StatusCode = 400
+            };
         }
 
         // Update only the content field

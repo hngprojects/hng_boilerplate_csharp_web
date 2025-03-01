@@ -76,13 +76,15 @@ public class UpdateCommentCommandShould
 
         // Assert
         Assert.NotNull(result);
+        Assert.Equal(200, result.StatusCode);
+        Assert.Equal("Comment updated successfully", result.Message);
         Assert.Equal("Updated content", result.Data.Content);
         _commentRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Comment>()), Times.Once);
         _commentRepositoryMock.Verify(r => r.SaveChanges(), Times.Once);
     }
 
     [Fact]
-    public async Task Handle_ShouldThrowExceptionWhenCommentNotFound()
+    public async Task Handle_ShouldReturnNotFound_WhenCommentNotFound()
     {
         // Arrange
         var blogId = Guid.NewGuid();
@@ -98,17 +100,21 @@ public class UpdateCommentCommandShould
             .Setup(s => s.GetCurrentUserAsync())
             .ReturnsAsync(userId);
 
-        // Act & Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(() =>
-            _handler.Handle(
-                new UpdateCommentCommand(blogId, commentId, updateCommentDto, userId),
-                CancellationToken.None
-            )
+        // Act
+        var result = await _handler.Handle(
+            new UpdateCommentCommand(blogId, commentId, updateCommentDto, userId),
+            CancellationToken.None
         );
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(404, result.StatusCode);
+        Assert.Equal("Comment not found.", result.Message);
+        Assert.Null(result.Data);
     }
 
     [Fact]
-    public async Task Handle_ShouldThrowExceptionWhenUserIsNotAuthorized()
+    public async Task Handle_ShouldReturnUnauthorized_WhenUserIsNotAuthorized()
     {
         // Arrange
         var blogId = Guid.NewGuid();
@@ -133,17 +139,21 @@ public class UpdateCommentCommandShould
             .Setup(s => s.GetCurrentUserAsync())
             .ReturnsAsync(anotherUserId);
 
-        // Act & Assert
-        await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
-            _handler.Handle(
-                new UpdateCommentCommand(blogId, commentId, updateCommentDto, anotherUserId),
-                CancellationToken.None
-            )
+        // Act
+        var result = await _handler.Handle(
+            new UpdateCommentCommand(blogId, commentId, updateCommentDto, anotherUserId),
+            CancellationToken.None
         );
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(403, result.StatusCode);
+        Assert.Equal("You are not authorized to update this comment.", result.Message);
+        Assert.Null(result.Data);
     }
 
     [Fact]
-    public async Task Handle_ShouldThrowExceptionWhenContentIsEmpty()
+    public async Task Handle_ShouldReturnBadRequest_WhenContentIsEmpty()
     {
         // Arrange
         var blogId = Guid.NewGuid();
@@ -167,12 +177,16 @@ public class UpdateCommentCommandShould
             .Setup(s => s.GetCurrentUserAsync())
             .ReturnsAsync(userId);
 
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() =>
-            _handler.Handle(
-                new UpdateCommentCommand(blogId, commentId, updateCommentDto, userId),
-                CancellationToken.None
-            )
+        // Act
+        var result = await _handler.Handle(
+            new UpdateCommentCommand(blogId, commentId, updateCommentDto, userId),
+            CancellationToken.None
         );
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(400, result.StatusCode);
+        Assert.Equal("Content cannot be empty.", result.Message);
+        Assert.Null(result.Data);
     }
 }
