@@ -57,7 +57,6 @@ public class UserActivationCommandHandler : IRequestHandler<UserActivationComman
             {
                 Message = "User activated successfully.",
                 StatusCode = StatusCodes.Status200OK,
-                User = userDto
             };
         }
         catch (Exception ex)
