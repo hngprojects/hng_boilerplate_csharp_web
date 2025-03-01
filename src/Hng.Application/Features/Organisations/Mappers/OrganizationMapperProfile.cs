@@ -13,6 +13,7 @@ namespace Hng.Application.Features.Organisations.Mappers
             CreateMap<CreateOrganizationDto, Organization>();
             CreateMap<Organization, OrganizationUserDto>()
           .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Users));
+            CreateMap<UpdateOrganizationDto, Organization>().ReverseMap();
         }
     }
 }

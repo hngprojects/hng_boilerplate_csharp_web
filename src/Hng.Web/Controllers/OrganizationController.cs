@@ -63,6 +63,24 @@ public class OrganizationController(IMediator mediator, IAuthenticationService a
     }
 
     /// <summary>
+    /// Update Organization
+    /// </summary>
+    [HttpPut("{orgId:guid}")]
+    [ProducesResponseType(typeof(OrganizationDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<OrganizationDto>> UpdateOrganization([FromRoute] Guid orgId, [FromBody] UpdateOrganizationDto body)
+    {
+        var command = new UpdateOrganizationCommand(orgId, body);
+        var response = await mediator.Send(command);
+        return response is null ? NotFound(new
+        {
+            message = "Organization not found",
+            is_successful = false,
+            status_code = 404
+        }) : StatusCode(response.StatusCode, response);
+    }
+
+
+    /// <summary>
     /// Create Role For Organization
     /// </summary>
     [HttpPost("{orgId:guid}/roles")]
