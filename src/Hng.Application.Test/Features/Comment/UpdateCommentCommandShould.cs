@@ -186,7 +186,7 @@ public class UpdateCommentCommandShould
         // Assert
         Assert.NotNull(result);
         Assert.Equal(400, result.StatusCode);
-        Assert.Equal("Content cannot be empty.", result.Message);
+        Assert.Equal("Comment cannot be empty.", result.Message);
         Assert.Null(result.Data);
     }
 }
