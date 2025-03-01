@@ -25,33 +25,18 @@ public class UpdateCommentCommandHandler(
         var comment = await _commentRepository.GetBySpec(c => c.Id == request.commentId && c.BlogId == request.BlogId);
         if (comment == null)
         {
-            return new SuccessResponseDto<CommentDto>
-            {
-                Data = null,
-                Message = "Comment not found.",
-                StatusCode = 404
-            };
+            throw new KeyNotFoundException("Comment not found.");
         }
 
         var userId = await _authenticationService.GetCurrentUserAsync();
         if (comment.AuthorId != userId)
         {
-            return new SuccessResponseDto<CommentDto>
-            {
-                Data = null,
-                Message = "You are not authorized to update this comment.",
-                StatusCode = 403
-            };
+            throw new UnauthorizedAccessException("You are not authorized to update this comment.");
         }
 
         if (string.IsNullOrWhiteSpace(request.CommentBody.Content))
         {
-            return new SuccessResponseDto<CommentDto>
-            {
-                Data = null,
-                Message = "Content cannot be empty.",
-                StatusCode = 400
-            };
+            throw new ArgumentException("Content cannot be empty.");
         }
 
         // Update only the content field
