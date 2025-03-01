@@ -81,7 +81,7 @@ public class JobController : ControllerBase
             string.IsNullOrEmpty(updateRequest.Location) &&
             updateRequest.Salary <= 0)
         {
-            return BadRequest(new UpdateJobResponseDto()
+            return NotFound(new UpdateJobResponseDto()
             {
                 Message = "Invalid request data",
                 StatusCode = StatusCodes.Status400BadRequest,
