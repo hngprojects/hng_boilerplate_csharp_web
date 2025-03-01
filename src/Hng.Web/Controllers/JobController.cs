@@ -61,4 +61,21 @@ public class JobController : ControllerBase
         await _mediator.Send(new DeleteJobByIdCommand(id));
         return NoContent();
     }
+
+
+    /// <summary>
+    /// Job - Search jobs by company name
+    /// </summary>
+    [HttpGet("search/company-name")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+    public async Task<ActionResult<IEnumerable<JobDto>>> GetJobByCompanyName([FromQuery] string CompanyName)
+    {
+        var query = new GetJobsByCompanyNameQuery(CompanyName);
+        var jobs = await _mediator.Send(query);
+        return Ok(jobs);
+    }
 }
