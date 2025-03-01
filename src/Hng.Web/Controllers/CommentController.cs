@@ -2,6 +2,7 @@
 using Hng.Application.Features.Comments.Dtos;
 using Hng.Application.Features.Comments.Queries;
 using Hng.Application.Shared.Dtos;
+using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,11 @@ namespace Hng.Web.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/v1/posts/{blogId:guid}/comments")]
-public class CommentController(IMediator mediator) : ControllerBase
+public class CommentController(IMediator mediator, IAuthenticationService authenticationService) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+    private readonly IAuthenticationService _authenticationService = authenticationService;
+
 
     [HttpPost]
     [ProducesResponseType(typeof(CommentDto), StatusCodes.Status201Created)]
@@ -36,5 +39,22 @@ public class CommentController(IMediator mediator) : ControllerBase
             Data = comments
         };
         return Ok(response);
+    }
+
+    [HttpPut("{commentId:guid}")]
+    [ProducesResponseType(typeof(CommentDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CommentDto>> UpdateComment(
+    [FromRoute] Guid blogId,
+    [FromRoute] Guid commentId,
+    [FromBody] UpdateCommentDto body)
+    {
+        var userId = await _authenticationService.GetCurrentUserAsync();
+        var command = new UpdateCommentCommand(blogId, commentId, body, userId);
+        var updatedComment = await _mediator.Send(command);
+
+        return Ok(updatedComment);
     }
 }
