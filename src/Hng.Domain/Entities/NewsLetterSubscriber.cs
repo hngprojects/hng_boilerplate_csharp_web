@@ -5,5 +5,6 @@
         public string Email { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LeftOn { get; set; }
+        public bool IsActive => LeftOn == null;
     }
 }
