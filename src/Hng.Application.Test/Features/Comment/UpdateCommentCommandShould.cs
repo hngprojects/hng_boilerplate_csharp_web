@@ -76,7 +76,7 @@ public class UpdateCommentCommandShould
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal("Updated content", result.Content);
+        Assert.Equal("Updated content", result.Data.Content);
         _commentRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Comment>()), Times.Once);
         _commentRepositoryMock.Verify(r => r.SaveChanges(), Times.Once);
     }
