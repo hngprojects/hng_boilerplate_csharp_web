@@ -61,7 +61,11 @@ BenchmarkDotNet.Artifacts/
 # .NET Core
 project.lock.json
 project.fragment.lock.json
+DesignTimeDbContextFactory.cs
 artifacts/
+
+# Rider generated 
+.idea/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt

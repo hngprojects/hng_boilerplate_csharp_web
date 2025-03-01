@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hng.Application.Features.Jobs.Dtos
 {
-    public class UpdateJobResponseDto
+    public class GetJobByCompanyNameResponseDto
     {
         [JsonPropertyName("status_code")]
         public int StatusCode { get; set; }
