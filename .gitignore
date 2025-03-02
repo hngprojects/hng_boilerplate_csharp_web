@@ -380,5 +380,3 @@ appsettings.*.json
 
 #env files
 .envrc
-
-src/Hng.Web/appsettings.json

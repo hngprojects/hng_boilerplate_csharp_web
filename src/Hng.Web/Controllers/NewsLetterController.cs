@@ -30,6 +30,7 @@ namespace Hng.Web.Controllers
             return StatusCode((int)HttpStatusCode.Created, new SuccessResponseDto<NewsLetterSubscriptionDto> { Message = "Email was successfully stored.", Data = result });
         }
 
+
         [HttpGet("subscribers")]
         public async Task<IActionResult> GetSubscribers([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
@@ -41,6 +42,16 @@ namespace Hng.Web.Controllers
 
 
 
+
+        [HttpDelete("{Id}")]
+        [EndpointDescription("Unsubscribe from News Letter")]
+        [ProducesResponseType<BaseResponseDto<bool>>((int)HttpStatusCode.OK)]
+        [ProducesResponseType<BaseResponseDto<object>>((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> RemoveSubscriber(Guid Id)
+        {
+            var result = await _mediator.Send(new DeleteSubscriberCommand(Id));
+            return StatusCode(result.StatusCode, new BaseResponseDto<bool> { Message = result.Message, Data = result.Data });
+        }
 
     }
 }
