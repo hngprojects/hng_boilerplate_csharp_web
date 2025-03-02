@@ -7,39 +7,35 @@ using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
 
-namespace Hng.Application.Features.SuperAdmin.Handlers
+namespace Hng.Application.Features.SuperAdmin.Handlers;
+
+public class GetUsersMemberOrganizationsByUserIdQueryHandler : IRequestHandler<GetUsersMemberOrganizationsByUserIdQuery, PagedListDto<OrganizationDto>>
 {
-    public class GetUsersMemberOrganizationsByUserIdQueryHandler : IRequestHandler<GetUsersMemberOrganizationsByUserIdQuery, PagedListDto<OrganizationDto>>
+    private readonly IRepository<User> _userRepository;
+    private readonly IMapper _mapper;
+
+    public GetUsersMemberOrganizationsByUserIdQueryHandler(IRepository<User> userRepository, IMapper mapper)
     {
-        private readonly IRepository<User> _userRepository;
-        private readonly IRepository<Organization> _organizationRepository;
-        private readonly IMapper _mapper;
-        private readonly IAuthenticationService _authenticationService;
+        _userRepository = userRepository;
+        _mapper = mapper;
+    }
 
-        public GetUsersMemberOrganizationsByUserIdQueryHandler(IRepository<User> userRepository,
-            IRepository<Organization> organizationRepository, IMapper mapper)
+    public async Task<PagedListDto<OrganizationDto>> Handle(GetUsersMemberOrganizationsByUserIdQuery request, CancellationToken cancellationToken)
+    {
+        var user = await _userRepository.GetBySpec(user => user.Id == request.UserId, user => user.Organizations);
+
+        if (user == null)
         {
-            _userRepository = userRepository;
-            _organizationRepository = organizationRepository;
-            _mapper = mapper;
+            return null;
         }
+        var userMemberOrganizations = user.Organizations.Where(org => org.OwnerId != user.Id).ToList();
 
-        public async Task<PagedListDto<OrganizationDto>> Handle(GetUsersMemberOrganizationsByUserIdQuery request, CancellationToken cancellationToken)
-        {
-            var user = await _userRepository.GetBySpec(user => user.Id == request.UserId, user => user.Organizations);
+        var mappedOrganizations = _mapper.Map<List<OrganizationDto>>(userMemberOrganizations);
 
-            if (user == null)
-            {
-                return null;
-            }
+        // var mappedProducts = _mapper.Map<IEnumerable<ProductDto>>(products);
 
-            var userMemberOrganizations = user.Organizations.Where(org => org.OwnerId != user.Id).ToList();
+        var organizationResult = PagedListDto<OrganizationDto>.ToPagedList(mappedOrganizations, request.UserMemberOrganizationsQueryParameter.Offset, request.UserMemberOrganizationsQueryParameter.Limit);
 
-            var mappedOrganizations = _mapper.Map<List<OrganizationDto>>(userMemberOrganizations);
-
-            var organizationResult = PagedListDto<OrganizationDto>.ToPagedList(mappedOrganizations, request.UserMemberOrganizationsQueryParameter.Offset, request.UserMemberOrganizationsQueryParameter.Limit);
-
-            return organizationResult;
-        }
+        return organizationResult;
     }
 }

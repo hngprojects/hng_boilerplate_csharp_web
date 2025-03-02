@@ -18,12 +18,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Middlewares\**" />
-    <Content Remove="Middlewares\**" />
-    <EmbeddedResource Remove="Middlewares\**" />
-    <None Remove="Middlewares\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.4.0" />
@@ -54,6 +48,10 @@
 	  <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
 	  <ProjectReference Include="..\Hng.Graphql\Hng.Graphql.csproj" />
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Middlewares\" />
   </ItemGroup>
 
  

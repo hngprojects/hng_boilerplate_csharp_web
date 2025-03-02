@@ -13,14 +13,12 @@ public class GetUsersMemberOrganizationsByUserIdQueryHandlerShould
 {
     private readonly Mock<IRepository<User>> _mockRepository;
     private readonly IMapper _mapper;
-    private readonly Mock<IRepository<Organization>> mockOrganizationRepository;
     private readonly GetUsersMemberOrganizationsByUserIdQueryHandler handler;
 
     public GetUsersMemberOrganizationsByUserIdQueryHandlerShould()
     {
         _mockRepository = new Mock<IRepository<User>>();
-        mockOrganizationRepository = new Mock<IRepository<Organization>>();
-
+        
         // Set up AutoMapper with your profiles
         var config = new MapperConfiguration(cfg =>
         {
@@ -30,7 +28,7 @@ public class GetUsersMemberOrganizationsByUserIdQueryHandlerShould
         });
 
         _mapper = config.CreateMapper();
-        handler = new GetUsersMemberOrganizationsByUserIdQueryHandler(_mockRepository.Object, mockOrganizationRepository.Object, _mapper);
+        handler = new GetUsersMemberOrganizationsByUserIdQueryHandler(_mockRepository.Object, _mapper);
     }
 
     [Fact]

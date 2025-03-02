@@ -15,14 +15,12 @@ namespace Hng.Application.Test.Features.SuperAdmin
     {
         private readonly Mock<IRepository<User>> _mockRepository;
         private readonly IMapper _mapper;
-        private readonly Mock<IRepository<Domain.Entities.Organization>> mockOrganizationRepository;
         private readonly GetUsersOwnedOrganizationsByUserIdQueryHandler handler;
 
         public GetUsersOwnedOrganizationsByUserIdQueryHandlerShould()
         {
             _mockRepository = new Mock<IRepository<User>>();
-            mockOrganizationRepository = new Mock<IRepository<Domain.Entities.Organization>>();
-
+            
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<User, UserSuperDto>();
@@ -30,7 +28,7 @@ namespace Hng.Application.Test.Features.SuperAdmin
             });
             _mapper = config.CreateMapper();
 
-            handler = new GetUsersOwnedOrganizationsByUserIdQueryHandler(_mockRepository.Object, mockOrganizationRepository.Object, _mapper);
+            handler = new GetUsersOwnedOrganizationsByUserIdQueryHandler(_mockRepository.Object, _mapper);
         }
 
         [Fact]

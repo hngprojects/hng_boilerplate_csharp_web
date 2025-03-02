@@ -4,11 +4,13 @@ using NLog.Web;
 using Hng.Application;
 using Hng.Infrastructure;
 using System.Reflection;
+using Hng.Application.Features.SuperAdmin.Authorization;
 using Prometheus;
 using Hng.Web.ModelStateError;
 using Microsoft.AspNetCore.Mvc;
 using Hng.Web.Filters.Swashbuckle;
 using Hng.Graphql;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +60,18 @@ builder.Services.AddSingleton<Counter>(sp =>
         LabelNames = new[] { "endpoint" }
     });
 });
+
+builder.Services.AddHttpContextAccessor();
+
+//add admin authorization policy
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("IsSuperAdmin", policy =>
+    {
+        policy.Requirements.Add(new IsSuperAdminRequirement());
+    });
+
+builder.Services.AddScoped<IAuthorizationHandler, IsSuperAdminHandler>();
+
 
 var app = builder.Build();
 

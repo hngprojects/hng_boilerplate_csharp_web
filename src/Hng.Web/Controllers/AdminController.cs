@@ -9,6 +9,7 @@ namespace Hng.Web.Controllers
 {
     [ApiController]
     [Route("api/v1/admin")]
+    [Authorize(Policy = "IsSuperAdmin")]
     public class AdminController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -22,7 +23,6 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("users")]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> GetUsersBySearch([FromQuery] UsersQueryParameters parameters)
         {
@@ -35,7 +35,6 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("users/{id}/organizations/owned")]
-        [Authorize]
         [ProducesResponseType(typeof(SuccessResponseDto<PaginatedResponseDto<PagedListDto<OrganizationDto>>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(StatusCodeResponse), StatusCodes.Status404NotFound)]
@@ -45,16 +44,12 @@ namespace Hng.Web.Controllers
             {
                 return BadRequest(new FailureResponseDto<object> { Message = "Valid user ID must be Provided" });
             }
-
             var userOrganizations = await _mediator.Send(new GetUsersOwnedOrganizationsByUserIdQuery(id, parameters));
 
             if (userOrganizations == null)
             {
                 return NotFound(new StatusCodeResponse
-                {
-                    Message = "User not found",
-                    StatusCode = StatusCodes.Status404NotFound
-                });
+                { Message = "User not found", StatusCode = StatusCodes.Status404NotFound });
             }
 
             return Ok(new PaginatedResponseDto<PagedListDto<OrganizationDto>> { Data = userOrganizations, Metadata = userOrganizations.MetaData });
@@ -65,7 +60,6 @@ namespace Hng.Web.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("users/{id}/organizations/member")]
-        [Authorize]
         [ProducesResponseType(typeof(SuccessResponseDto<PaginatedResponseDto<PagedListDto<OrganizationDto>>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(StatusCodeResponse), StatusCodes.Status404NotFound)]
@@ -75,16 +69,12 @@ namespace Hng.Web.Controllers
             {
                 return BadRequest(new FailureResponseDto<object> { Message = "Valid user ID must be Provided" });
             }
-
             var userOrganizations = await _mediator.Send(new GetUsersMemberOrganizationsByUserIdQuery(id, parameters));
 
             if (userOrganizations == null)
             {
                 return NotFound(new StatusCodeResponse
-                {
-                    Message = "User not found",
-                    StatusCode = StatusCodes.Status404NotFound
-                });
+                { Message = "User not found", StatusCode = StatusCodes.Status404NotFound });
             }
 
             return Ok(new PaginatedResponseDto<PagedListDto<OrganizationDto>> { Data = userOrganizations, Metadata = userOrganizations.MetaData });
