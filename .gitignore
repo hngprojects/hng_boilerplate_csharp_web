@@ -380,3 +380,5 @@ appsettings.*.json
 
 #env files
 .envrc
+temp_auto_push.bat
+temp_interactive_push.bat
