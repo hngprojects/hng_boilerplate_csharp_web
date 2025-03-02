@@ -1,8 +1,8 @@
-using System.Linq.Expressions;
 using Hng.Domain.Entities;
 using Hng.Infrastructure.Context;
 using Hng.Infrastructure.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Hng.Infrastructure.Repository
 {
@@ -85,11 +85,11 @@ namespace Hng.Infrastructure.Repository
             return await entities.ToListAsync();
         }
 
-
         public IQueryable<T> GetQueryableBySpec(Expression<Func<T, bool>> predicate)
         {
             return _context.Set<T>().AsNoTracking().Where(predicate);
         }
+
         public async Task<T> GetBySpec(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
         {
             var entities = _context.Set<T>().Where(predicate).AsNoTracking();
@@ -109,12 +109,11 @@ namespace Hng.Infrastructure.Repository
 
         public async Task SaveChanges()
         {
-
-            //Add newly registered user to the organisation if they were invited
+            // Add newly registered user to the organisation if they were invited
             var newUsers = _context.ChangeTracker.Entries<User>()
-            .Where(e => e.State == EntityState.Added)
-            .Select(e => e.Entity)
-            .ToList();
+                .Where(e => e.State == EntityState.Added)
+                .Select(e => e.Entity)
+                .ToList();
 
             if (newUsers.Count != 0)
             {
