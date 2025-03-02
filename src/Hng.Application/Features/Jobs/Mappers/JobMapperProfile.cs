@@ -11,5 +11,8 @@ public class JobMapperProfile : Profile
         CreateMap<CreateJobDto, Job>();
         CreateMap<Job, JobDto>()
             .ReverseMap();
+
+        CreateMap<UpdateJobDto, Job>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
     }
 }
