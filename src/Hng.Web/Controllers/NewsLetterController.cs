@@ -48,5 +48,5 @@ namespace Hng.Web.Controllers
             var result = await _mediator.Send(new DeleteSubscriberByEmailCommand(dto));
             return StatusCode(result.StatusCode, new BaseResponseDto<bool> { Message = result.Message, Data = result.Data });
         }
-}
+    }
 }
