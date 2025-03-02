@@ -10,4 +10,6 @@ public class CommentDto
     public string Content { get; set; }
     [JsonPropertyName("created_at")]
     public DateTime CreatedAt { get; set; }
+    [JsonPropertyName("updated_at")]
+    public DateTime? UpdatedAt { get; set; }
 }

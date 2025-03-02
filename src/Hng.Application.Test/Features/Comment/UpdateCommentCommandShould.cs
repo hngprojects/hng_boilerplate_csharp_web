@@ -49,7 +49,7 @@ public class UpdateCommentCommandShould
             BlogId = blogId,
             AuthorId = userId,
             Content = "Original content",
-            CreatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow
         };
 
         _commentRepositoryMock
@@ -128,7 +128,7 @@ public class UpdateCommentCommandShould
             BlogId = blogId,
             AuthorId = userId,
             Content = "Original content",
-            CreatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow
         };
 
         _commentRepositoryMock
@@ -166,7 +166,7 @@ public class UpdateCommentCommandShould
             BlogId = blogId,
             AuthorId = userId,
             Content = "Original content",
-            CreatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow
         };
 
         _commentRepositoryMock
