@@ -40,7 +40,7 @@ public class GetUsersMemberOrganizationsByUserIdQueryHandlerShould
         )).ReturnsAsync((User)null);
 
         var result = await handler.Handle(
-            new GetUsersMemberOrganizationsByUserIdQuery(Guid.NewGuid(), new BaseQueryParameters()), 
+            new GetUsersMemberOrganizationsByUserIdQuery(Guid.NewGuid(), new BaseQueryParameters()),
             CancellationToken.None
         );
 
