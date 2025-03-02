@@ -20,7 +20,7 @@ namespace Hng.Application.Test.Features.SuperAdmin
         public GetUsersOwnedOrganizationsByUserIdQueryHandlerShould()
         {
             _mockRepository = new Mock<IRepository<User>>();
-            
+
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<User, UserSuperDto>();
@@ -34,9 +34,15 @@ namespace Hng.Application.Test.Features.SuperAdmin
         [Fact]
         public async Task ReturnNullWhenUserIsNotFound()
         {
-            _mockRepository.Setup(repo => repo.GetBySpec(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<Expression<Func<User, object>>[]>())).ReturnsAsync((User)null);
+            _mockRepository.Setup(repo => repo.GetBySpec(
+                It.IsAny<Expression<Func<User, bool>>>(),
+                It.IsAny<Expression<Func<User, object>>[]>()
+            )).ReturnsAsync((User)null);
 
-            var result = await handler.Handle(new GetUsersOwnedOrganizationsByUserIdQuery(Guid.NewGuid(), new BaseQueryParameters()), CancellationToken.None);
+            var result = await handler.Handle(
+                new GetUsersOwnedOrganizationsByUserIdQuery(Guid.NewGuid(), new BaseQueryParameters()),
+                CancellationToken.None
+            );
 
             Assert.Null(result);
         }
