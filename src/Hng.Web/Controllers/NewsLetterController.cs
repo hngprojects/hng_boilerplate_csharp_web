@@ -32,6 +32,10 @@ namespace Hng.Web.Controllers
 
 
         [HttpGet("subscribers")]
+        [EndpointDescription("Retrieve paginated list of newsletter subscribers")]
+        [ProducesResponseType<PaginatedSubscribersResponseDto>((int)HttpStatusCode.OK)]
+        [ProducesResponseType<BaseResponseDto<object>>((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType<BaseResponseDto<object>>((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetSubscribers([FromQuery] int page = 1, [FromQuery] int limit = 10)
         {
             var query = new GetPaginatedSubscribersQuery { Page = page, Limit = limit };
