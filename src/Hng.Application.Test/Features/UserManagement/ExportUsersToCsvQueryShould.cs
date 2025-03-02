@@ -22,7 +22,7 @@ namespace Hng.Application.Test.Features.UserManagement
 
         public ExportUsersToCsvQueryHandlerShould()
         {
-            var userMappingProfile = new UserMappingProfile();  // Make sure your mapping profile is correctly configured
+            var userMappingProfile = new UserMappingProfile();  // Ensure your mapping profile is correctly configured
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(userMappingProfile));
             _mapper = new Mapper(configuration);
         }
@@ -71,7 +71,7 @@ namespace Hng.Application.Test.Features.UserManagement
             foreach (var user in expectedList)
             {
                 Assert.Contains(user.Id.ToString(), csvContent);
-                Assert.Contains(user.FirstName, csvContent); 
+                Assert.Contains(user.FirstName, csvContent);
                 Assert.Contains(user.Email, csvContent);
             }
         }
