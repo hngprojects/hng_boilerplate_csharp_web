@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Hng.Application\Hng.Application.csproj" />
     <ProjectReference Include="..\Hng.Domain\Hng.Domain.csproj" />
     <ProjectReference Include="..\Hng.Infrastructure\Hng.Infrastructure.csproj" />
+    <ProjectReference Include="..\Hng.Web\Hng.Web.csproj" />
   </ItemGroup>
 
 </Project>

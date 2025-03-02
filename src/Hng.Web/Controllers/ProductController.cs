@@ -3,10 +3,12 @@ using Hng.Application.Features.Categories.Queries;
 using Hng.Application.Features.Products.Commands;
 using Hng.Application.Features.Products.Dtos;
 using Hng.Application.Features.Products.Queries;
+using Hng.Application.Shared;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Error = Hng.Application.Shared.Dtos.Error;
 
 
 namespace Hng.Web.Controllers

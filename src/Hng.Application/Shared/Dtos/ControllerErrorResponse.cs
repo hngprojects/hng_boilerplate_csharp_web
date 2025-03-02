@@ -16,7 +16,7 @@ public class ControllerErrorResponse
     public EmptyDataResponse Data { get; set; }
 }
 
-public record Error
+public class Error
 {
     [JsonPropertyName("field")]
     public string Field { get; init; }
