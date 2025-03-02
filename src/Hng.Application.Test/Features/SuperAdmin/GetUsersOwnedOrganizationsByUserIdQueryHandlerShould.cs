@@ -39,10 +39,7 @@ namespace Hng.Application.Test.Features.SuperAdmin
                 It.IsAny<Expression<Func<User, object>>[]>()
             )).ReturnsAsync((User)null);
 
-            var result = await handler.Handle(
-                new GetUsersMemberOrganizationsByUserIdQuery(Guid.NewGuid(), new BaseQueryParameters()),
-                CancellationToken.None
-            );
+            var result = await handler.Handle(new GetUsersMemberOrganizationsByUserIdQuery(Guid.NewGuid(), new BaseQueryParameters()),CancellationToken.None);
 
             Assert.Null(result);
         }
