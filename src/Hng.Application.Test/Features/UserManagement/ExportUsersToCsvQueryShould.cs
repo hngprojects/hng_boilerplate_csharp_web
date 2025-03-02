@@ -1,66 +1,79 @@
-﻿using System.Net.Mime;
+﻿using AutoMapper;
+using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Application.Features.UserManagement.Handlers;
+using Hng.Application.Features.UserManagement.Mappers;
 using Hng.Application.Features.UserManagement.Queries;
-using Hng.Application.Shared.Dtos;
-using Hng.Web.Controllers;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using Hng.Domain.Entities;
+using Hng.Infrastructure.Repository.Interface;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Hng.Application.Test.Features.UserManagement
 {
-    public class ExportUsersToCsvEndpointTests
+    public class ExportUsersToCsvQueryHandlerShould
     {
-        private readonly Mock<IMediator> _mediatorMock;
-        private readonly UserController _controller;
+        private readonly IMapper _mapper;
 
-        public ExportUsersToCsvEndpointTests()
+        public ExportUsersToCsvQueryHandlerShould()
         {
-            _mediatorMock = new Mock<IMediator>();
-            _controller = new UserController(_mediatorMock.Object);
+            var userMappingProfile = new UserMappingProfile();  // Make sure your mapping profile is correctly configured
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(userMappingProfile));
+            _mapper = new Mapper(configuration);
         }
 
         [Fact]
-        public async Task ExportUsersToCsv_ReturnsCsvFile()
+        public async Task ExportUsersToCsvSuccessfully()
         {
             // Arrange
-            var csvBytes = new byte[] { 1, 2, 3 }; // Simulated CSV file content
-            _mediatorMock
-                .Setup(m => m.Send(It.IsAny<ExportUsersToCsvQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(csvBytes);
+            var expectedList = new List<User>
+            {
+                new User
+                {
+                    Id = Guid.NewGuid(),
+                    FirstName = "Jon",
+                    LastName = "Snow",
+                    Email = "jsnow@gmail.com"
+                },
+                new User
+                {
+                    Id = Guid.NewGuid(),
+                    FirstName = "Arya",
+                    LastName = "Stark",
+                    Email = "arya@stark.com"
+                }
+            };
+
+            var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Default);
+            userRepositoryMock.Setup(r => r.GetAllAsync())
+                .ReturnsAsync(expectedList);
+
+            var handler = new ExportUsersToCsvQueryHandler(userRepositoryMock.Object, _mapper);
 
             // Act
-            var result = await _controller.ExportUsersToCsv();
+            var result = await handler.Handle(new ExportUsersToCsvQuery(), default);
 
             // Assert
-            var fileResult = Assert.IsType<FileContentResult>(result);
-            Assert.Equal(MediaTypeNames.Application.Octet, fileResult.ContentType);
+            Assert.NotNull(result);
+            Assert.True(result.Length > 0);  // Ensure that the result is not empty
 
-            // Check if the filename starts with "users_export_" and ends with ".csv"
-            Assert.StartsWith("users_export_", fileResult.FileDownloadName);
-            Assert.EndsWith(".csv", fileResult.FileDownloadName);
+            // Verify that the CSV is correctly formatted by reading it from the byte array
+            using var memoryStream = new MemoryStream(result);
+            using var streamReader = new StreamReader(memoryStream, Encoding.UTF8);
+            var csvContent = await streamReader.ReadToEndAsync();
 
-            Assert.Equal(csvBytes, fileResult.FileContents);
+            // Check that the CSV contains the expected data
+            foreach (var user in expectedList)
+            {
+                Assert.Contains(user.Id.ToString(), csvContent);
+                Assert.Contains(user.FirstName, csvContent); 
+                Assert.Contains(user.Email, csvContent);
+            }
         }
-
-        [Fact]
-        public async Task ExportUsersToCsv_UnauthorizedAccess_Returns401Unauthorized()
-        {
-            // Arrange
-            _mediatorMock
-                .Setup(m => m.Send(It.IsAny<ExportUsersToCsvQuery>(), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new UnauthorizedAccessException());
-
-            // Act
-            var result = await _controller.ExportUsersToCsv();
-
-            // Assert
-            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
-            var response = Assert.IsType<FailureResponseDto<object>>(unauthorizedResult.Value);
-            Assert.Equal(401, response.StatusCode);
-            Assert.Equal("Unauthorized access. You must have Super Admin privileges to export user data.", response.Message);
-        }
-
-   
     }
 }
