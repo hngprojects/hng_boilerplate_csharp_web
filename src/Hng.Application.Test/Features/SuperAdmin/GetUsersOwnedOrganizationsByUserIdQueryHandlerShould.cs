@@ -11,13 +11,13 @@ using Xunit;
 
 namespace Hng.Application.Test.Features.SuperAdmin
 {
-    public class GetUsersOwnedOrganizationsByUserIdQueryHandlerShould
+    public class GetUsersMemberOrganizationsByUserIdQueryHandlerShould
     {
         private readonly Mock<IRepository<User>> _mockRepository;
         private readonly IMapper _mapper;
-        private readonly GetUsersOwnedOrganizationsByUserIdQueryHandler handler;
+        private readonly GetUsersMemberOrganizationsByUserIdQueryHandler handler;
 
-        public GetUsersOwnedOrganizationsByUserIdQueryHandlerShould()
+        public GetUsersMemberOrganizationsByUserIdQueryHandlerShould()
         {
             _mockRepository = new Mock<IRepository<User>>();
 
@@ -28,7 +28,7 @@ namespace Hng.Application.Test.Features.SuperAdmin
             });
             _mapper = config.CreateMapper();
 
-            handler = new GetUsersOwnedOrganizationsByUserIdQueryHandler(_mockRepository.Object, _mapper);
+            handler = new GetUsersMemberOrganizationsByUserIdQueryHandler(_mockRepository.Object, _mapper);
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace Hng.Application.Test.Features.SuperAdmin
             )).ReturnsAsync((User)null);
 
             var result = await handler.Handle(
-                new GetUsersOwnedOrganizationsByUserIdQuery(Guid.NewGuid(), new BaseQueryParameters()),
+                new GetUsersMemberOrganizationsByUserIdQuery(Guid.NewGuid(), new BaseQueryParameters()),
                 CancellationToken.None
             );
 
