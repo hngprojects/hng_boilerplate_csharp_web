@@ -24,7 +24,7 @@ namespace Hng.Application.Features.NewsLetterSubscription.Handlers
 
         public async Task<NewsLetterSubscriptionDto> Handle(AddSubscriberCommand request, CancellationToken cancellationToken)
         {
-            var userExists = await _repository.GetBySpec(u => u.Email == request.NewsLetterSubscriptionBody.Email);
+            var userExists = await _repository.GetBySpec(u => u.Email == request.NewsLetterSubscriptionBody.Email.Trim().ToLower());
             if (userExists is not null)
                 return null;
             var subscriberModel = _mapper.Map<NewsLetterSubscriber>(request.NewsLetterSubscriptionBody);

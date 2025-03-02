@@ -68,6 +68,28 @@ namespace Hng.Application.Features.UserManagement.Handlers
                 };
             }
 
+            if (user.Status == "Inactive")
+            {
+                return new UserLoginResponseDto<SignupResponseData>
+                {
+                    Data = null,
+                    AccessToken = null,
+                    Message = "Your account is inactive. Please contact support.",
+                    StatusCode = StatusCodes.Status403Forbidden
+                };
+            }
+
+            if (user.Status == "Deleted")
+            {
+                return new UserLoginResponseDto<SignupResponseData>
+                {
+                    Data = null,
+                    AccessToken = null,
+                    Message = "Your account does not exist or has been deleted.",
+                    StatusCode = StatusCodes.Status403Forbidden
+                };
+            }
+
             var token = _tokenService.GenerateJwt(user);
 
             var lastlogin = new LastLogin
