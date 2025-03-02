@@ -1,0 +1,550 @@
+[1mdiff --git a/.github/workflows/dev-deployment.yml b/.github/workflows/dev-deployment.yml[m
+[1mindex baae780..f90dc1b 100644[m
+[1m--- a/.github/workflows/dev-deployment.yml[m
+[1m+++ b/.github/workflows/dev-deployment.yml[m
+[36m@@ -10,23 +10,22 @@[m [mjobs:[m
+   build:[m
+     runs-on: ubuntu-latest[m
+     steps:[m
+[31m-      - uses: actions/checkout@v2[m
+[32m+[m[32m      - uses: actions/checkout@v4[m
+ [m
+[31m-      - name: Build Docker image[m
+[31m-        run: docker build -t csharp_dev .[m
+[32m+[m[32m      # - name: Build Docker image[m
+[32m+[m[32m      #   run: docker build -t csharp_dev .[m
+ [m
+[31m-      - name: Save and compress Docker image[m
+[31m-        run: docker save csharp_dev | gzip > csharp_dev.tar.gz[m
+[32m+[m[32m      # - name: Save and compress Docker image[m
+[32m+[m[32m      #   run: docker save csharp_dev | gzip > csharp_dev.tar.gz[m
+ [m
+[31m-      - name: Upload Docker image[m
+[31m-        uses: actions/upload-artifact@v2[m
+[31m-        with:[m
+[31m-          name: csharp_dev[m
+[31m-          path: csharp_dev.tar.gz[m
+[32m+[m[32m      # - name: Upload Docker image[m
+[32m+[m[32m      #   uses: actions/upload-artifact@v4[m
+[32m+[m[32m      #   with:[m
+[32m+[m[32m      #     name: csharp_dev[m
+[32m+[m[32m      #     path: csharp_dev.tar.gz[m
+         [m
+   deploy:[m
+     needs: build[m
+[31m-    if: github.event.repository.fork == false[m
+     runs-on: ubuntu-latest[m
+ [m
+     environment:[m
+[36m@@ -34,29 +33,41 @@[m [mjobs:[m
+       url: ${{ vars.URL }}[m
+ [m
+     steps:[m
+[31m-      - name: Download Docker image[m
+[31m-        uses: actions/download-artifact@v2[m
+[31m-        with:[m
+[31m-          name: csharp_dev[m
+[31m-          path: .[m
+[32m+[m[32m      # - name: Download Docker image[m
+[32m+[m[32m      #   uses: actions/download-artifact@v4[m
+[32m+[m[32m      #   with:[m
+[32m+[m[32m      #     name: csharp_dev[m
+[32m+[m[32m      #     path: .[m
+ [m
+[31m-      - name: Copy image to server[m
+[31m-        uses: appleboy/scp-action@master[m
+[31m-        with:[m
+[31m-          host: ${{ secrets.HOST }}[m
+[31m-          username: ${{ secrets.USERNAME }}[m
+[31m-          password: ${{ secrets.PASSWORD }}[m
+[31m-          source: csharp_dev.tar.gz[m
+[31m-          target: "/tmp"[m
+[32m+[m[32m      # - name: Copy image to server[m
+[32m+[m[32m      #   uses: appleboy/scp-action@master[m
+[32m+[m[32m      #   with:[m
+[32m+[m[32m      #     host: ${{ secrets.HOST }}[m
+[32m+[m[32m      #     username: ${{ secrets.USERNAME }}[m
+[32m+[m[32m      #     password: ${{ secrets.PASSWORD }}[m
+[32m+[m[32m      #     source: csharp_dev.tar.gz[m
+[32m+[m[32m      #     target: "/tmp"[m
+[32m+[m
+[32m+[m[32m      # - name: Deploy on server[m
+[32m+[m[32m      #   uses: appleboy/ssh-action@master[m
+[32m+[m[32m      #   with:[m
+[32m+[m[32m          # host: ${{ secrets.HOST }}[m
+[32m+[m[32m          # username: ${{ secrets.USERNAME }}[m
+[32m+[m[32m          # password: ${{ secrets.PASSWORD }}[m
+[32m+[m[32m      #     script: |[m
+[32m+[m[32m      #       gunzip -c /tmp/csharp_dev.tar.gz | docker load[m
+[32m+[m[32m      #       rm -f /tmp/csharp_dev.tar.gz[m
+[32m+[m[32m      #       cd ~/hng_boilerplate_csharp_web[m
+[32m+[m[32m      #       docker compose -p csharp_dev up -d[m
+ [m
+[31m-      - name: Deploy on server[m
+[31m-        uses: appleboy/ssh-action@master[m
+[32m+[m[32m      - name: SSH into server and deploy[m
+[32m+[m[32m        uses: appleboy/ssh-action@v1.2.1[m
+         with:[m
+           host: ${{ secrets.HOST }}[m
+           username: ${{ secrets.USERNAME }}[m
+           password: ${{ secrets.PASSWORD }}[m
+           script: |[m
+[31m-            gunzip -c /tmp/csharp_dev.tar.gz | docker load[m
+[31m-            rm -f /tmp/csharp_dev.tar.gz[m
+[31m-            cd ~/hng_boilerplate_csharp_web[m
+[31m-            docker compose -p csharp_dev up -d[m
+\ No newline at end of file[m
+[32m+[m[32m            mkdir -p ~/csharp/backend[m
+[32m+[m[32m            cd ~/csharp/backend[m
+[32m+[m[32m            git pull origin dev[m
+[32m+[m[32m            docker compose -p csharp_dev up -d[m
+[1mdiff --git a/src/Hng.Application.Test/Features/Job/UpdateJobCommandShould.cs b/src/Hng.Application.Test/Features/Job/UpdateJobCommandShould.cs[m
+[1mdeleted file mode 100644[m
+[1mindex 6eea192..0000000[m
+[1m--- a/src/Hng.Application.Test/Features/Job/UpdateJobCommandShould.cs[m
+[1m+++ /dev/null[m
+[36m@@ -1,108 +0,0 @@[m
+[31m-﻿using Hng.Infrastructure.Repository.Interface;[m
+[31m-using Moq;[m
+[31m-using System;[m
+[31m-using System.Collections.Generic;[m
+[31m-using System.Linq;[m
+[31m-using System.Text;[m
+[31m-using System.Threading.Tasks;[m
+[31m-using AutoMapper;[m
+[31m-using Hng.Application.Features.Jobs.Handlers;[m
+[31m-using Xunit;[m
+[31m-using Hng.Domain.Entities;[m
+[31m-using Hng.Application.Features.Jobs.Dtos;[m
+[31m-using Hng.Application.Features.Jobs.Commands;[m
+[31m-using Microsoft.AspNetCore.Http;[m
+[31m-[m
+[31m-namespace Hng.Application.Test.Features.Job[m
+[31m-{[m
+[31m-    public class UpdateJobCommandShould[m
+[31m-    {[m
+[31m-        private readonly Mock<IRepository<Domain.Entities.Job>> _mockJobRepository;[m
+[31m-        private readonly Mock<IMapper> _mockMapper;[m
+[31m-        private readonly UpdateJobCommandHandler _handler;[m
+[31m-[m
+[31m-        public UpdateJobCommandShould()[m
+[31m-        {[m
+[31m-            _mockJobRepository = new Mock<IRepository<Domain.Entities.Job>>();[m
+[31m-            _mockMapper = new Mock<IMapper>();[m
+[31m-            _handler = new UpdateJobCommandHandler(_mockJobRepository.Object, _mockMapper.Object);[m
+[31m-        }[m
+[31m-[m
+[31m-        [Fact][m
+[31m-        public async Task Handle_JobExists_UpdatesJobSuccessfully()[m
+[31m-        {[m
+[31m-            // Arrange - Create existing job[m
+[31m-            var existingJob = new Domain.Entities.Job[m
+[31m-            {[m
+[31m-                Id = Guid.NewGuid(),[m
+[31m-                Title = "Software Developer",[m
+[31m-                Description = "Develop software",[m
+[31m-                Location = "Lagos",[m
+[31m-                Salary = 30_000,[m
+[31m-                Company = "HNG",[m
+[31m-                DatePosted = DateTime.Now,[m
+[31m-                Level = Domain.Enums.ExperienceLevel.Junior[m
+[31m-[m
+[31m-            };[m
+[31m-[m
+[31m-            var updateJob = new UpdateJobDto[m
+[31m-            {[m
+[31m-                Title = "Backend Developer",[m
+[31m-                Description = "Develop software",[m
+[31m-                Level = Domain.Enums.ExperienceLevel.Senior[m
+[31m-            };[m
+[31m-[m
+[31m-            var command = new UpdateJobCommand(updateJob, existingJob.Id);[m
+[31m-[m
+[31m-            _mockJobRepository.Setup(repo => repo.GetAsync(existingJob.Id)).ReturnsAsync(existingJob);[m
+[31m-            _mockMapper[m
+[31m-                .Setup(mapper => mapper.Map(updateJob, existingJob))[m
+[31m-                .Callback<UpdateJobDto, Domain.Entities.Job>((src, dest) =>[m
+[31m-                 {[m
+[31m-                     dest.Title = src.Title;[m
+[31m-                     dest.Description = src.Description;[m
+[31m-                     dest.Level = src.Level.Value;[m
+[31m-                 });[m
+[31m-[m
+[31m-            // Act[m
+[31m-            var response = await _handler.Handle(command, CancellationToken.None);[m
+[31m-[m
+[31m-            // Assert - Ensure the job was updated and the response is correct[m
+[31m-            Assert.NotNull(response.Data);[m
+[31m-            Assert.True(response.Success);[m
+[31m-            Assert.Equal(StatusCodes.Status200OK, response.StatusCode);[m
+[31m-            Assert.Equal(updateJob.Title, existingJob.Title);[m
+[31m-            _mockJobRepository.Verify(repo => repo.UpdateAsync(existingJob), Times.Once);[m
+[31m-            _mockJobRepository.Verify(repo => repo.SaveChanges(), Times.Once);[m
+[31m-        }[m
+[31m-[m
+[31m-        [Fact][m
+[31m-        public async Task Handle_JobDoesNotExist_ReturnsNotFound()[m
+[31m-        {[m
+[31m-            // Arrange = Simulate job not existing[m
+[31m-            var existingJobId = Guid.NewGuid();[m
+[31m-[m
+[31m-            var updateJob = new UpdateJobDto[m
+[31m-            {[m
+[31m-                Title = "Backend Developer",[m
+[31m-                Description = "Develop software",[m
+[31m-                Level = Domain.Enums.ExperienceLevel.Senior[m
+[31m-            };[m
+[31m-[m
+[31m-            var command = new UpdateJobCommand(updateJob, existingJobId);[m
+[31m-            [m
+[31m-            _mockJobRepository.Setup(repo => repo.GetAsync(existingJobId)).ReturnsAsync((Domain.Entities.Job)null);[m
+[31m-[m
+[31m-            // Act[m
+[31m-            var response = await _handler.Handle(command, CancellationToken.None);[m
+[31m-[m
+[31m-            // Assert - Check response for not found[m
+[31m-            Assert.Null(response.Data);[m
+[31m-            Assert.False(response.Success);[m
+[31m-            Assert.Equal(StatusCodes.Status404NotFound, response.StatusCode);[m
+[31m-            Assert.Equal("Job not found", response.Message);[m
+[31m-            Assert.Null(response.Data);[m
+[31m-[m
+[31m-        }[m
+[31m-    }[m
+[31m-}[m
+[1mdiff --git a/src/Hng.Application.Test/Features/NewsLetterSubscription/AddSubscriberCommandHandlerShould.cs b/src/Hng.Application.Test/Features/NewsLetterSubscription/AddSubscriberCommandHandlerShould.cs[m
+[1mnew file mode 100644[m
+[1mindex 0000000..087e63e[m
+[1m--- /dev/null[m
+[1m+++ b/src/Hng.Application.Test/Features/NewsLetterSubscription/AddSubscriberCommandHandlerShould.cs[m
+[36m@@ -0,0 +1,82 @@[m
+[32m+[m[32musing AutoMapper;[m
+[32m+[m[32musing Hng.Application.Features.NewsLetterSubscription.Commands;[m
+[32m+[m[32musing Hng.Application.Features.NewsLetterSubscription.Dtos;[m
+[32m+[m[32musing Hng.Application.Features.NewsLetterSubscription.Handlers;[m
+[32m+[m[32musing Hng.Domain.Entities;[m
+[32m+[m[32musing Hng.Infrastructure.Repository.Interface;[m
+[32m+[m[32musing Moq;[m
+[32m+[m[32musing Xunit;[m
+[32m+[m
+[32m+[m[32mnamespace Hng.Application.Test.Features.NewsLetterSubscription[m
+[32m+[m[32m{[m
+[32m+[m[32m    public class AddSubscriberHandlerShould[m
+[32m+[m[32m    {[m
+[32m+[m[32m        private readonly Mock<IRepository<NewsLetterSubscriber>> _mockRepository;[m
+[32m+[m[32m        private readonly AddSubscriberHandler _handler;[m
+[32m+[m[32m        private readonly IMapper _mapper;[m
+[32m+[m
+[32m+[m[32m        public AddSubscriberHandlerShould()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            _mockRepository = new Mock<IRepository<NewsLetterSubscriber>>();[m
+[32m+[m
+[32m+[m[32m            var mapperConfig = new MapperConfiguration(cfg =>[m
+[32m+[m[32m            {[m
+[32m+[m[32m                cfg.CreateMap<NewsLetterSubscriptionDto, NewsLetterSubscriber>();[m
+[32m+[m[32m            });[m
+[32m+[m[32m            _mapper = mapperConfig.CreateMapper();[m
+[32m+[m
+[32m+[m[32m            _handler = new AddSubscriberHandler(_mockRepository.Object, _mapper);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        [Fact][m
+[32m+[m[32m        public async Task Handle_ShouldAddSubscriber_WhenSubscriberDoesNotExist()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            // Arrange[m
+[32m+[m[32m            var email = "new_subscriber@gmail.com";[m
+[32m+[m[32m            var subscriber = new NewsLetterSubscriptionDto { Email = email };[m
+[32m+[m[32m            var command = new AddSubscriberCommand(subscriber);[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Setup(r => r.GetBySpec(It.IsAny<System.Linq.Expressions.Expression<Func<NewsLetterSubscriber, bool>>>(), It.IsAny<System.Linq.Expressions.Expression<Func<NewsLetterSubscriber, object>>[]>()))[m
+[32m+[m[32m                .ReturnsAsync((NewsLetterSubscriber)null);[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Setup(r => r.AddAsync(It.IsAny<NewsLetterSubscriber>()))[m
+[32m+[m[32m                .ReturnsAsync((NewsLetterSubscriber)null);[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Setup(r => r.SaveChanges())[m
+[32m+[m[32m                .Returns(Task.CompletedTask);[m
+[32m+[m
+[32m+[m[32m            // Act[m
+[32m+[m[32m            var result = await _handler.Handle(command, CancellationToken.None);[m
+[32m+[m
+[32m+[m[32m            // Assert[m
+[32m+[m[32m            Assert.NotNull(result);[m
+[32m+[m[32m            Assert.Equal(email, result.Email);[m
+[32m+[m[32m            _mockRepository.Verify(r => r.AddAsync(It.IsAny<NewsLetterSubscriber>()), Times.Once);[m
+[32m+[m[32m            _mockRepository.Verify(r => r.SaveChanges(), Times.Once);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        [Fact][m
+[32m+[m[32m        public async Task Handle_ShouldReturnNull_WhenSubscriberAlreadyExists()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            // Arrange[m
+[32m+[m[32m            var email = "existing_subscriber@gmail.com";[m
+[32m+[m[32m            var subscriberDto = new NewsLetterSubscriptionDto { Email = email };[m
+[32m+[m[32m            var command = new AddSubscriberCommand(subscriberDto);[m
+[32m+[m
+[32m+[m[32m            var existingSubscriber = new NewsLetterSubscriber { Email = email };[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Setup(r => r.GetBySpec(It.IsAny<System.Linq.Expressions.Expression<Func<NewsLetterSubscriber, bool>>>(), It.IsAny<System.Linq.Expressions.Expression<Func<NewsLetterSubscriber, object>>[]>()))[m
+[32m+[m[32m                .ReturnsAsync(existingSubscriber);[m
+[32m+[m
+[32m+[m[32m            // Act[m
+[32m+[m[32m            var result = await _handler.Handle(command, CancellationToken.None);[m
+[32m+[m
+[32m+[m[32m            // Assert[m
+[32m+[m[32m            Assert.Null(result);[m
+[32m+[m[32m            _mockRepository.Verify(r => r.AddAsync(It.IsAny<NewsLetterSubscriber>()), Times.Never);[m
+[32m+[m[32m            _mockRepository.Verify(r => r.SaveChanges(), Times.Never);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+[1mdiff --git a/src/Hng.Application.Test/Features/NewsLetterSubscription/DeleteSubscriberCommandHandlerShould.cs b/src/Hng.Application.Test/Features/NewsLetterSubscription/DeleteSubscriberCommandHandlerShould.cs[m
+[1mnew file mode 100644[m
+[1mindex 0000000..3f189e3[m
+[1m--- /dev/null[m
+[1m+++ b/src/Hng.Application.Test/Features/NewsLetterSubscription/DeleteSubscriberCommandHandlerShould.cs[m
+[36m@@ -0,0 +1,70 @@[m
+[32m+[m[32musing Hng.Application.Features.NewsLetterSubscription.Commands;[m
+[32m+[m[32musing Hng.Application.Features.NewsLetterSubscription.Handlers;[m
+[32m+[m[32musing Hng.Domain.Entities;[m
+[32m+[m[32musing Hng.Infrastructure.Repository.Interface;[m
+[32m+[m[32musing Moq;[m
+[32m+[m[32musing Xunit;[m
+[32m+[m
+[32m+[m[32mnamespace Hng.Application.Test.Features.NewsLetterSubscription[m
+[32m+[m[32m{[m
+[32m+[m[32m    public class DeleteSubscriberHandlerShould[m
+[32m+[m[32m    {[m
+[32m+[m[32m        private readonly Mock<IRepository<NewsLetterSubscriber>> _mockRepository;[m
+[32m+[m[32m        private readonly DeleteSubscriberHandler _handler;[m
+[32m+[m
+[32m+[m[32m        public DeleteSubscriberHandlerShould()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            _mockRepository = new Mock<IRepository<NewsLetterSubscriber>>();[m
+[32m+[m[32m            _handler = new DeleteSubscriberHandler(_mockRepository.Object);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        [Fact][m
+[32m+[m[32m        public async Task Handle_ShouldDeleteSubscriber_WhenSubscriberExists()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            var subscriberId = Guid.NewGuid();[m
+[32m+[m[32m            var subscriber = new NewsLetterSubscriber { Id = subscriberId };[m
+[32m+[m[32m            var command = new DeleteSubscriberCommand(subscriberId);[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Setup(r => r.GetAsync(subscriberId))[m
+[32m+[m[32m                .ReturnsAsync(subscriber);[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Setup(r => r.UpdateAsync(It.IsAny<NewsLetterSubscriber>()))[m
+[32m+[m[32m                .Returns(Task.CompletedTask);[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Setup(r => r.SaveChanges())[m
+[32m+[m[32m                .Returns(Task.CompletedTask);[m
+[32m+[m
+[32m+[m[32m            // Act[m
+[32m+[m[32m            var result = await _handler.Handle(command, CancellationToken.None);[m
+[32m+[m
+[32m+[m[32m            // Assert[m
+[32m+[m[32m            Assert.Equal(200, result.StatusCode);[m
+[32m+[m[32m            Assert.Equal("Subscriber deleted successfully.", result.Message);[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Verify(r => r.GetAsync(subscriberId), Times.Once);[m
+[32m+[m[32m            _mockRepository.Verify(r => r.UpdateAsync(subscriber), Times.Once);[m
+[32m+[m[32m            _mockRepository.Verify(r => r.SaveChanges(), Times.Once);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        [Fact][m
+[32m+[m[32m        public async Task Handle_ShouldReturnNotFound_WhenSubscriberDoesNotExist()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            var subscriberId = Guid.NewGuid();[m
+[32m+[m[32m            var command = new DeleteSubscriberCommand(subscriberId);[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Setup(r => r.GetAsync(subscriberId))[m
+[32m+[m[32m                .ReturnsAsync((NewsLetterSubscriber)null);[m
+[32m+[m
+[32m+[m[32m            // Act[m
+[32m+[m[32m            var result = await _handler.Handle(command, CancellationToken.None);[m
+[32m+[m
+[32m+[m[32m            // Assert[m
+[32m+[m[32m            Assert.Equal(404, result.StatusCode);[m
+[32m+[m[32m            Assert.Equal("Subscriber not found.", result.Message);[m
+[32m+[m
+[32m+[m[32m            _mockRepository.Verify(r => r.GetAsync(subscriberId), Times.Once);[m
+[32m+[m[32m            _mockRepository.Verify(r => r.UpdateAsync(It.IsAny<NewsLetterSubscriber>()), Times.Never);[m
+[32m+[m[32m            _mockRepository.Verify(r => r.SaveChanges(), Times.Never);[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+[1mdiff --git a/src/Hng.Application.Test/Features/Organization/UpdateOrganizationShould.cs b/src/Hng.Application.Test/Features/Organization/UpdateOrganizationShould.cs[m
+[1mnew file mode 100644[m
+[1mindex 0000000..470bdc7[m
+[1m--- /dev/null[m
+[1m+++ b/src/Hng.Application.Test/Features/Organization/UpdateOrganizationShould.cs[m
+[36m@@ -0,0 +1,184 @@[m
+[32m+[m[32m﻿using AutoMapper;[m
+[32m+[m[32musing Hng.Application.Features.Organisations.Commands;[m
+[32m+[m[32musing Hng.Application.Features.Organisations.Dtos;[m
+[32m+[m[32musing Hng.Application.Features.Organisations.Handlers;[m
+[32m+[m[32musing Hng.Application.Features.Organisations.Mappers;[m
+[32m+[m[32musing Hng.Infrastructure.Repository.Interface;[m
+[32m+[m[32musing Hng.Infrastructure.Services.Interfaces;[m
+[32m+[m[32musing Microsoft.AspNetCore.Http;[m
+[32m+[m[32musing Moq;[m
+[32m+[m[32musing System.Linq.Expressions;[m
+[32m+[m[32musing Xunit;[m
+[32m+[m
+[32m+[m[32mnamespace Hng.Application.Test.Features.Organization[m
+[32m+[m[32m{[m
+[32m+[m[32m    public class UpdateOrganizationShould[m
+[32m+[m[32m    {[m
+[32m+[m[32m        private readonly Mock<IRepository<Domain.Entities.Organization>> _repositoryMock;[m
+[32m+[m[32m        private readonly Mock<IAuthenticationService> _authenticationServiceMock;[m
+[32m+[m[32m        private readonly UpdateOrganizationCommandHandler _handler;[m
+[32m+[m[32m        private readonly IMapper _mapper;[m
+[32m+[m
+[32m+[m[32m        public UpdateOrganizationShould()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            // Setup mapper with proper profile[m
+[32m+[m[32m            var mappingProfile = new OrganizationMapperProfile();[m
+[32m+[m[32m            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfile));[m
+[32m+[m[32m            _mapper = new Mapper(configuration);[m
+[32m+[m
+[32m+[m[32m            // Setup repository and authentication mocks[m
+[32m+[m[32m            _repositoryMock = new Mock<IRepository<Domain.Entities.Organization>>();[m
+[32m+[m[32m            _authenticationServiceMock = new Mock<IAuthenticationService>();[m
+[32m+[m
+[32m+[m[32m            // Initialize the handler with mocks[m
+[32m+[m[32m            _handler = new UpdateOrganizationCommandHandler([m
+[32m+[m[32m                _repositoryMock.Object,[m
+[32m+[m[32m                _mapper,[m
+[32m+[m[32m                _authenticationServiceMock.Object[m
+[32m+[m[32m            );[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        [Fact][m
+[32m+[m[32m        public async Task Handle_ShouldReturn200_WhenOrganizationUpdatedSuccessfully()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            // Arrange[m
+[32m+[m[32m            var userId = Guid.NewGuid();[m
+[32m+[m[32m            var organizationId = Guid.NewGuid();[m
+[32m+[m
+[32m+[m[32m            var updateDto = new UpdateOrganizationDto[m
+[32m+[m[32m            {[m
+[32m+[m[32m                Name = "Updated Org",[m
+[32m+[m[32m                Description = "Updated Description",[m
+[32m+[m[32m                Email = "updated@example.com",[m
+[32m+[m[32m                Industry = "Tech",[m
+[32m+[m[32m                Type = "Enterprise",[m
+[32m+[m[32m                Country = "Updated Country",[m
+[32m+[m[32m                Address = "Updated Address",[m
+[32m+[m[32m                State = "Updated State"[m
+[32m+[m[32m            };[m
+[32m+[m
+[32m+[m[32m            var existingOrganization = new Domain.Entities.Organization[m
+[32m+[m[32m            {[m
+[32m+[m[32m                Id = organizationId,[m
+[32m+[m[32m                OwnerId = userId,[m
+[32m+[m[32m                Name = "Old Org",[m
+[32m+[m[32m                Description = "Old Description",[m
+[32m+[m[32m                Email = "old@example.com",[m
+[32m+[m[32m                Industry = "Old Industry",[m
+[32m+[m[32m                Type = "Old Type",[m
+[32m+[m[32m                Country = "Old Country",[m
+[32m+[m[32m                Address = "Old Address",[m
+[32m+[m[32m                State = "Old State"[m
+[32m+[m[32m            };[m
+[32m+[m
+[32m+[m[32m            // Setup authentication to return the current user[m
+[32m+[m[32m            _authenticationServiceMock[m
+[32m+[m[32m                .Setup(a => a.GetCurrentUserAsync())[m
+[32m+[m[32m                .ReturnsAsync(userId);[m
+[32m+[m
+[32m+[m[32m            // Setup repository to return existing organization when GetBySpec is called[m
+[32m+[m[32m            _repositoryMock[m
+[32m+[m[32m                .Setup(r => r.GetBySpec(It.IsAny<Expression<Func<Domain.Entities.Organization, bool>>>()))[m
+[32m+[m[32m                .ReturnsAsync(existingOrganization);[m
+[32m+[m
+[32m+[m[32m            // Setup UpdateAsync to do nothing (void return)[m
+[32m+[m[32m            _repositoryMock[m
+[32m+[m[32m                .Setup(r => r.UpdateAsync(It.IsAny<Domain.Entities.Organization>()))[m
+[32m+[m[32m                .Returns(Task.CompletedTask);[m
+[32m+[m
+[32m+[m[32m            // Setup SaveChanges to return success[m
+[32m+[m[32m            _repositoryMock[m
+[32m+[m[32m                .Setup(r => r.SaveChanges())[m
+[32m+[m[32m                .Returns(Task.FromResult(true));[m
+[32m+[m
+[32m+[m[32m            var command = new UpdateOrganizationCommand(organizationId, updateDto);[m
+[32m+[m
+[32m+[m[32m            // Act[m
+[32m+[m[32m            var result = await _handler.Handle(command, CancellationToken.None);[m
+[32m+[m
+[32m+[m[32m            // Assert[m
+[32m+[m[32m            Assert.NotNull(result);[m
+[32m+[m[32m            Assert.Equal(StatusCodes.Status200OK, result.StatusCode);[m
+[32m+[m[32m            Assert.Equal("Organization updated successfully", result.Message);[m
+[32m+[m[32m            Assert.NotNull(result.Data);[m
+[32m+[m
+[32m+[m[32m            // Verify all properties were mapped correctly[m
+[32m+[m[32m            Assert.Equal(updateDto.Name, result.Data.Name);[m
+[32m+[m[32m            Assert.Equal(updateDto.Description, result.Data.Description);[m
+[32m+[m[32m            Assert.Equal(updateDto.Email, result.Data.Email);[m
+[32m+[m[32m            Assert.Equal(updateDto.Industry, result.Data.Industry);[m
+[32m+[m[32m            Assert.Equal(updateDto.Type, result.Data.Type);[m
+[32m+[m[32m            Assert.Equal(updateDto.Country, result.Data.Country);[m
+[32m+[m[32m            Assert.Equal(updateDto.Address, result.Data.Address);[m
+[32m+[m[32m            Assert.Equal(updateDto.State, result.Data.State);[m
+[32m+[m
+[32m+[m[32m            // Verify repository methods were called[m
+[32m+[m[32m            _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Domain.Entities.Organization>()), Times.Once);[m
+[32m+[m[32m            _repositoryMock.Verify(r => r.SaveChanges(), Times.Once);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        [Fact][m
+[32m+[m[32m        public async Task Handle_ShouldReturn404_WhenOrganizationNotFound()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            // Arrange[m
+[32m+[m[32m            var organizationId = Guid.NewGuid();[m
+[32m+[m[32m            var updateDto = new UpdateOrganizationDto { Name = "Updated Org" };[m
+[32m+[m[32m            var command = new UpdateOrganizationCommand(organizationId, updateDto);[m
+[32m+[m
+[32m+[m[32m            // Setup repository to return null (organization not found)[m
+[32m+[m[32m            _repositoryMock[m
+[32m+[m[32m                .Setup(r => r.GetBySpec(It.IsAny<Expression<Func<Domain.Entities.Organization, bool>>>()))[m
+[32m+[m[32m                .ReturnsAsync((Domain.Entities.Organization)null);[m
+[32m+[m
+[32m+[m[32m            // Act[m
+[32m+[m[32m            var result = await _handler.Handle(command, CancellationToken.None);[m
+[32m+[m
+[32m+[m[32m            // Assert[m
+[32m+[m[32m            Assert.Equal(StatusCodes.Status404NotFound, result.StatusCode);[m
+[32m+[m[32m            Assert.Equal("Organization not found", result.Message);[m
+[32m+[m
+[32m+[m[32m            // Verify Update/Save were never called[m
+[32m+[m[32m            _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Domain.Entities.Organization>()), Times.Never);[m
+[32m+[m[32m            _repositoryMock.Verify(r => r.SaveChanges(), Times.Never);[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        [Fact][m
+[32m+[m[32m        public async Task Handle_ShouldReturn403_WhenUnauthorizedUpdateAttempt()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            // Arrange[m
+[32m+[m[32m            var organizationId = Guid.NewGuid();[m
+[32m+[m[32m            var ownerId = Guid.NewGuid();[m
+[32m+[m[32m            var unauthorizedUserId = Guid.NewGuid(); // Different from owner[m
+[32m+[m[32m            var updateDto = new UpdateOrganizationDto { Name = "Updated Org" };[m
+[32m+[m[32m            var command = new UpdateOrganizationCommand(organizationId, updateDto);[m
+[32m+[m
+[32m+[m[32m            var organization = new Domain.Entities.Organization[m
+[32m+[m[32m            {[m
+[32m+[m[32m                Id = organizationId,[m
+[32m+[m[32m                OwnerId = ownerId  // This is the owner[m
+[32m+[m[32m            };[m
+[32m+[m
+[32m+[m[32m            // Setup authentication to return unauthorized user[m
+[32m+[m[32m            _authenticationServiceMock[m
+[32m+[m[32m                .Setup(a => a.GetCurrentUserAsync())[m
+[32m+[m[32m                .ReturnsAsync(unauthorizedUserId);  // Different from owner[m
+[32m+[m
+[32m+[m[32m            // Setup repositor
