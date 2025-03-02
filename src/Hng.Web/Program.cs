@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Hng.Web.Filters.Swashbuckle;
 using Hng.Graphql;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLog();
