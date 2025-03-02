@@ -38,5 +38,15 @@ namespace Hng.Web.Controllers
             var result = await _mediator.Send(new DeleteSubscriberCommand(Id));
             return StatusCode(result.StatusCode, new BaseResponseDto<bool> { Message = result.Message, Data = result.Data });
         }
-    }
+
+        [HttpPatch("unsubscribe")]
+        [EndpointDescription("Unsubscribe from News Letter by Email")]
+        [ProducesResponseType<BaseResponseDto<bool>>((int)HttpStatusCode.OK)]
+        [ProducesResponseType<BaseResponseDto<object>>((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> RemoveSubscriberByEmail([FromBody] NewsLetterSubscriptionDto dto)
+        {
+            var result = await _mediator.Send(new DeleteSubscriberByEmailCommand(dto));
+            return StatusCode(result.StatusCode, new BaseResponseDto<bool> { Message = result.Message, Data = result.Data });
+        }
+}
 }
