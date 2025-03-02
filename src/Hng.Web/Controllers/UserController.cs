@@ -64,9 +64,8 @@ public class UserController(IMediator mediator) : ControllerBase
 
             });
         }
-        
     }
-    
+
     [HttpPut("organisations/{organisationId:guid}")]
     public async Task<IActionResult> SwitchUserOrganisation(
         Guid organisationId,
