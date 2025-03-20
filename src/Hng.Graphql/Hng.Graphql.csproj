@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,7 +9,7 @@
 	<ItemGroup>	
 	  <PackageReference Include="MediatR" Version="12.4.0" />
 		<PackageReference Include="HotChocolate.AspNetCore" Version="13.9.11" />
-		<PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="13.9.11" />
+		<PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="15.1.0" />
 	</ItemGroup>
 
   <ItemGroup>
