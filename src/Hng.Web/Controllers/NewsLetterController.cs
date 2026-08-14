@@ -1,6 +1,7 @@
 using System.Net;
 using Hng.Application.Features.NewsLetterSubscription.Commands;
 using Hng.Application.Features.NewsLetterSubscription.Dtos;
+using Hng.Application.Features.NewsLetterSubscription.Queries;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,23 @@ namespace Hng.Web.Controllers
             return StatusCode((int)HttpStatusCode.Created, new SuccessResponseDto<NewsLetterSubscriptionDto> { Message = "Email was successfully stored.", Data = result });
         }
 
+
+        [HttpGet("subscribers")]
+        [EndpointDescription("Retrieve paginated list of newsletter subscribers")]
+        [ProducesResponseType<PaginatedSubscribersResponseDto>((int)HttpStatusCode.OK)]
+        [ProducesResponseType<BaseResponseDto<object>>((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType<BaseResponseDto<object>>((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> GetSubscribers([FromQuery] int page = 1, [FromQuery] int limit = 10)
+        {
+            var query = new GetPaginatedSubscribersQuery { Page = page, Limit = limit };
+            var result = await _mediator.Send(query);
+
+            return StatusCode(result.StatusCode, result);
+        }
+
+
+
+
         [HttpDelete("{Id}")]
         [EndpointDescription("Unsubscribe from News Letter")]
         [ProducesResponseType<BaseResponseDto<bool>>((int)HttpStatusCode.OK)]
@@ -38,5 +56,6 @@ namespace Hng.Web.Controllers
             var result = await _mediator.Send(new DeleteSubscriberCommand(Id));
             return StatusCode(result.StatusCode, new BaseResponseDto<bool> { Message = result.Message, Data = result.Data });
         }
+
     }
 }
