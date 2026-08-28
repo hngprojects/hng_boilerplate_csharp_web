@@ -59,11 +59,11 @@ namespace Hng.Web.Controllers
         [ProducesResponseType(typeof(SuccessResponseDto<IEnumerable<ProductResponseDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(FailureResponseDto<object>), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAllProducts(Guid orgId)
+        public async Task<IActionResult> GetAllProducts(Guid orgId, [FromQuery] string? category)
         {
             try
             {
-                var query = new GetAllProductsQuery(orgId);
+                var query = new GetAllProductsQuery(orgId, category);
                 var response = await _mediator.Send(query);
                 return Ok(new SuccessResponseDto<IEnumerable<ProductResponseDto>>
                 {
