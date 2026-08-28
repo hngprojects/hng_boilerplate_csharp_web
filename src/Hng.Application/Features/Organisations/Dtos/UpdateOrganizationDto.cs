@@ -27,5 +27,7 @@ namespace Hng.Application.Features.Organisations.Dtos
 
         [JsonPropertyName("state")]
         public string State { get; set; }
+        [JsonPropertyName("is_active")]
+        public bool IsActive { get; set; }
     }
 }
