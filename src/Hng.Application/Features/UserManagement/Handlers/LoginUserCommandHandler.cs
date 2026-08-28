@@ -3,6 +3,7 @@ using Hng.Application.Features.Subscriptions.Dtos.Responses;
 using Hng.Application.Features.UserManagement.Commands;
 using Hng.Application.Features.UserManagement.Dtos;
 using Hng.Domain.Entities;
+using Hng.Domain.Enums;
 using Hng.Infrastructure.Repository.Interface;
 using Hng.Infrastructure.Services.Interfaces;
 using MediatR;
@@ -53,6 +54,16 @@ namespace Hng.Application.Features.UserManagement.Handlers
                     Data = null,
                     AccessToken = null,
                     Message = "Invalid credentials",
+                    StatusCode = StatusCodes.Status401Unauthorized
+                };
+            }
+            if (user.UserStatus == UserStatus.deactivate)
+            {
+                return new UserLoginResponseDto<SignupResponseData>
+                {
+                    Data = null,
+                    AccessToken = null,
+                    Message = "User Deactivated",
                     StatusCode = StatusCodes.Status401Unauthorized
                 };
             }

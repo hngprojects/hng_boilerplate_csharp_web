@@ -1,3 +1,4 @@
+using Hng.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Hng.Domain.Entities;
@@ -37,4 +38,5 @@ public class User : EntityBase
     public Timezone Timezone { get; set; }
     public Guid? LanguageId { get; set; }
     public Language Language { get; set; }
+    public UserStatus UserStatus { get; set; }
 }

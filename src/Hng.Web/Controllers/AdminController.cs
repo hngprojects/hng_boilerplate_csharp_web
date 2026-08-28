@@ -1,5 +1,8 @@
 ﻿using Hng.Application.Features.SuperAdmin.Dto;
 using Hng.Application.Features.SuperAdmin.Queries;
+using Hng.Application.Features.UserManagement.Commands;
+using Hng.Application.Features.UserManagement.Dtos;
+using Hng.Application.Features.UserManagement.Queries;
 using Hng.Application.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +31,20 @@ namespace Hng.Web.Controllers
         {
             var users = await _mediator.Send(new GetUsersBySearchQuery(parameters));
             return Ok(new PaginatedResponseDto<PagedListDto<UserSuperDto>> { Data = users, Metadata = users.MetaData });
+        }
+
+        [HttpPut("users/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> ActivateUser(Guid id)
+        {
+            var command = new UserActivationCommand
+            {
+                UserId = id,
+
+            };
+
+            var response = await _mediator.Send(command);
+            return Ok(response);
         }
     }
 }
